@@ -30,6 +30,9 @@ jobs:
           java-version: '19'
           distribution: 'adopt'
 
+      - name: Grant Execute Permission to Gradlew
+        run: chmod +x ./gradlew
+
       - name: Create Sonar Gradle File
         run: |
           insert_string="plugins { id 'org.sonarqube' version '4.4.1.3373' }"

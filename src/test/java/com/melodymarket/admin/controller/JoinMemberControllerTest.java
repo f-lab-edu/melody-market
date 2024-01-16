@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -22,6 +21,7 @@ class JoinMemberControllerTest {
     @Autowired JoinMemberController joinMemberController;
     @MockBean UserJoinService userJoinService;
 
+
     @Test
     @DisplayName("[GET] 존재하지 않는 유저아이디 체크")
     void isUserIdAvailable() throws Exception {
@@ -31,7 +31,7 @@ class JoinMemberControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("User not exists"));
         // 한번만 수행이 되는지 체크
-        verify(userJoinService, times(1)).checkUserIdDuplication("elephant97");
+        verify(userJoinService, times(1)).checkUserIdDuplication("elephant");
     }
 
     @Test

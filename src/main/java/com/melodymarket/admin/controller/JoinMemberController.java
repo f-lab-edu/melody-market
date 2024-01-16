@@ -21,9 +21,9 @@ public class JoinMemberController {
      */
     @GetMapping("/join/{user_id}/exists")
     @ResponseBody
-    public ResponseEntity<String> isUserIdAvailable(@PathVariable("user_id") String userId){
+    public ResponseEntity<String> isUserIdAvailable(@PathVariable("user_id") String userId) {
 
-        return ResponseEntity.ok(userJoinService.checkUserIdDuplication(userId)?
+        return ResponseEntity.ok(userJoinService.checkUserIdDuplication(userId) ?
                 "User exists" : "User not exists");
     }
 

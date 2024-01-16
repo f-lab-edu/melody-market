@@ -9,11 +9,11 @@ public class UserJoinService {
     private final UserMapper userMapper;
 
     @Autowired
-    public UserJoinService(UserMapper userMapper){
+    public UserJoinService(UserMapper userMapper) {
         this.userMapper = userMapper;
     }
 
-    public boolean checkUserIdDuplication(String userId){
+    public boolean checkUserIdDuplication(String userId) {
         return userMapper.existByUserId(userId);
     }
 }

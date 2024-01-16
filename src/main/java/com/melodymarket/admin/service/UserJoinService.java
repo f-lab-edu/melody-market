@@ -16,4 +16,8 @@ public class UserJoinService {
     public boolean checkUserIdDuplication(String userId) {
         return userMapper.existByUserId(userId);
     }
+
+    public boolean checkNicknameDuplication(String nickname) {
+        return userMapper.existByNickname(nickname);
+    }
 }

@@ -17,9 +17,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(JoinMemberController.class) // 해당 컨트롤러만 테스트 가능하도록 함
 class JoinMemberControllerTest {
 
-    @Autowired MockMvc mockMvc;
-    @Autowired JoinMemberController joinMemberController;
-    @MockBean UserJoinService userJoinService;
+    @Autowired
+    MockMvc mockMvc;
+    @Autowired
+    JoinMemberController joinMemberController;
+    @MockBean
+    UserJoinService userJoinService;
 
 
     @Test
@@ -27,9 +30,9 @@ class JoinMemberControllerTest {
     void isUserIdAvailable() throws Exception {
         //given
         //when&then
-        mockMvc.perform(get("/v1/member/join/elephant/exists"))
+        mockMvc.perform(get("/v1/member/join/check-userid?user-id=elephant"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("User not exists"));
+                .andExpect(content().string("사용 가능한 아이디 입니다."));
         // 한번만 수행이 되는지 체크
         verify(userJoinService, times(1)).checkUserIdDuplication("elephant");
     }
@@ -41,11 +44,38 @@ class JoinMemberControllerTest {
         when(userJoinService.checkUserIdDuplication("elephant")).thenReturn(true);
 
         //when & then
-        mockMvc.perform(get("/v1/member/join/elephant/exists"))
+        mockMvc.perform(get("/v1/member/join/check-userid?user-id=elephant"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("User exists"));
+                .andExpect(content().string("이미 사용중인 아이디 입니다."));
 
         // 한번만 수행이 되는지 체크
         verify(userJoinService, times(1)).checkUserIdDuplication("elephant");
+    }
+
+    @Test
+    @DisplayName("[GET] 존재하는 닉네임 체크")
+    void isNicknameAvailable() throws Exception {
+        //given
+        //when&then
+        mockMvc.perform(get("/v1/member/join/check-nickname?nickname=elephant"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("사용 가능한 닉네임 입니다."));
+        // 한번만 수행이 되는지 체크
+        verify(userJoinService, times(1)).checkNicknameDuplication("elephant");
+    }
+
+    @Test
+    @DisplayName("[GET] 존재하는 닉네임 체크")
+    void isNicknameNotAvailable() throws Exception {
+        //given
+        when(userJoinService.checkNicknameDuplication("elephant")).thenReturn(true);
+
+        //when & then
+        mockMvc.perform(get("/v1/member/join/check-nickname?nickname=elephant"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("이미 사용중인 닉네임 입니다."));
+
+        // 한번만 수행이 되는지 체크
+        verify(userJoinService, times(1)).checkNicknameDuplication("elephant");
     }
 }

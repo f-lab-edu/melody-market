@@ -1,23 +1,11 @@
 package com.melodymarket.admin.service;
 
-import com.melodymarket.admin.mapper.UserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.melodymarket.admin.dto.UserDto;
 
-@Service
-public class UserJoinService {
-    private final UserMapper userMapper;
+public interface UserJoinService {
+    public boolean checkUserIdDuplication(String userId);
 
-    @Autowired
-    public UserJoinService(UserMapper userMapper) {
-        this.userMapper = userMapper;
-    }
+    public boolean checkNicknameDuplication(String nickname);
 
-    public boolean checkUserIdDuplication(String userId) {
-        return userMapper.existByUserId(userId);
-    }
-
-    public boolean checkNicknameDuplication(String nickname) {
-        return userMapper.existByNickname(nickname);
-    }
+    public boolean signUpUser(UserDto userDto);
 }

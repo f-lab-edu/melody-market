@@ -10,5 +10,5 @@ spring:
 
 
 mybatis:
-  mapper-locations: mybatis/mappers/UserMapper.xml
+  mapper-locations: mappers/UserMapper.xml
   type-aliases-package: com.melodymarket.admin.mapper

@@ -1,6 +1,6 @@
-package com.melodymarket.admin.service;
+package com.melodymarket.application.service;
 
-import com.melodymarket.admin.dto.UserDto;
+import com.melodymarket.application.dto.UserDto;
 
 public interface UserJoinService {
     public boolean checkUserIdDuplication(String userId);

@@ -1,6 +1,6 @@
-package com.melodymarket.admin.mapper;
+package com.melodymarket.infrastructure.mybatis.mapper;
 
-import com.melodymarket.admin.dto.UserDto;
+import com.melodymarket.application.dto.UserDto;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

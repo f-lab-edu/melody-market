@@ -1,8 +1,8 @@
-package com.melodymarket.admin.service;
+package com.melodymarket.application.service;
 
-import com.melodymarket.admin.dto.MembershipLevelEnum;
-import com.melodymarket.admin.dto.UserDto;
-import com.melodymarket.admin.mapper.UserMapper;
+import com.melodymarket.application.dto.UserDto;
+import com.melodymarket.domain.admin.enums.MembershipLevelEnum;
+import com.melodymarket.infrastructure.mybatis.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,11 +13,14 @@ import java.time.LocalDate;
 @Slf4j
 public class UserJoinServiceImpl implements UserJoinService {
     private final UserMapper userMapper;
+    private final EncryptPasswordService encryptPasswordService;
 
     @Autowired
-    public UserJoinServiceImpl(UserMapper userMapper) {
+    public UserJoinServiceImpl(UserMapper userMapper, EncryptPasswordService encryptPasswordService) {
         this.userMapper = userMapper;
+        this.encryptPasswordService = encryptPasswordService;
     }
+
 
     @Override
     public boolean checkUserIdDuplication(String userId) {
@@ -39,13 +42,15 @@ public class UserJoinServiceImpl implements UserJoinService {
 
     /**
      * 회원 가입 시 가입 날짜는 오늘로, 등급은 BRONZE로 가입 됨
+     * 비밀번호는 평문 -> 암호화
      *
-     * @param userDto
+     * @param userDto 회원가입을 위한 유저 정보
      */
     private void initUser(UserDto userDto) {
         userDto.setMembershipLevel(MembershipLevelEnum.BRONZE.getLevel());
         userDto.setJoinDate(LocalDate.now());
-        log.info("date=#{}", userDto.getJoinDate()); //TODO: log 형식 다르게 지정할 수 있음
+        encryptPasswordService.encryptPassword(userDto);
+        log.info("date=#{}", userDto.getJoinDate());
     }
 
 }

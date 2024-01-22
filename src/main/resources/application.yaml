@@ -8,7 +8,11 @@ spring:
     username: ${username}
     password: ${password}
 
-
 mybatis:
   mapper-locations: mappers/UserMapper.xml
-  type-aliases-package: com.melodymarket.admin.mapper
+  type-aliases-package: com.melodymarket.infrastructure.mybatis.admin.mapper
+
+logging:
+  level:
+    root: debug
+

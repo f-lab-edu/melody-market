@@ -2,8 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.melodymarket.admin.mapper.UserMapper">
-
+<mapper namespace="com.melodymarket.infrastructure.mybatis.mapper.UserMapper">
     <select id="existByUserId" resultType="boolean">
         SELECT count(*) > 0
         FROM melody_user
@@ -18,6 +17,6 @@
 
     <insert id="saveUser">
         INSERT INTO melody_user (user_id, user_passwd, nickname, email, birth_date, join_date, membership_level)
-        VALUES (#{userId}, #{userPasswd}, #{nickname}, #{email}, STR_TO_DATE(#{birthDate}, '%Y%m%d'), STR_TO_DATE(#{joinDate}, '%Y-%m-%d'), #{membershipLevelEnum})
+        VALUES (#{userId}, #{userPasswd}, #{nickname}, #{email}, STR_TO_DATE(#{birthDate}, '%Y%m%d'), STR_TO_DATE(#{joinDate}, '%Y-%m-%d'), #{membershipLevel})
     </insert>
 </mapper>

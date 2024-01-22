@@ -1,7 +1,8 @@
-package com.melodymarket.admin.controller;
+package com.melodymarket.presentation.admin.controller;
 
-import com.melodymarket.admin.dto.UserDto;
-import com.melodymarket.admin.service.UserJoinServiceImpl;
+import com.melodymarket.application.dto.UserDto;
+import com.melodymarket.application.service.UserJoinServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/v1/member")
 public class JoinMemberController {
@@ -58,12 +60,14 @@ public class JoinMemberController {
      */
     @PostMapping("/join/save")
     public ResponseEntity<Object> createAccount(@RequestBody @Validated UserDto userDto, BindingResult bindingResult) {
-
+        log.info("##Entered Save");
         if (bindingResult.hasErrors()) {//TODO: 다른 방식으로 개선해 볼 것
             Map<String, String> errors = bindingResult.getFieldErrors().stream()
                     .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
+
+        log.info("##### user info={}",userDto.toString());
 
 
 

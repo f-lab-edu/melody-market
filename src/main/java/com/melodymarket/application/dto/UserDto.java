@@ -1,4 +1,4 @@
-package com.melodymarket.admin.dto;
+package com.melodymarket.application.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

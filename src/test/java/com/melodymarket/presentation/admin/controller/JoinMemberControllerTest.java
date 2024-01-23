@@ -1,9 +1,9 @@
-package com.melodymarket.admin.controller;
+package com.melodymarket.presentation.admin.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.melodymarket.application.dto.UserDto;
 import com.melodymarket.application.service.UserJoinServiceImpl;
-import com.melodymarket.presentation.admin.controller.JoinMemberController;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +12,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.validation.Validator;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -33,8 +35,18 @@ class JoinMemberControllerTest {
     @MockBean
     UserJoinServiceImpl userJoinServiceImpl;
 
-    private final Validator validator = new LocalValidatorFactoryBean();
+    @Autowired
+    WebApplicationContext webApplicationContext;
 
+    @BeforeEach
+    void setUp() {
+
+        this.mockMvc = MockMvcBuilders
+                .webAppContextSetup(webApplicationContext)
+                .apply(springSecurity())
+                .defaultRequest(post("/**").with(csrf()))
+                .build();
+    }
 
     @Test
     @DisplayName("[GET] 존재하지 않는 유저아이디 체크")
@@ -91,7 +103,8 @@ class JoinMemberControllerTest {
     }
 
     @Test
-    @DisplayName("[POST] 존재하는 닉네임 체크")
+    @WithMockUser(roles = "USER")// 유저 권한을 가지고 요청을 수행 하도록 함
+    @DisplayName("[POST] 회원 가입 테스트")
     void givenTestUser_whenSaveUser_thenSuccess() throws Exception {
         //given
         UserDto testUser = new UserDto();
@@ -99,6 +112,7 @@ class JoinMemberControllerTest {
         //json 형식으로 convert
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonTestUser = objectMapper.writeValueAsString(testUser);
+        when(userJoinServiceImpl.signUpUser(testUser)).thenReturn(true);
 
 
         //when & then
@@ -106,7 +120,7 @@ class JoinMemberControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonTestUser))
                 .andExpect(status().isOk())
-                .andExpect(content().string("유저 생성에 성공했습니다."));
+                .andExpect(content().string("유저 생성에 성공하였습니다."));
 
         // 한번만 수행이 되는지 체크
         verify(userJoinServiceImpl, times(1)).signUpUser(testUser);
@@ -119,5 +133,6 @@ class JoinMemberControllerTest {
         testUser.setBirthDate("19970908");
         testUser.setEmail("test@example.com");
     }
+
 
 }

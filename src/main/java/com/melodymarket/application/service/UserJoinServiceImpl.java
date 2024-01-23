@@ -24,17 +24,20 @@ public class UserJoinServiceImpl implements UserJoinService {
 
     @Override
     public boolean checkUserIdDuplication(String userId) {
+        log.info("###유저중복체크");
         return userMapper.existByUserId(userId);
     }
 
     @Override
     public boolean checkNicknameDuplication(String nickname) {
+        log.info("###닉네임 중복체크");
         return userMapper.existByNickname(nickname);
     }
 
     @Override
     public boolean signUpUser(UserDto userDto) {
         //TODO: 실패일 경우 어떻게 처리할지 void로 변경하고 (Exception)
+        log.info("###회원가입");
         initUser(userDto);
         userMapper.saveUser(userDto);
         return true;

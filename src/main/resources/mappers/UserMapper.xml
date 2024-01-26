@@ -15,6 +15,12 @@
         WHERE nickname = #{nickname}
     </select>
 
+    <select id="findUser">
+        SELECT id, user_passwd, nickname, email, birth_date, join_date, membership_level
+        FROM melody_user
+        WHERE user_id = #{userId}
+    </select>
+
     <insert id="saveUser">
         INSERT INTO melody_user (user_id, user_passwd, nickname, email, birth_date, join_date, membership_level)
         VALUES (#{userId}, #{userPasswd}, #{nickname}, #{email}, STR_TO_DATE(#{birthDate}, '%Y%m%d'), STR_TO_DATE(#{joinDate}, '%Y-%m-%d'), #{membershipLevel})

@@ -1,6 +1,6 @@
 package com.melodymarket.infrastructure.mybatis.mapper;
 
-import com.melodymarket.application.dto.UserDto;
+import com.melodymarket.domain.user.model.Account;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
@@ -9,5 +9,7 @@ public interface UserMapper {
 
     boolean existByNickname(String nickname);
 
-    void saveUser(UserDto userDto);
+    void saveUser(Account account);
+
+    Account findUser(Account account);
 }

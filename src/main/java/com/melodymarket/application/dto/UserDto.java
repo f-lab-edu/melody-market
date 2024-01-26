@@ -4,11 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
-import java.time.LocalDate;
-
 @Data
 public class UserDto {
-    private Long id;
     @NotBlank(message = "아이디는 필수 입력 값 입니다.")
     private String userId;
     @NotBlank(message = "비밀번호는 필수 입력 값 입니다.")
@@ -25,6 +22,4 @@ public class UserDto {
     @NotBlank(message = "생년월일을 입력하세요.")
     @Pattern(regexp = "\\d{8}", message = "생년월일을 8자리로 입력해주세요.")
     private String birthDate;
-    private LocalDate joinDate;
-    private Integer membershipLevel;
 }

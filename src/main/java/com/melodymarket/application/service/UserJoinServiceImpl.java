@@ -1,7 +1,8 @@
 package com.melodymarket.application.service;
 
 import com.melodymarket.application.dto.UserDto;
-import com.melodymarket.domain.admin.enums.MembershipLevelEnum;
+import com.melodymarket.domain.user.enums.MembershipLevelEnum;
+import com.melodymarket.domain.user.model.Account;
 import com.melodymarket.infrastructure.mybatis.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,21 +40,35 @@ public class UserJoinServiceImpl implements UserJoinService {
         //TODO: 실패일 경우 어떻게 처리할지 void로 변경하고 (Exception)
         log.info("###회원가입");
         initUser(userDto);
-        userMapper.saveUser(userDto);
+        Account account = convertDtoToModel(userDto);
+        userMapper.saveUser(account);
         return true;
     }
 
     /**
-     * 회원 가입 시 가입 날짜는 오늘로, 등급은 BRONZE로 가입 됨
      * 비밀번호는 평문 -> 암호화
      *
      * @param userDto 회원가입을 위한 유저 정보
      */
     private void initUser(UserDto userDto) {
-        userDto.setMembershipLevel(MembershipLevelEnum.BRONZE.getLevel());
-        userDto.setJoinDate(LocalDate.now());
         encryptPasswordService.encryptPassword(userDto);
-        log.info("date=#{}", userDto.getJoinDate());
+    }
+
+    /**
+     * 회원 가입 시 가입 날짜는 오늘로, 등급은 BRONZE로 가입 됨
+     *
+     * @param userDto user 모델로 전환할 객체
+     */
+    public Account convertDtoToModel(UserDto userDto) {
+        Account account = new Account();
+        account.setUserId(userDto.getUserId());
+        account.setNickname(userDto.getNickname());
+        account.setUserPasswd(userDto.getUserPasswd());
+        account.setEmail(userDto.getEmail());
+        account.setBirthDate(userDto.getBirthDate());
+        account.setJoinDate(LocalDate.now());
+        account.setMembershipLevel(MembershipLevelEnum.BRONZE.getLevel());
+        return account;
     }
 
 }

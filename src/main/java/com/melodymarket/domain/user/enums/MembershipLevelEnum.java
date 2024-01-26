@@ -1,4 +1,4 @@
-package com.melodymarket.domain.admin.enums;
+package com.melodymarket.domain.user.enums;
 
 public enum MembershipLevelEnum {
     BRONZE(1),

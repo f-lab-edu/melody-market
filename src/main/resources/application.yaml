@@ -11,6 +11,8 @@ spring:
 mybatis:
   mapper-locations: mappers/UserMapper.xml
   type-aliases-package: com.melodymarket.infrastructure.mybatis.admin.mapper
+  configuration:
+    map-underscore-to-camel-case: true
 
 logging:
   level:

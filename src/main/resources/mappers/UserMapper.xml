@@ -15,8 +15,8 @@
         WHERE nickname = #{nickname}
     </select>
 
-    <select id="findUser">
-        SELECT id, user_passwd, nickname, email, birth_date, join_date, membership_level
+    <select id="findUser" parameterType="com.melodymarket.domain.user.model.Account">
+        SELECT id, user_id, user_passwd, nickname, email, birth_date, join_date, membership_level
         FROM melody_user
         WHERE user_id = #{userId}
     </select>

@@ -26,7 +26,8 @@ public class LoginService implements UserDetailsService {
         Account account = new Account();
         account.setUserId(username);
         account = userMapper.findUser(account);
-        if(account != null){
+//        log.debug("login user={}", account.toString());
+        if (account.getUsername() != null && account.getPassword() != null) {
             List<GrantedAuthority> authorities = new ArrayList<>();
             return new User(account.getUsername(), account.getPassword(), authorities);
         }

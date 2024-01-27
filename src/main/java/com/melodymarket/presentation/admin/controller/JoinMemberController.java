@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequestMapping("/v1/member")
+@RequestMapping("/v1/member/join")
 public class JoinMemberController {
 
     private final UserJoinServiceImpl userJoinServiceImpl;
@@ -33,7 +33,7 @@ public class JoinMemberController {
      * @param userId 중복되는지 체크하려는 id
      * @return User exists or User not exists
      */
-    @GetMapping("/join/check-userid")
+    @GetMapping("/check-userid")
     public ResponseEntity<String> isUserIdAvailable(@RequestParam("user-id") String userId) {
 
         return ResponseEntity.ok(userJoinServiceImpl.checkUserIdDuplication(userId) ? "이미 사용중인 아이디 입니다." : "사용 가능한 아이디 입니다.");
@@ -45,7 +45,7 @@ public class JoinMemberController {
      * @param nickname 중복되는지 체크하려는 nickname
      * @return User exists or User not exists
      */
-    @GetMapping("/join/check-nickname")
+    @GetMapping("/check-nickname")
     public ResponseEntity<String> isNicknameAvailable(@RequestParam("nickname") String nickname) {
 
         return ResponseEntity.ok(userJoinServiceImpl.checkNicknameDuplication(nickname) ? "이미 사용중인 닉네임 입니다." : "사용 가능한 닉네임 입니다.");
@@ -58,7 +58,7 @@ public class JoinMemberController {
      * @param bindingResult 유효성 검사 중 에러가 발생한 변수에 대한 결과 값
      * @return User exists or User not exists
      */
-    @PostMapping("/join/save")
+    @PostMapping("/save")
     public ResponseEntity<Object> createAccount(@RequestBody @Validated UserDto userDto, BindingResult bindingResult) {
         log.info("##Entered Save");
         if (bindingResult.hasErrors()) {//TODO: 다른 방식으로 개선해 볼 것

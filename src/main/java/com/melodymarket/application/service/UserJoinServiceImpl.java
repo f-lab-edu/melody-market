@@ -6,6 +6,7 @@ import com.melodymarket.domain.user.model.Account;
 import com.melodymarket.infrastructure.mybatis.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -37,12 +38,16 @@ public class UserJoinServiceImpl implements UserJoinService {
 
     @Override
     public boolean signUpUser(UserDto userDto) {
-        //TODO: 실패일 경우 어떻게 처리할지 void로 변경하고 (Exception)
         log.info("###회원가입");
         initUser(userDto);
         Account account = convertDtoToModel(userDto);
-        userMapper.saveUser(account);
-        return true;
+        try {
+            userMapper.saveUser(account);
+            return true;
+        } catch (DuplicateKeyException e) {
+            log.error("중복 데이터 회원가입 시도 ={}",userDto.toString());
+            return false;
+        }
     }
 
     /**

@@ -3,11 +3,11 @@ package com.melodymarket.presentation.admin.controller;
 import com.melodymarket.application.dto.UserDto;
 import com.melodymarket.application.service.UserJoinServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -67,11 +67,10 @@ public class JoinMemberController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
 
-        log.info("##### user info={}",userDto.toString());
+        log.info("##### user info={}", userDto.toString());
 
 
-
-        return ResponseEntity.ok(userJoinServiceImpl.signUpUser(userDto) ? "유저 생성에 성공하였습니다." : "유저 생성에 실패하였습니다.");
+        return ResponseEntity.ok(userJoinServiceImpl.signUpUser(userDto)? "유저 생성에 성공했습니다.":"중복 된 데이터 입니다.");
     }
 
 }

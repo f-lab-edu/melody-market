@@ -9,7 +9,7 @@ spring:
     password: ${password}
 
 mybatis:
-  mapper-locations: mappers/UserMapper.xml
+  mapper-locations: mybatis/mappers/UserMapper.xml
   type-aliases-package: com.melodymarket.infrastructure.mybatis.admin.mapper
   configuration:
     map-underscore-to-camel-case: true

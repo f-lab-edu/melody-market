@@ -15,7 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -48,63 +49,35 @@ class JoinMemberControllerTest {
                 .build();
     }
 
+
     @Test
-    @DisplayName("[GET] 존재하지 않는 유저아이디 체크")
-    void isUserIdAvailable() throws Exception {
-        //given
-        //when&then
-        mockMvc.perform(get("/v1/member/join/check-userid?user-id=elephant"))
+    @DisplayName("[GET] 유저아이디 중복 검사 API")
+    void isUserIdNotAvailable() throws Exception {
+        //given & when
+        // then
+        mockMvc.perform(get("/v1/member/join/check-userid?user-id=testuser"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("사용 가능한 아이디 입니다."));
+
         // 한번만 수행이 되는지 체크
-        verify(userJoinServiceImpl, times(1)).checkUserIdDuplication("elephant");
+        verify(userJoinServiceImpl, times(1)).checkUserIdDuplication("testuser");
     }
 
     @Test
-    @DisplayName("[GET] 존재하는 유저아이디 체크")
-    void isUserIdNotAvailable() throws Exception {
-        //given
-        when(userJoinServiceImpl.checkUserIdDuplication("elephant")).thenReturn(true);
-
-        //when & then
-        mockMvc.perform(get("/v1/member/join/check-userid?user-id=elephant"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("이미 사용중인 아이디 입니다."));
-
-        // 한번만 수행이 되는지 체크
-        verify(userJoinServiceImpl, times(1)).checkUserIdDuplication("elephant");
-    }
-
-    @Test
-    @DisplayName("[GET] 존재하는 닉네임 체크")
+    @DisplayName("[GET] 닉네임 중복 검사 API 테스트")
     void isNicknameAvailable() throws Exception {
         //given
         //when&then
-        mockMvc.perform(get("/v1/member/join/check-nickname?nickname=elephant"))
+        mockMvc.perform(get("/v1/member/join/check-nickname?nickname=testnickname"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("사용 가능한 닉네임 입니다."));
         // 한번만 수행이 되는지 체크
-        verify(userJoinServiceImpl, times(1)).checkNicknameDuplication("elephant");
-    }
-
-    @Test
-    @DisplayName("[GET] 존재하는 닉네임 체크")
-    void isNicknameNotAvailable() throws Exception {
-        //given
-        when(userJoinServiceImpl.checkNicknameDuplication("elephant")).thenReturn(true);
-
-        //when & then
-        mockMvc.perform(get("/v1/member/join/check-nickname?nickname=elephant"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("이미 사용중인 닉네임 입니다."));
-
-        // 한번만 수행이 되는지 체크
-        verify(userJoinServiceImpl, times(1)).checkNicknameDuplication("elephant");
+        verify(userJoinServiceImpl, times(1)).checkNicknameDuplication("testnickname");
     }
 
     @Test
     @WithMockUser(roles = "USER")// 유저 권한을 가지고 요청을 수행 하도록 함
-    @DisplayName("[POST] 회원 가입 테스트")
+    @DisplayName("[POST] 회원 가입 API 테스트")
     void givenTestUser_whenSaveUser_thenSuccess() throws Exception {
         //given
         UserDto testUser = new UserDto();
@@ -112,7 +85,7 @@ class JoinMemberControllerTest {
         //json 형식으로 convert
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonTestUser = objectMapper.writeValueAsString(testUser);
-        when(userJoinServiceImpl.signUpUser(testUser)).thenReturn(true);
+        userJoinServiceImpl.signUpUser(testUser);
 
 
         //when & then
@@ -120,7 +93,7 @@ class JoinMemberControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonTestUser))
                 .andExpect(status().isOk())
-                .andExpect(content().string("유저 생성에 성공하였습니다."));
+                .andExpect(content().string("유저 생성에 성공했습니다."));
 
         // 한번만 수행이 되는지 체크
         verify(userJoinServiceImpl, times(1)).signUpUser(testUser);

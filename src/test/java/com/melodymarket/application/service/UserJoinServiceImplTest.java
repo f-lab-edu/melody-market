@@ -1,13 +1,15 @@
 package com.melodymarket.application.service;
 
 import com.melodymarket.application.dto.UserDto;
+import com.melodymarket.infrastructure.mybatis.exception.MybatisDuplicateKeyException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
@@ -19,69 +21,71 @@ class UserJoinServiceImplTest {
 
 
     @Test
-    @DisplayName("존재하는 유저아이디 중복 체크")
-    void givenExistUserId_whenCheckUserIdDuplication_thenTrue() {
+    @DisplayName("존재하는 유저아이디 예외 발생 체크")
+    void givenExistUserId_whenCheckUserIdDuplication_thenThrowsException() {
         //given
         String existUserId = "elephant";
 
-        //when
-        boolean result = userJoinService.checkUserIdDuplication(existUserId);
-
-        //then
-        assertThat(result).isTrue();
+        //when&then
+        assertThrows(MybatisDuplicateKeyException.class
+                , () -> userJoinService.checkUserIdDuplication(existUserId));
     }
 
     @Test
-    @DisplayName("존재하지 않는 유저아이디 중복 체크")
-    void givenNotExistUserId_whenCheckUserIdDuplication_thenReturnFalse() {
+    @DisplayName("존재하지 않는 유저아이디 예외 미발생 체크")
+    void givenNotExistUserId_whenCheckUserIdDuplication_thenDoseNotThrowException() {
         //given
         String NotExistUserId = "not_exist";
 
-        //when
-        boolean result = userJoinService.checkUserIdDuplication(NotExistUserId);
-
-        //then
-        assertThat(result).isFalse();
+        //when&then
+        assertDoesNotThrow(() -> userJoinService.checkUserIdDuplication(NotExistUserId));
     }
 
     @Test
-    @DisplayName("존재하는 닉네임 중복 체크")
-    void givenExistNickname_whencheckNicknameDuplication_thenTrue() {
+    @DisplayName("존재하는 닉네임 예외 발생 체크")
+    void givenExistNickname_whencheckNicknameDuplication_thenThrowsException() {
         //given
         String existNickname = "hello";
 
-        //when
-        boolean result = userJoinService.checkNicknameDuplication(existNickname);
-
-        //then
-        assertThat(result).isTrue();
+        //when&then
+        assertThrows(MybatisDuplicateKeyException.class
+                , () -> userJoinService.checkNicknameDuplication(existNickname));
     }
 
     @Test
-    @DisplayName("존재하지 않는 닉네임 중복 체크")
-    void givenNotExistNickname_whencheckNicknameDuplication_thenReturnFalse() {
+    @DisplayName("존재하지 않는 닉네임 예외 미발생 체크")
+    void givenNotExistNickname_whencheckNicknameDuplication_thenDoseNotThrowException() {
         //given
         String notExistNickname = "not_exist";
 
-        //when
-        boolean result = userJoinService.checkNicknameDuplication(notExistNickname);
-
-        //then
-        assertThat(result).isFalse();
+        //when&then
+        assertDoesNotThrow(() -> userJoinService.checkNicknameDuplication(notExistNickname));
     }
 
     @Test
-    @DisplayName("회원가입 테스트")
-    void givenUserDto_whenSaveUser_thenReturnTrue() {
+    @DisplayName("존재하지 않는 유저 정보 회원가입 예외 미발생 테스트")
+    void givenNotExsistUserDto_whenSaveUser_thenDoseNotThrowException() {
         //given
         UserDto testUser = new UserDto();
         setTestUser(testUser);
 
-        //when
-        boolean result = userJoinService.signUpUser(testUser);
+        //when&then
+        assertDoesNotThrow(()->userJoinService.signUpUser(testUser));
+    }
+
+    @Test
+    @DisplayName("존재하는 유저 정보 회원가입 예외 발생 테스트")
+    void givenNotExsistUserDto_whenSaveUser_thenThrowsException() {
+        //given
+        UserDto testUser = new UserDto();
+        setTestUser(testUser);
+
+        // when
+        userJoinService.signUpUser(testUser);
+
 
         //then
-        assertThat(result).isTrue();
+        assertThrows(MybatisDuplicateKeyException.class,()->userJoinService.signUpUser(testUser));
     }
 
     private void setTestUser(UserDto testUser) {

@@ -26,7 +26,8 @@ class UserJoinServiceImplTest {
         //given
         String existUserId = "elephant";
 
-        //when&then
+        //when
+        //then
         assertThrows(MybatisDuplicateKeyException.class
                 , () -> userJoinService.checkUserIdDuplication(existUserId));
     }
@@ -37,7 +38,8 @@ class UserJoinServiceImplTest {
         //given
         String NotExistUserId = "not_exist";
 
-        //when&then
+        //when
+        //then
         assertDoesNotThrow(() -> userJoinService.checkUserIdDuplication(NotExistUserId));
     }
 
@@ -47,7 +49,8 @@ class UserJoinServiceImplTest {
         //given
         String existNickname = "hello";
 
-        //when&then
+        //when
+        //then
         assertThrows(MybatisDuplicateKeyException.class
                 , () -> userJoinService.checkNicknameDuplication(existNickname));
     }
@@ -58,7 +61,8 @@ class UserJoinServiceImplTest {
         //given
         String notExistNickname = "not_exist";
 
-        //when&then
+        //when
+        //then
         assertDoesNotThrow(() -> userJoinService.checkNicknameDuplication(notExistNickname));
     }
 
@@ -66,10 +70,10 @@ class UserJoinServiceImplTest {
     @DisplayName("존재하지 않는 유저 정보 회원가입 예외 미발생 테스트")
     void givenNotExsistUserDto_whenSaveUser_thenDoseNotThrowException() {
         //given
-        UserDto testUser = new UserDto();
-        setTestUser(testUser);
+        UserDto testUser = createTestUser();
 
-        //when&then
+        //when
+        //then
         assertDoesNotThrow(()->userJoinService.signUpUser(testUser));
     }
 
@@ -77,8 +81,7 @@ class UserJoinServiceImplTest {
     @DisplayName("존재하는 유저 정보 회원가입 예외 발생 테스트")
     void givenNotExsistUserDto_whenSaveUser_thenThrowsException() {
         //given
-        UserDto testUser = new UserDto();
-        setTestUser(testUser);
+        UserDto testUser = createTestUser();
 
         // when
         userJoinService.signUpUser(testUser);
@@ -88,11 +91,14 @@ class UserJoinServiceImplTest {
         assertThrows(MybatisDuplicateKeyException.class,()->userJoinService.signUpUser(testUser));
     }
 
-    private void setTestUser(UserDto testUser) {
-        testUser.setUserId("testuser");
-        testUser.setUserPasswd("test123!");
-        testUser.setNickname("imtest");
-        testUser.setBirthDate("19970908");
-        testUser.setEmail("test@example.com");
+    private UserDto createTestUser() {
+        UserDto userDto = new UserDto();
+        userDto.setUserId("testuser");
+        userDto.setUserPasswd("test123!");
+        userDto.setNickname("imtest");
+        userDto.setBirthDate("19970908");
+        userDto.setEmail("test@example.com");
+
+        return userDto;
     }
 }

@@ -27,7 +27,7 @@ public class JoinMemberController {
      * @param userId 중복되는지 체크하려는 id
      * @return User exists or User not exists
      */
-    @GetMapping("/check-userid")
+    @GetMapping("/check-user-id")
     public ResponseEntity<String> isUserIdAvailable(@RequestParam("user-id") String userId) {
         userJoinServiceImpl.checkUserIdDuplication(userId);
         return ResponseEntity.ok( "사용 가능한 아이디 입니다.");

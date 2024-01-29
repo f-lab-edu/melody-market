@@ -5,29 +5,26 @@ import com.melodymarket.domain.user.enums.MembershipLevelEnum;
 import com.melodymarket.domain.user.model.Account;
 import com.melodymarket.infrastructure.mybatis.exception.MybatisDuplicateKeyException;
 import com.melodymarket.infrastructure.mybatis.mapper.UserMapper;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class UserJoinServiceImpl implements UserJoinService {
-    private final UserMapper userMapper;
-    private final EncryptPasswordService encryptPasswordService;
-
-    @Autowired
-    public UserJoinServiceImpl(UserMapper userMapper, EncryptPasswordService encryptPasswordService) {
-        this.userMapper = userMapper;
-        this.encryptPasswordService = encryptPasswordService;
-    }
-
+    UserMapper userMapper;
+    EncryptPasswordService encryptPasswordService;
 
     @Override
     public void checkUserIdDuplication(String userId) {
-        log.info("###유저중복체크");
+        log.debug("유저 중복 체크");
         if (userMapper.existByUserId(userId)) {
             throw new MybatisDuplicateKeyException("이미 존재하는 아이디 입니다.");
         }

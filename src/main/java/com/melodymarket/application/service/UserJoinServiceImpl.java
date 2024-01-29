@@ -3,13 +3,13 @@ package com.melodymarket.application.service;
 import com.melodymarket.application.dto.UserDto;
 import com.melodymarket.domain.user.enums.MembershipLevelEnum;
 import com.melodymarket.domain.user.model.Account;
-import com.melodymarket.infrastructure.mybatis.exception.MybatisDuplicateKeyException;
+import com.melodymarket.infrastructure.exception.DataDuplicateKeyException;
 import com.melodymarket.infrastructure.mybatis.mapper.UserMapper;
+import com.melodymarket.util.DateFormattingUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,7 +26,7 @@ public class UserJoinServiceImpl implements UserJoinService {
     public void checkUserIdDuplication(String userId) {
         log.debug("유저 중복 체크");
         if (userMapper.existByUserId(userId)) {
-            throw new MybatisDuplicateKeyException("이미 존재하는 아이디 입니다.");
+            throw new DataDuplicateKeyException("이미 존재하는 아이디 입니다.");
         }
     }
 
@@ -34,7 +34,7 @@ public class UserJoinServiceImpl implements UserJoinService {
     public void checkNicknameDuplication(String nickname) {
         log.info("###닉네임 중복체크");
         if (userMapper.existByNickname(nickname)) {
-            throw new MybatisDuplicateKeyException("이미 존재하는 닉네임 입니다.");
+            throw new DataDuplicateKeyException("이미 존재하는 닉네임 입니다.");
         }
     }
 
@@ -45,9 +45,9 @@ public class UserJoinServiceImpl implements UserJoinService {
         Account account = convertDtoToModel(userDto);
         try {
             userMapper.saveUser(account);
-        } catch (DuplicateKeyException e) {
+        } catch (org.springframework.dao.DuplicateKeyException e) {
             log.error("중복 데이터 회원가입 시도 ={}", userDto);
-            throw new MybatisDuplicateKeyException("이미 가입 된 회원 정보 입니다.");
+            throw new DataDuplicateKeyException("이미 가입 된 회원 정보 입니다.");
         }
     }
 
@@ -71,10 +71,11 @@ public class UserJoinServiceImpl implements UserJoinService {
         account.setNickname(userDto.getNickname());
         account.setUserPasswd(userDto.getUserPasswd());
         account.setEmail(userDto.getEmail());
-        account.setBirthDate(userDto.getBirthDate());
-        account.setJoinDate(LocalDate.now());
+        account.setBirthDate(DateFormattingUtil.dataFormatter(userDto.getBirthDate(),"yyyyMMdd","yyyy-MM-dd"));
+        account.setJoinDate(LocalDate.now().toString());
         account.setMembershipLevel(MembershipLevelEnum.BRONZE.getLevel());
         return account;
     }
+
 
 }

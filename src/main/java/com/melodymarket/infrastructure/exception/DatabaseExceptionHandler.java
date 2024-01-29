@@ -1,4 +1,4 @@
-package com.melodymarket.infrastructure.mybatis.exception;
+package com.melodymarket.infrastructure.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class MybatisExceptionHandler {
-    @ExceptionHandler(MybatisDuplicateKeyException.class)
-    public ResponseEntity<Object> handleDuplecateKeyException(MybatisDuplicateKeyException ex) {
+public class DatabaseExceptionHandler {
+    @ExceptionHandler(DataDuplicateKeyException.class)
+    public ResponseEntity<Object> handleDuplicateKeyException(DataDuplicateKeyException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ex.getMessage());

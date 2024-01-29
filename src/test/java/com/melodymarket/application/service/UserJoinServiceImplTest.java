@@ -1,7 +1,7 @@
 package com.melodymarket.application.service;
 
 import com.melodymarket.application.dto.UserDto;
-import com.melodymarket.infrastructure.mybatis.exception.MybatisDuplicateKeyException;
+import com.melodymarket.infrastructure.exception.DataDuplicateKeyException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ class UserJoinServiceImplTest {
 
         //when
         //then
-        assertThrows(MybatisDuplicateKeyException.class
+        assertThrows(DataDuplicateKeyException.class
                 , () -> userJoinService.checkUserIdDuplication(existUserId));
     }
 
@@ -45,19 +45,19 @@ class UserJoinServiceImplTest {
 
     @Test
     @DisplayName("존재하는 닉네임 예외 발생 체크")
-    void givenExistNickname_whencheckNicknameDuplication_thenThrowsException() {
+    void givenExistNickname_whenCheckNicknameDuplication_thenThrowsException() {
         //given
         String existNickname = "hello";
 
         //when
         //then
-        assertThrows(MybatisDuplicateKeyException.class
+        assertThrows(DataDuplicateKeyException.class
                 , () -> userJoinService.checkNicknameDuplication(existNickname));
     }
 
     @Test
     @DisplayName("존재하지 않는 닉네임 예외 미발생 체크")
-    void givenNotExistNickname_whencheckNicknameDuplication_thenDoseNotThrowException() {
+    void givenNotExistNickname_whenCheckNicknameDuplication_thenDoseNotThrowException() {
         //given
         String notExistNickname = "not_exist";
 
@@ -68,7 +68,7 @@ class UserJoinServiceImplTest {
 
     @Test
     @DisplayName("존재하지 않는 유저 정보 회원가입 예외 미발생 테스트")
-    void givenNotExsistUserDto_whenSaveUser_thenDoseNotThrowException() {
+    void givenNotExistUserDto_whenSaveUser_thenDoseNotThrowException() {
         //given
         UserDto testUser = createTestUser();
 
@@ -88,7 +88,7 @@ class UserJoinServiceImplTest {
 
 
         //then
-        assertThrows(MybatisDuplicateKeyException.class,()->userJoinService.signUpUser(testUser));
+        assertThrows(DataDuplicateKeyException.class,()->userJoinService.signUpUser(testUser));
     }
 
     private UserDto createTestUser() {

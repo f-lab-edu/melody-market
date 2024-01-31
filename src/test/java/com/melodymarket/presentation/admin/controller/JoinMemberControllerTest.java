@@ -39,7 +39,6 @@ class JoinMemberControllerTest {
 
     @BeforeEach
     void setUp() {
-
         this.mockMvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
                 .apply(springSecurity())
@@ -51,10 +50,9 @@ class JoinMemberControllerTest {
     @Test
     @DisplayName("[GET] 유저아이디 중복 검사 API")
     void isUserIdNotAvailable() throws Exception {
-        //given
         // when
-        // then
         mockMvc.perform(get("/v1/member/join/check-user-id?user-id=testuser"))
+        // then
                 .andExpect(status().isOk())
                 .andExpect(content().string("사용 가능한 아이디 입니다."));
     }
@@ -62,10 +60,10 @@ class JoinMemberControllerTest {
     @Test
     @DisplayName("[GET] 닉네임 중복 검사 API 테스트")
     void isNicknameAvailable() throws Exception {
-        //given
+
         //when
-        //then
         mockMvc.perform(get("/v1/member/join/check-nickname?nickname=testnickname"))
+        //then
                 .andExpect(status().isOk())
                 .andExpect(content().string("사용 가능한 닉네임 입니다."));
     }
@@ -80,10 +78,10 @@ class JoinMemberControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonTestUser = objectMapper.writeValueAsString(testUser);
         //when
-        //then
         mockMvc.perform(post("/v1/member/join/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonTestUser))
+        //then
                 .andExpect(status().isOk())
                 .andExpect(content().string("유저 생성에 성공했습니다."));
     }

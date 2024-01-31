@@ -16,6 +16,6 @@ mybatis:
 
 logging:
   level:
-    com.melodymarket: INFO
+    com.melodymarket: DEBUG
 
 

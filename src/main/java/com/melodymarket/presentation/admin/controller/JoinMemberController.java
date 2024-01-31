@@ -29,6 +29,7 @@ public class JoinMemberController {
      */
     @GetMapping("/check-user-id")
     public ResponseEntity<String> isUserIdAvailable(@RequestParam("user-id") String userId) {
+        log.debug("[isUserIdAvailable] userId={}", userId);
         userJoinServiceImpl.checkUserIdDuplication(userId);
         return ResponseEntity.ok( "사용 가능한 아이디 입니다.");
     }
@@ -41,6 +42,7 @@ public class JoinMemberController {
      */
     @GetMapping("/check-nickname")
     public ResponseEntity<String> isNicknameAvailable(@RequestParam("nickname") String nickname) {
+        log.debug("[isNicknameAvailable] nickname={}", nickname);
         userJoinServiceImpl.checkNicknameDuplication(nickname);
         return ResponseEntity.ok("사용 가능한 닉네임 입니다.");
     }
@@ -53,8 +55,7 @@ public class JoinMemberController {
      */
     @PostMapping("/save")
     public ResponseEntity<Object> createAccount(@RequestBody @Validated UserDto userDto) {
-        log.info("##Entered Save");
-        log.info("##### user info={}", userDto.toString());
+        log.debug("[CreateAccount] user info={}", userDto.toString());
         userJoinServiceImpl.signUpUser(userDto);
         return ResponseEntity.ok("유저 생성에 성공했습니다.");
     }

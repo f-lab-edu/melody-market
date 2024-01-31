@@ -26,8 +26,7 @@ class UserJoinServiceImplTest {
         //given
         String existUserId = "elephant";
 
-        //when
-        //then
+        //when & then
         assertThrows(DataDuplicateKeyException.class
                 , () -> userJoinService.checkUserIdDuplication(existUserId));
     }
@@ -38,8 +37,7 @@ class UserJoinServiceImplTest {
         //given
         String NotExistUserId = "not_exist";
 
-        //when
-        //then
+        //when & then
         assertDoesNotThrow(() -> userJoinService.checkUserIdDuplication(NotExistUserId));
     }
 
@@ -49,8 +47,7 @@ class UserJoinServiceImplTest {
         //given
         String existNickname = "hello";
 
-        //when
-        //then
+        //when & then
         assertThrows(DataDuplicateKeyException.class
                 , () -> userJoinService.checkNicknameDuplication(existNickname));
     }
@@ -61,8 +58,7 @@ class UserJoinServiceImplTest {
         //given
         String notExistNickname = "not_exist";
 
-        //when
-        //then
+        //when & then
         assertDoesNotThrow(() -> userJoinService.checkNicknameDuplication(notExistNickname));
     }
 
@@ -72,8 +68,7 @@ class UserJoinServiceImplTest {
         //given
         UserDto testUser = createTestUser();
 
-        //when
-        //then
+        //when & then
         assertDoesNotThrow(()->userJoinService.signUpUser(testUser));
     }
 

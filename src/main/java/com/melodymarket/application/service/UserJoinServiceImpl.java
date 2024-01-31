@@ -40,7 +40,6 @@ public class UserJoinServiceImpl implements UserJoinService {
 
     @Override
     public void signUpUser(UserDto userDto) {
-        log.info("###회원가입");
         initUser(userDto);
         Account account = convertDtoToModel(userDto);
         try {

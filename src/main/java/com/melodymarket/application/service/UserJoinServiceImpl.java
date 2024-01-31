@@ -1,18 +1,14 @@
 package com.melodymarket.application.service;
 
 import com.melodymarket.application.dto.UserDto;
-import com.melodymarket.domain.user.enums.MembershipLevelEnum;
 import com.melodymarket.domain.user.model.Account;
 import com.melodymarket.infrastructure.exception.DataDuplicateKeyException;
 import com.melodymarket.infrastructure.mybatis.mapper.UserMapper;
-import com.melodymarket.util.DateFormattingUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +37,7 @@ public class UserJoinServiceImpl implements UserJoinService {
     @Override
     public void signUpUser(UserDto userDto) {
         initUser(userDto);
-        Account account = convertDtoToModel(userDto);
+        Account account = userDto.convertDtoToModel();
         try {
             userMapper.saveUser(account);
         } catch (org.springframework.dao.DuplicateKeyException e) {
@@ -59,22 +55,7 @@ public class UserJoinServiceImpl implements UserJoinService {
         encryptPasswordService.encryptPassword(userDto);
     }
 
-    /**
-     * 회원 가입 시 가입 날짜는 오늘로, 등급은 BRONZE로 가입 됨
-     *
-     * @param userDto user 모델로 전환할 객체
-     */
-    public Account convertDtoToModel(UserDto userDto) {
-        Account account = new Account();
-        account.setUserId(userDto.getUserId());
-        account.setNickname(userDto.getNickname());
-        account.setUserPasswd(userDto.getUserPasswd());
-        account.setEmail(userDto.getEmail());
-        account.setBirthDate(DateFormattingUtil.dataFormatter(userDto.getBirthDate(),"yyyyMMdd","yyyy-MM-dd"));
-        account.setJoinDate(LocalDate.now().toString());
-        account.setMembershipLevel(MembershipLevelEnum.BRONZE.getLevel());
-        return account;
-    }
+
 
 
 }

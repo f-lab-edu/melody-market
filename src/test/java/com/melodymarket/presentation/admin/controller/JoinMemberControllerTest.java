@@ -2,13 +2,11 @@ package com.melodymarket.presentation.admin.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.melodymarket.application.dto.UserDto;
-import com.melodymarket.application.service.UserJoinServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,8 +29,6 @@ class JoinMemberControllerTest {
     MockMvc mockMvc;
     @Autowired
     JoinMemberController joinMemberController;
-    @MockBean
-    UserJoinServiceImpl userJoinServiceImpl;
 
     @Autowired
     WebApplicationContext webApplicationContext;
@@ -89,6 +85,7 @@ class JoinMemberControllerTest {
     private UserDto createTestUser() {
         UserDto userDto = new UserDto();
         userDto.setUserId("testuser");
+        userDto.setUsername("테스트");
         userDto.setUserPasswd("test123!");
         userDto.setNickname("imtest");
         userDto.setBirthDate("19970908");

@@ -1,13 +1,24 @@
 package com.melodymarket.application.dto;
 
+import com.melodymarket.domain.user.enums.MembershipLevelEnum;
+import com.melodymarket.domain.user.model.Account;
+import com.melodymarket.util.DateFormattingUtil;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
+
+import java.time.LocalDate;
 
 @Data
 public class UserDto {
     @NotBlank(message = "아이디는 필수 입력 값 입니다.")
     private String userId;
+
+    @NotBlank(message = "이름 필수 입력 값 입니다.")
+    @Pattern(regexp = "^[a-zA-Z가-힣]+$"
+            , message = "이름에는 공백이나 특수문자가 포함될 수 없습니다.")
+    private String username;
+
     @NotBlank(message = "비밀번호는 필수 입력 값 입니다.")
     @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,16}"
             , message = "비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 조합하여 작성해야 합니다.")
@@ -22,4 +33,19 @@ public class UserDto {
     @NotBlank(message = "생년월일을 입력하세요.")
     @Pattern(regexp = "\\d{8}", message = "생년월일을 8자리로 입력해주세요.")
     private String birthDate;
+
+    private Integer membershipLevel;
+
+    public Account convertDtoToModel() {
+        Account account = new Account();
+        account.setUsername(this.getUsername());
+        account.setUserId(this.getUserId());
+        account.setNickname(this.getNickname());
+        account.setUserPasswd(this.getUserPasswd());
+        account.setEmail(this.getEmail());
+        account.setBirthDate(DateFormattingUtil.dataFormatter(this.getBirthDate(),"yyyyMMdd","yyyy-MM-dd"));
+        account.setJoinDate(LocalDate.now().toString());
+        account.setMembershipLevel(MembershipLevelEnum.BRONZE.getLevel());
+        return account;
+    }
 }

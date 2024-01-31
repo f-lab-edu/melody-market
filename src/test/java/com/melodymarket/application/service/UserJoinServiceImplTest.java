@@ -89,6 +89,7 @@ class UserJoinServiceImplTest {
     private UserDto createTestUser() {
         UserDto userDto = new UserDto();
         userDto.setUserId("testuser");
+        userDto.setUsername("테스트");
         userDto.setUserPasswd("test123!");
         userDto.setNickname("imtest");
         userDto.setBirthDate("19970908");

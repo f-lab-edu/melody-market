@@ -22,14 +22,13 @@ public class LoginService implements UserDetailsService {
     private final UserMapper userMapper;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
         Account account = new Account();
-        account.setUserId(username);
-        account = userMapper.findUser(account);
-//        log.debug("login user={}", account.toString());
-        if (account.getUsername() != null && account.getPassword() != null) {
+        account.setUserId(userId);
+        account = userMapper.findUser(account.getUserId());
+        if (account.getUserId() != null && account.getPassword() != null) {
             List<GrantedAuthority> authorities = new ArrayList<>();
-            return new User(account.getUsername(), account.getPassword(), authorities);
+            return new User(account.getUserId(), account.getPassword(), authorities);
         }
 
         return null;

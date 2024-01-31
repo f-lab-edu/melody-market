@@ -1,2 +1,21 @@
 server:
   port: 9090
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${url}
+    username: ${username}
+    password: ${password}
+
+mybatis:
+  mapper-locations: mybatis/mappers/UserMapper.xml
+  type-aliases-package: com.melodymarket.infrastructure.mybatis.admin.mapper
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    com.melodymarket: DEBUG
+
+

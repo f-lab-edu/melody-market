@@ -16,13 +16,13 @@
     </select>
 
     <select id="findUser" parameterType="com.melodymarket.domain.user.model.Account">
-        SELECT id, user_id, user_passwd, nickname, email, birth_date, join_date, membership_level
+        SELECT id, user_id, username, user_passwd, nickname, email, birth_date, join_date, membership_level
         FROM melody_user
         WHERE user_id = #{userId}
     </select>
 
     <insert id="saveUser">
-        INSERT INTO melody_user (user_id, user_passwd, nickname, email, birth_date, join_date, membership_level)
-        VALUES (#{userId}, #{userPasswd}, #{nickname}, #{email}, #{birthDate}, #{joinDate}, #{membershipLevel})
+        INSERT INTO melody_user (user_id, username, user_passwd, nickname, email, birth_date, join_date, membership_level)
+        VALUES (#{userId}, #{username}, #{userPasswd}, #{nickname}, #{email}, #{birthDate}, #{joinDate}, #{membershipLevel})
     </insert>
 </mapper>

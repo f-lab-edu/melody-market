@@ -11,5 +11,5 @@ public interface UserMapper {
 
     void saveUser(Account account);
 
-    Account findUser(Account account);
+    Account findUser(String userId);
 }

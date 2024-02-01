@@ -3,6 +3,8 @@ package com.melodymarket.presentation.admin.controller;
 import com.melodymarket.application.dto.UserDto;
 import com.melodymarket.application.service.UserJoinService;
 import com.melodymarket.application.service.UserJoinServiceImpl;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping("/v1/member/join")
 public class JoinMemberController {
 
-    private final UserJoinService userJoinService;
+    UserJoinService userJoinService;
 
     @Autowired
     public JoinMemberController(UserJoinServiceImpl userJoinServiceImpl) {
@@ -32,7 +35,7 @@ public class JoinMemberController {
     public ResponseEntity<String> isUserIdAvailable(@RequestParam("user-id") String userId) {
         log.debug("[isUserIdAvailable] userId={}", userId);
         userJoinService.checkUserIdDuplication(userId);
-        return ResponseEntity.ok( "사용 가능한 아이디 입니다.");
+        return ResponseEntity.ok("사용 가능한 아이디 입니다.");
     }
 
     /**
@@ -51,7 +54,7 @@ public class JoinMemberController {
     /**
      * 유저 정보 저장
      *
-     * @param userDto       회원가입 할 유저 정보
+     * @param userDto 회원가입 할 유저 정보
      * @return User exists or User not exists
      */
     @PostMapping("/save")

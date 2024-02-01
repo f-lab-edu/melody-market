@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -39,9 +40,9 @@ class ManageMemberControllerTest {
 
         //when
         Mockito.when(userInfoManageService.getUserDetails(userId)).thenReturn(userDto);
-        mockMvc.perform(get("/v1/member/details?user-id=" + userId))
+        ResultActions resultActions = mockMvc.perform(get("/v1/member/details?user-id=" + userId));
         //then
-                .andExpect(status().isOk())
+        resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.userId").value("testuser"))
                 .andExpect(jsonPath("$.username").value("테스트"))
                 .andExpect(jsonPath("$.nickname").value("imtest"))

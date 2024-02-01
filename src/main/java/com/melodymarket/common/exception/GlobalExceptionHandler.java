@@ -17,6 +17,7 @@ public class GlobalExceptionHandler {
 
     /**
      * 유효성 검사에 문제가 있을 경우 badRequest
+     *
      * @param ex Validation 검사 예외
      * @return badRequest error message return
      */
@@ -35,5 +36,4 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(errors);
     }
-
 }

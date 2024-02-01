@@ -2,6 +2,7 @@ package com.melodymarket.application.service;
 
 import com.melodymarket.application.dto.UserDto;
 import com.melodymarket.domain.user.model.Account;
+import com.melodymarket.infrastructure.exception.DataNotFoundException;
 import com.melodymarket.infrastructure.mybatis.mapper.UserMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +21,12 @@ public class UserInfoManageServiceImpl implements UserInfoManageService {
     @Override
     public UserDto getUserDetails(String userId) {
         log.debug("유저 정보 조회");
-        Account account = userMapper.findUser(userId);
-        return account.convertToUserDto();
+        try {
+            Account account = userMapper.findUser(userId);
+            return account.convertToUserDto();
+        } catch (NullPointerException e) {
+            throw new DataNotFoundException("유저 정보를 조회할 수 없습니다.");
+        }
     }
 
 }

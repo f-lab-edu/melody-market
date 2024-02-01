@@ -14,4 +14,12 @@ public class DatabaseExceptionHandler {
                 .body(ex.getMessage());
 
     }
+
+    @ExceptionHandler(DataNotFoundException.class)
+    public ResponseEntity<Object> handleNotFoundException(DataNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
+
+    }
 }

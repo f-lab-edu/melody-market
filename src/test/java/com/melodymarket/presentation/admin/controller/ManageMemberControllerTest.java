@@ -36,14 +36,14 @@ class ManageMemberControllerTest {
     @DisplayName("[GET] 유저 상세 정보 조회 API 테스트")
     void givenUserId_whenGetMappingWithUserIdFindSuccess_thenReturnUserInfo() throws Exception {
         //given
-        String userId = "testuser";
+        Long userId = 1L;
 
         //when
         Mockito.when(userInfoManageService.getUserDetails(userId)).thenReturn(userDto);
         ResultActions resultActions = mockMvc.perform(get("/v1/member/details?user-id=" + userId));
         //then
         resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.userId").value("testuser"))
+                .andExpect(jsonPath("$.loginId").value("testuser"))
                 .andExpect(jsonPath("$.username").value("테스트"))
                 .andExpect(jsonPath("$.nickname").value("imtest"))
                 .andExpect(jsonPath("$.birthDate").value("19970908"))
@@ -53,7 +53,7 @@ class ManageMemberControllerTest {
 
     private UserDto createTestUser() {
         UserDto userDto = new UserDto();
-        userDto.setUserId("testuser");
+        userDto.setLoginId("testuser");
         userDto.setUsername("테스트");
         userDto.setNickname("imtest");
         userDto.setBirthDate("19970908");

@@ -19,9 +19,9 @@ public class UserJoinServiceImpl implements UserJoinService {
     EncryptPasswordService encryptPasswordService;
 
     @Override
-    public void checkUserIdDuplication(String userId) {
+    public void checkUserIdDuplication(String loginId) {
         log.debug("유저 중복 체크");
-        if (userMapper.existByUserId(userId)) {
+        if (userMapper.existByLoginId(loginId)) {
             throw new DataDuplicateKeyException("이미 존재하는 아이디 입니다.");
         }
     }

@@ -21,21 +21,21 @@ class UserInfoManageServiceImplTest {
     UserInfoManageService userInfoManageService;
 
     @Autowired
-    UserJoinService userJoinService;
+    UserJoinServiceImpl userJoinServiceImpl;
 
     UserDto userDto;
 
     @BeforeEach
     void insert() {
         this.userDto = createTestUser();
-        userJoinService.signUpUser(userDto);
+        userJoinServiceImpl.signUpUser(userDto);
     }
 
     @Test
     @DisplayName("존재하는 유저 ID의 유저 정보 조회")
     void givenExistUserId_whenGetUserDetails_thenGetUserInfo() {
         //given
-        String userId = this.userDto.getUserId();
+        Long userId = 2L;
 
         //when
         UserDto returnUser = userInfoManageService.getUserDetails(userId);
@@ -48,7 +48,7 @@ class UserInfoManageServiceImplTest {
     @DisplayName("존재하지 않는 유저 ID의 유저 정보 조회 예외 발생 테스트")
     void givenNotExistUserId_whenGetUserDetails_thenThrowException() {
         //given
-        String userId = "anonymous";
+        Long userId = 999L;
 
         //when
         DataNotFoundException exception =
@@ -60,7 +60,7 @@ class UserInfoManageServiceImplTest {
 
     private UserDto createTestUser() {
         UserDto userDto = new UserDto();
-        userDto.setUserId("testuser");
+        userDto.setLoginId("testuser");
         userDto.setUsername("테스트");
         userDto.setUserPasswd("test123!");
         userDto.setNickname("imtest");

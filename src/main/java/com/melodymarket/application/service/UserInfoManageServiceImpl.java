@@ -19,10 +19,10 @@ public class UserInfoManageServiceImpl implements UserInfoManageService {
     UserMapper userMapper;
 
     @Override
-    public UserDto getUserDetails(String userId) {
+    public UserDto getUserDetails(Long userId) {
         log.debug("유저 정보 조회");
         try {
-            Account account = userMapper.findUser(userId);
+            Account account = userMapper.getUserInfo(userId);
             return account.convertToUserDto();
         } catch (NullPointerException e) {
             throw new DataNotFoundException("유저 정보를 조회할 수 없습니다.");

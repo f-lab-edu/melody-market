@@ -28,13 +28,13 @@ public class JoinMemberController {
     /**
      * 아이디 중복 체크
      *
-     * @param userId 중복되는지 체크하려는 id
+     * @param loginId 중복되는지 체크하려는 id
      * @return User exists or User not exists
      */
-    @GetMapping("/check-user-id")
-    public ResponseEntity<String> isUserIdAvailable(@RequestParam("user-id") String userId) {
-        log.debug("[isUserIdAvailable] userId={}", userId);
-        userJoinService.checkUserIdDuplication(userId);
+    @GetMapping("/check-login-id")
+    public ResponseEntity<String> isUserIdAvailable(@RequestParam("login-id") String loginId) {
+        log.debug("[isUserIdAvailable] loginId={}", loginId);
+        userJoinService.checkUserIdDuplication(loginId);
         return ResponseEntity.ok("사용 가능한 아이디 입니다.");
     }
 

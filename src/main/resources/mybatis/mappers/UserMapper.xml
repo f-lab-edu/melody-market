@@ -3,10 +3,10 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.melodymarket.infrastructure.mybatis.mapper.UserMapper">
-    <select id="existByUserId" resultType="boolean">
+    <select id="existByLoginId" resultType="boolean">
         SELECT count(*) > 0
         FROM melody_user
-        WHERE user_id = #{userId}
+        WHERE login_id = #{loginId}
     </select>
 
     <select id="existByNickname" resultType="boolean">
@@ -16,13 +16,19 @@
     </select>
 
     <select id="findUser" parameterType="com.melodymarket.domain.user.model.Account">
-        SELECT id, user_id, username, user_passwd, nickname, email, birth_date, join_date, membership_level
+        SELECT user_id, login_id, username, user_passwd, nickname, email, birth_date, join_date, membership_level
+        FROM melody_user
+        WHERE login_id = #{loginId}
+    </select>
+
+    <select id="getUserInfo" parameterType="com.melodymarket.domain.user.model.Account">
+        SELECT user_id, login_id, username, user_passwd, nickname, email, birth_date, join_date, membership_level
         FROM melody_user
         WHERE user_id = #{userId}
     </select>
 
     <insert id="saveUser">
-        INSERT INTO melody_user (user_id, username, user_passwd, nickname, email, birth_date, join_date, membership_level)
-        VALUES (#{userId}, #{username}, #{userPasswd}, #{nickname}, #{email}, #{birthDate}, #{joinDate}, #{membershipLevel})
+        INSERT INTO melody_user (login_id, username, user_passwd, nickname, email, birth_date, join_date, membership_level)
+        VALUES (#{loginId}, #{username}, #{userPasswd}, #{nickname}, #{email}, #{birthDate}, #{joinDate}, #{membershipLevel})
     </insert>
 </mapper>

@@ -2,11 +2,13 @@ package com.melodymarket.presentation.admin.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.melodymarket.application.dto.UserDto;
+import com.melodymarket.application.service.UserJoinServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,6 +32,9 @@ class JoinMemberControllerTest {
     @Autowired
     JoinMemberController joinMemberController;
 
+    @MockBean
+    UserJoinServiceImpl userJoinService;
+
     @Autowired
     WebApplicationContext webApplicationContext;
 
@@ -47,7 +52,7 @@ class JoinMemberControllerTest {
     @DisplayName("[GET] 유저아이디 중복 검사 API")
     void isUserIdNotAvailable() throws Exception {
         // when
-        mockMvc.perform(get("/v1/member/join/check-user-id?user-id=testuser"))
+        mockMvc.perform(get("/v1/member/join/check-login-id?login-id=testuser"))
         // then
                 .andExpect(status().isOk())
                 .andExpect(content().string("사용 가능한 아이디 입니다."));
@@ -84,7 +89,7 @@ class JoinMemberControllerTest {
 
     private UserDto createTestUser() {
         UserDto userDto = new UserDto();
-        userDto.setUserId("testuser");
+        userDto.setLoginId("testuser");
         userDto.setUsername("테스트");
         userDto.setUserPasswd("test123!");
         userDto.setNickname("imtest");

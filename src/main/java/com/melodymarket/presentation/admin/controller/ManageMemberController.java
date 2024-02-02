@@ -23,7 +23,7 @@ public class ManageMemberController {
     }
 
     @GetMapping("/details")
-    public ResponseEntity<Object> getUserInfo(@RequestParam("user-id") String userId) {
+    public ResponseEntity<Object> getUserInfo(@RequestParam("user-id") Long userId) {
         log.debug("[getUserInfo] request user id={}", userId);
         return ResponseEntity.ok(userInfoManageService.getUserDetails(userId));
     }

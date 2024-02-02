@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Data
 public class UserDto {
     @NotBlank(message = "아이디는 필수 입력 값 입니다.")
-    private String userId;
+    private String loginId;
 
     @NotBlank(message = "이름 필수 입력 값 입니다.")
     @Pattern(regexp = "^[a-zA-Z가-힣]+$"
@@ -39,7 +39,7 @@ public class UserDto {
     public Account convertDtoToModel() {
         Account account = new Account();
         account.setUsername(this.getUsername());
-        account.setUserId(this.getUserId());
+        account.setLoginId(this.getLoginId());
         account.setNickname(this.getNickname());
         account.setUserPasswd(this.getUserPasswd());
         account.setEmail(this.getEmail());

@@ -21,7 +21,7 @@ public class UserInfoManageServiceImpl implements UserInfoManageService {
     public UserDto getUserDetails(Long userId) {
         log.debug("유저 정보 조회");
         try {
-            return UserDto.withAccount(userMapper.getUserInfo(userId));
+            return UserDto.from(userMapper.getUserInfo(userId));
         } catch (NullPointerException e) {
             throw new DataNotFoundException("유저 정보를 조회할 수 없습니다.");
         }

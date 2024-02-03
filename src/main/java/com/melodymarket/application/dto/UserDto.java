@@ -34,7 +34,7 @@ public class UserDto {
 
     private Integer membershipLevel;
 
-    public static UserDto withAccount(Account account) {
+    public static UserDto from(Account account) {
         return UserDto
                 .builder()
                 .loginId(account.getLoginId())

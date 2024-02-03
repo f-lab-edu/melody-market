@@ -1,6 +1,5 @@
 package com.melodymarket.application.service;
 
-import com.melodymarket.application.dto.UserDto;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -15,7 +14,8 @@ public class EncryptPasswordServiceImpl implements EncryptPasswordService {
     PasswordEncoder passwordEncoder;
 
     @Override
-    public void encryptPassword(UserDto userDto) {
-        userDto.setUserPasswd(passwordEncoder.encode(userDto.getUserPasswd()));
+    public String encryptPassword(String password) {
+        return passwordEncoder.encode(password);
     }
+
 }

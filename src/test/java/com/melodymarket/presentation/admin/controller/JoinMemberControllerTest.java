@@ -3,7 +3,6 @@ package com.melodymarket.presentation.admin.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.melodymarket.application.dto.UserDto;
 import com.melodymarket.application.service.UserJoinServiceImpl;
-import com.melodymarket.common.CreateTestUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -75,7 +74,7 @@ class JoinMemberControllerTest {
     @DisplayName("[POST] 회원 가입 API 테스트")
     void givenTestUser_whenSaveUser_thenSuccess() throws Exception {
         //given
-        UserDto testUser = CreateTestUser.getTestUser();
+        UserDto testUser = createTestUser();
         //json 형식으로 convert
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonTestUser = objectMapper.writeValueAsString(testUser);
@@ -86,6 +85,17 @@ class JoinMemberControllerTest {
         //then
                 .andExpect(status().isOk())
                 .andExpect(content().string("유저 생성에 성공했습니다."));
+    }
+
+    public UserDto createTestUser() {
+        return UserDto.builder()
+                .loginId("testuser")
+                .username("테스트")
+                .userPasswd("test123!")
+                .nickname("imtest")
+                .email("test@example.com")
+                .birthDate("19970908")
+                .build();
     }
 
 }

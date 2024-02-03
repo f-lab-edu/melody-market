@@ -1,7 +1,6 @@
 package com.melodymarket.application.service;
 
 import com.melodymarket.application.dto.UserDto;
-import com.melodymarket.common.CreateTestUser;
 import com.melodymarket.infrastructure.exception.DataDuplicateKeyException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -67,24 +66,34 @@ class UserJoinServiceImplTest {
     @DisplayName("존재하지 않는 유저 정보 회원가입 예외 미발생 테스트")
     void givenNotExistUserDto_whenSaveUser_thenDoseNotThrowException() {
         //given
-        UserDto testUser = CreateTestUser.getTestUser();
+        UserDto testUser = createTestUser();
 
         //when & then
-        assertDoesNotThrow(()->userJoinService.signUpUser(testUser));
+        assertDoesNotThrow(() -> userJoinService.signUpUser(testUser));
     }
 
     @Test
     @DisplayName("존재하는 유저 정보 회원가입 예외 발생 테스트")
     void givenNotExsistUserDto_whenSaveUser_thenThrowsException() {
         //given
-        UserDto testUser = CreateTestUser.getTestUser();
+        UserDto testUser = createTestUser();
 
         // when
         userJoinService.signUpUser(testUser);
 
 
         //then
-        assertThrows(DataDuplicateKeyException.class,()->userJoinService.signUpUser(testUser));
+        assertThrows(DataDuplicateKeyException.class, () -> userJoinService.signUpUser(testUser));
     }
 
+    public UserDto createTestUser() {
+        return UserDto.builder()
+                .loginId("testuser")
+                .username("테스트")
+                .userPasswd("test123!")
+                .nickname("imtest")
+                .email("test@example.com")
+                .birthDate("19970908")
+                .build();
+    }
 }

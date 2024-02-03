@@ -31,8 +31,9 @@ class JoinMemberControllerTest {
     MockMvc mockMvc;
     @Autowired
     JoinMemberController joinMemberController;
+
     @MockBean
-    UserJoinServiceImpl userJoinServiceImpl;
+    UserJoinServiceImpl userJoinService;
 
     @Autowired
     WebApplicationContext webApplicationContext;
@@ -51,7 +52,7 @@ class JoinMemberControllerTest {
     @DisplayName("[GET] 유저아이디 중복 검사 API")
     void isUserIdNotAvailable() throws Exception {
         // when
-        mockMvc.perform(get("/v1/member/join/check-user-id?user-id=testuser"))
+        mockMvc.perform(get("/v1/member/join/check-login-id?login-id=testuser"))
         // then
                 .andExpect(status().isOk())
                 .andExpect(content().string("사용 가능한 아이디 입니다."));
@@ -86,16 +87,15 @@ class JoinMemberControllerTest {
                 .andExpect(content().string("유저 생성에 성공했습니다."));
     }
 
-    private UserDto createTestUser() {
-        UserDto userDto = new UserDto();
-        userDto.setUserId("testuser");
-        userDto.setUserPasswd("test123!");
-        userDto.setNickname("imtest");
-        userDto.setBirthDate("19970908");
-        userDto.setEmail("test@example.com");
-
-        return userDto;
+    public UserDto createTestUser() {
+        return UserDto.builder()
+                .loginId("testuser")
+                .username("테스트")
+                .userPasswd("test123!")
+                .nickname("imtest")
+                .email("test@example.com")
+                .birthDate("19970908")
+                .build();
     }
-
 
 }

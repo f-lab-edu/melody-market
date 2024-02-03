@@ -1,55 +1,42 @@
 package com.melodymarket.domain.user.model;
 
-import lombok.Setter;
-import lombok.ToString;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.melodymarket.application.dto.UserDto;
+import com.melodymarket.domain.user.enums.MembershipLevelEnum;
+import com.melodymarket.util.DateFormattingUtil;
+import lombok.Builder;
+import lombok.Data;
 
-import java.util.Collection;
+import java.time.LocalDate;
+import java.util.Optional;
 
-@Setter
-@ToString
-public class Account implements UserDetails {
-    private Long id;
-    private String userId;
+@Data
+@Builder
+public class Account {
+    private Long userId;
+    private String loginId;
+    private String username;
     private String userPasswd;
     private String nickname;
     private String email;
     private String birthDate;
     private String joinDate;
     private Integer membershipLevel;
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+
+
+
+    public static Account from(UserDto userDto, String encryptPassword) {
+        return Account
+                .builder()
+                .loginId(userDto.getLoginId())
+                .userPasswd(encryptPassword)
+                .username(userDto.getUsername())
+                .nickname(userDto.getNickname())
+                .email(userDto.getEmail())
+                .joinDate(LocalDate.now().toString())
+                .birthDate(DateFormattingUtil
+                        .dataFormatter(userDto.getBirthDate(), "yyyyMMdd", "yyyy-MM-dd"))
+                .membershipLevel(Optional.ofNullable(userDto.getMembershipLevel()).orElse(MembershipLevelEnum.BRONZE.getLevel()))
+                .build();
     }
 
-    @Override
-    public String getPassword() {
-        return this.userPasswd;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.userId;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
 }

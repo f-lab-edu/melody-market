@@ -69,7 +69,7 @@ class UserJoinServiceImplTest {
         UserDto testUser = createTestUser();
 
         //when & then
-        assertDoesNotThrow(()->userJoinService.signUpUser(testUser));
+        assertDoesNotThrow(() -> userJoinService.signUpUser(testUser));
     }
 
     @Test
@@ -83,17 +83,17 @@ class UserJoinServiceImplTest {
 
 
         //then
-        assertThrows(DataDuplicateKeyException.class,()->userJoinService.signUpUser(testUser));
+        assertThrows(DataDuplicateKeyException.class, () -> userJoinService.signUpUser(testUser));
     }
 
-    private UserDto createTestUser() {
-        UserDto userDto = new UserDto();
-        userDto.setUserId("testuser");
-        userDto.setUserPasswd("test123!");
-        userDto.setNickname("imtest");
-        userDto.setBirthDate("19970908");
-        userDto.setEmail("test@example.com");
-
-        return userDto;
+    public UserDto createTestUser() {
+        return UserDto.builder()
+                .loginId("testuser")
+                .username("테스트")
+                .userPasswd("test123!")
+                .nickname("imtest")
+                .email("test@example.com")
+                .birthDate("19970908")
+                .build();
     }
 }

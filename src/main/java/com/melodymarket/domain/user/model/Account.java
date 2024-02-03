@@ -1,9 +1,12 @@
 package com.melodymarket.domain.user.model;
 
 import com.melodymarket.application.dto.UserDto;
+import com.melodymarket.util.DateFormattingUtil;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class Account {
     private Long userId;
     private String loginId;
@@ -15,15 +18,18 @@ public class Account {
     private String joinDate;
     private Integer membershipLevel;
 
-    public UserDto convertToUserDto() {
-        UserDto userDto = new UserDto();
-        userDto.setLoginId(loginId);
-        userDto.setUsername(username);
-        userDto.setNickname(nickname);
-        userDto.setEmail(email);
-        userDto.setBirthDate(birthDate);
-        userDto.setMembershipLevel(membershipLevel);
-        return userDto;
+    public static Account withUserDto(UserDto userDto) {
+        return Account
+                .builder()
+                .loginId(userDto.getLoginId())
+                .userPasswd(userDto.getUserPasswd())
+                .username(userDto.getUsername())
+                .nickname(userDto.getNickname())
+                .email(userDto.getEmail())
+                .birthDate(DateFormattingUtil
+                        .dataFormatter(userDto.getBirthDate(), "yyyyMMdd", "yyyy-MM-dd"))
+                .membershipLevel(userDto.getMembershipLevel())
+                .build();
     }
 
 }

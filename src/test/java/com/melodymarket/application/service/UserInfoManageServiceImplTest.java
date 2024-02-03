@@ -1,6 +1,7 @@
 package com.melodymarket.application.service;
 
 import com.melodymarket.application.dto.UserDto;
+import com.melodymarket.common.CreateTestUser;
 import com.melodymarket.infrastructure.exception.DataNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +28,7 @@ class UserInfoManageServiceImplTest {
 
     @BeforeEach
     void insert() {
-        this.userDto = createTestUser();
+        this.userDto = CreateTestUser.getTestUser();
         userJoinServiceImpl.signUpUser(userDto);
     }
 
@@ -35,7 +36,7 @@ class UserInfoManageServiceImplTest {
     @DisplayName("존재하는 유저 ID의 유저 정보 조회")
     void givenExistUserId_whenGetUserDetails_thenGetUserInfo() {
         //given
-        Long userId = 2L;
+        Long userId = 1L;
 
         //when
         UserDto returnUser = userInfoManageService.getUserDetails(userId);
@@ -58,15 +59,4 @@ class UserInfoManageServiceImplTest {
         Assertions.assertThat(exception.getMessage()).isEqualTo("유저 정보를 조회할 수 없습니다.");
     }
 
-    private UserDto createTestUser() {
-        UserDto userDto = new UserDto();
-        userDto.setLoginId("testuser");
-        userDto.setUsername("테스트");
-        userDto.setUserPasswd("test123!");
-        userDto.setNickname("imtest");
-        userDto.setBirthDate("19970908");
-        userDto.setEmail("test@example.com");
-
-        return userDto;
-    }
 }

@@ -1,6 +1,7 @@
 package com.melodymarket.application.service;
 
 import com.melodymarket.application.dto.UserDto;
+import com.melodymarket.domain.user.enums.MembershipLevelEnum;
 import com.melodymarket.domain.user.model.Account;
 import com.melodymarket.infrastructure.exception.DataDuplicateKeyException;
 import com.melodymarket.infrastructure.mybatis.mapper.UserMapper;
@@ -9,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -36,8 +39,7 @@ public class UserJoinServiceImpl implements UserJoinService {
 
     @Override
     public void signUpUser(UserDto userDto) {
-        initUser(userDto);
-        Account account = userDto.convertDtoToModel();
+        Account account = initUser(userDto);
         try {
             userMapper.saveUser(account);
         } catch (org.springframework.dao.DuplicateKeyException e) {
@@ -48,11 +50,17 @@ public class UserJoinServiceImpl implements UserJoinService {
 
     /**
      * 비밀번호는 평문 -> 암호화
+     * 초기 멤버 멤버쉽 레벨 BRONZE
      *
      * @param userDto 회원가입을 위한 유저 정보
      */
-    private void initUser(UserDto userDto) {
+    private Account initUser(UserDto userDto) {
         encryptPasswordService.encryptPassword(userDto);
+        userDto.setMembershipLevel(MembershipLevelEnum.BRONZE.getLevel());
+        Account account = Account.withUserDto(userDto);
+        account.setJoinDate(LocalDate.now().toString());
+
+        return account;
     }
 
 

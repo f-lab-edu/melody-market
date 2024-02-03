@@ -2,6 +2,7 @@ package com.melodymarket.presentation.admin.controller;
 
 import com.melodymarket.application.dto.UserDto;
 import com.melodymarket.application.service.UserInfoManageServiceImpl;
+import com.melodymarket.common.CreateTestUser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -30,7 +31,7 @@ class ManageMemberControllerTest {
     @Autowired
     ManageMemberController manageMemberController;
 
-    UserDto userDto = createTestUser();
+    UserDto userDto = CreateTestUser.getTestUser();
 
     @Test
     @DisplayName("[GET] 유저 상세 정보 조회 API 테스트")
@@ -50,17 +51,5 @@ class ManageMemberControllerTest {
                 .andExpect(jsonPath("$.email").value("test@example.com"));
 
     }
-
-    private UserDto createTestUser() {
-        UserDto userDto = new UserDto();
-        userDto.setLoginId("testuser");
-        userDto.setUsername("테스트");
-        userDto.setNickname("imtest");
-        userDto.setBirthDate("19970908");
-        userDto.setEmail("test@example.com");
-
-        return userDto;
-    }
-
 
 }

@@ -1,15 +1,13 @@
 package com.melodymarket.application.dto;
 
-import com.melodymarket.domain.user.enums.MembershipLevelEnum;
 import com.melodymarket.domain.user.model.Account;
-import com.melodymarket.util.DateFormattingUtil;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDate;
-
 @Data
+@Builder
 public class UserDto {
     @NotBlank(message = "아이디는 필수 입력 값 입니다.")
     private String loginId;
@@ -36,16 +34,17 @@ public class UserDto {
 
     private Integer membershipLevel;
 
-    public Account convertDtoToModel() {
-        Account account = new Account();
-        account.setUsername(this.getUsername());
-        account.setLoginId(this.getLoginId());
-        account.setNickname(this.getNickname());
-        account.setUserPasswd(this.getUserPasswd());
-        account.setEmail(this.getEmail());
-        account.setBirthDate(DateFormattingUtil.dataFormatter(this.getBirthDate(),"yyyyMMdd","yyyy-MM-dd"));
-        account.setJoinDate(LocalDate.now().toString());
-        account.setMembershipLevel(MembershipLevelEnum.BRONZE.getLevel());
-        return account;
+    public static UserDto withAccount(Account account) {
+        return UserDto
+                .builder()
+                .loginId(account.getLoginId())
+                .username(account.getUsername())
+                .nickname(account.getNickname())
+                .userPasswd(account.getUserPasswd())
+                .birthDate(account.getBirthDate())
+                .email(account.getEmail())
+                .membershipLevel(account.getMembershipLevel())
+                .build();
     }
+
 }

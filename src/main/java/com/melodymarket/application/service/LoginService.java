@@ -27,7 +27,7 @@ public class LoginService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
         Account account = userMapper.findUser(loginId);
-        if (account.getUserId() != null && account.getUserPasswd() != null) {
+        if (account.getId() != null && account.getUserPasswd() != null) {
             List<GrantedAuthority> authorities = new ArrayList<>();
             return new MelodyUserDetails(account, authorities);
         }

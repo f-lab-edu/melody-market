@@ -53,6 +53,7 @@ class JoinMemberControllerTest {
     void isUserIdNotAvailable() throws Exception {
         // when
         mockMvc.perform(get("/v1/member/join/check-login-id?login-id=testuser"))
+
         // then
                 .andExpect(status().isOk())
                 .andExpect(content().string("사용 가능한 아이디 입니다."));

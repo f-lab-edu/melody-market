@@ -16,15 +16,15 @@
     </select>
 
     <select id="findUser" parameterType="com.melodymarket.domain.user.model.Account">
-        SELECT user_id, login_id, username, user_passwd, nickname, email, birth_date, join_date, membership_level
+        SELECT id, login_id, username, user_passwd, nickname, email, birth_date, join_date, membership_level
         FROM melody_user
         WHERE login_id = #{loginId}
     </select>
 
     <select id="getUserInfo" parameterType="com.melodymarket.domain.user.model.Account">
-        SELECT user_id, login_id, username, user_passwd, nickname, email, birth_date, join_date, membership_level
+        SELECT id, login_id, username, user_passwd, nickname, email, birth_date, join_date, membership_level
         FROM melody_user
-        WHERE user_id = #{userId}
+        WHERE id = #{id}
     </select>
 
     <insert id="saveUser">
@@ -34,20 +34,20 @@
 
     <update id="updatePassword">
         UPDATE melody_user
-        SET user_passwd = #{newPassword}
-        WHERE user_id = #{userId}
+        SET user_passwd = #{password}
+        WHERE id = #{id}
     </update>
 
     <update id="updateNickname">
         UPDATE melody_user
         SET nickname = #{nickname}
-        WHERE user_id = #{userId}
+        WHERE id = #{id}
     </update>
 
     <update id="updateEmail">
         UPDATE melody_user
         SET email = #{email}
-        WHERE user_id = #{userId}
+        WHERE id = #{id}
     </update>
 
 </mapper>

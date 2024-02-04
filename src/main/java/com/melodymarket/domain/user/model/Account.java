@@ -12,7 +12,7 @@ import java.util.Optional;
 @Data
 @Builder
 public class Account {
-    private Long userId;
+    private Long id;
     private String loginId;
     private String username;
     private String userPasswd;

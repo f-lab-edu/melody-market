@@ -23,34 +23,36 @@ public class UserInfoManageServiceImpl implements UserInfoManageService {
     CryptPasswordService cryptPasswordService;
 
     @Override
-    public UserDto getUserDetails(Long userId) {
-        log.debug("유저 정보 조회={}", userId);
+    public UserDto getUserDetails(Long id) {
+        log.debug("유저 정보 조회={}", id);
         try {
-            return UserDto.from(userMapper.getUserInfo(userId));
+            return UserDto.from(userMapper.getUserInfo(id));
         } catch (NullPointerException e) {
             throw new DataNotFoundException("유저 정보를 조회할 수 없습니다.");
         }
     }
 
-    public void modifyUserPassword(Long userId, UpdatePasswordDto updatePasswordDto) {
+    @Override
+    public void modifyUserPassword(Long id, UpdatePasswordDto updatePasswordDto) {
         try {
             if (!cryptPasswordService.isPasswordMatch(updatePasswordDto.getOldPasswd(),
-                    userMapper.getUserInfo(userId).getUserPasswd()))
+                    userMapper.getUserInfo(id).getUserPasswd()))
                 throw new PasswordMismatchException("비밀번호가 일치하지 않습니다.");
 
-            userMapper.updatePassword(userId, cryptPasswordService.encryptPassword(updatePasswordDto.getNewPasswd()));
+            userMapper.updatePassword(id, cryptPasswordService.encryptPassword(updatePasswordDto.getNewPasswd()));
         } catch (NullPointerException e) {
             throw new DataNotFoundException("알 수 없는 유저 정보에 대한 요청 입니다.");
         }
     }
 
-    public void modifyUserDetails(Long userId, UpdateUserDto userDto) {
-        log.debug("유저 정보 수정={}", userId);
+    @Override
+    public void modifyUserDetails(Long id, UpdateUserDto userDto) {
+        log.debug("유저 정보 수정={}", id);
         try {
             if (userDto.getNickname() != null)
-                userMapper.updateNickname(userId, userDto.getNickname());
+                userMapper.updateNickname(id, userDto.getNickname());
             if (userDto.getEmail() != null)
-                userMapper.updateEmail(userId, userDto.getEmail());
+                userMapper.updateEmail(id, userDto.getEmail());
         } catch (NullPointerException e) {
             throw new DataNotFoundException("알 수 없는 유저 정보에 대한 요청 입니다.");
         }

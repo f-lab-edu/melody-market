@@ -1,6 +1,9 @@
 package com.melodymarket.application.service;
 
+import com.melodymarket.application.dto.UpdatePasswordDto;
+import com.melodymarket.application.dto.UpdateUserDto;
 import com.melodymarket.application.dto.UserDto;
+import com.melodymarket.common.exception.PasswordMismatchException;
 import com.melodymarket.infrastructure.exception.DataNotFoundException;
 import com.melodymarket.infrastructure.mybatis.mapper.UserMapper;
 import lombok.AccessLevel;
@@ -17,13 +20,39 @@ public class UserInfoManageServiceImpl implements UserInfoManageService {
 
     UserMapper userMapper;
 
+    CryptPasswordService cryptPasswordService;
+
     @Override
     public UserDto getUserDetails(Long userId) {
-        log.debug("유저 정보 조회");
+        log.debug("유저 정보 조회={}", userId);
         try {
             return UserDto.from(userMapper.getUserInfo(userId));
         } catch (NullPointerException e) {
             throw new DataNotFoundException("유저 정보를 조회할 수 없습니다.");
+        }
+    }
+
+    public void modifyUserPassword(Long userId, UpdatePasswordDto updatePasswordDto) {
+        try {
+            if (!cryptPasswordService.isPasswordMatch(updatePasswordDto.getOldPasswd(),
+                    userMapper.getUserInfo(userId).getUserPasswd()))
+                throw new PasswordMismatchException("비밀번호가 일치하지 않습니다.");
+
+            userMapper.updatePassword(userId, cryptPasswordService.encryptPassword(updatePasswordDto.getNewPasswd()));
+        } catch (NullPointerException e) {
+            throw new DataNotFoundException("알 수 없는 유저 정보에 대한 요청 입니다.");
+        }
+    }
+
+    public void modifyUserDetails(Long userId, UpdateUserDto userDto) {
+        log.debug("유저 정보 수정={}", userId);
+        try {
+            if (userDto.getNickname() != null)
+                userMapper.updateNickname(userId, userDto.getNickname());
+            if (userDto.getEmail() != null)
+                userMapper.updateEmail(userId, userDto.getEmail());
+        } catch (NullPointerException e) {
+            throw new DataNotFoundException("알 수 없는 유저 정보에 대한 요청 입니다.");
         }
     }
 

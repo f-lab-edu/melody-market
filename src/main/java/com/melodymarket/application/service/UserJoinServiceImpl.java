@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class UserJoinServiceImpl implements UserJoinService {
     UserMapper userMapper;
 
-    EncryptPasswordService encryptPasswordService;
+    CryptPasswordService cryptPasswordService;
 
     @Override
     public void checkUserIdDuplication(String loginId) {
@@ -37,7 +37,7 @@ public class UserJoinServiceImpl implements UserJoinService {
 
     @Override
     public void signUpUser(UserDto userDto) {
-        Account account = Account.from(userDto, encryptPasswordService.encryptPassword(userDto.getUserPasswd()));
+        Account account = Account.from(userDto, cryptPasswordService.encryptPassword(userDto.getUserPasswd()));
         try {
             userMapper.saveUser(account);
         } catch (org.springframework.dao.DuplicateKeyException e) {

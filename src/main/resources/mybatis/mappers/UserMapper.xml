@@ -31,4 +31,23 @@
         INSERT INTO melody_user (login_id, username, user_passwd, nickname, email, birth_date, join_date, membership_level)
         VALUES (#{loginId}, #{username}, #{userPasswd}, #{nickname}, #{email}, #{birthDate}, #{joinDate}, #{membershipLevel})
     </insert>
+
+    <update id="updatePassword">
+        UPDATE melody_user
+        SET user_passwd = #{newPassword}
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="updateNickname">
+        UPDATE melody_user
+        SET nickname = #{nickname}
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="updateEmail">
+        UPDATE melody_user
+        SET email = #{email}
+        WHERE user_id = #{userId}
+    </update>
+
 </mapper>

@@ -6,12 +6,11 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface UserMapper {
     boolean existByLoginId(String loginId);
-
     boolean existByNickname(String nickname);
-
     void saveUser(Account account);
-
     Account findUser(String loginId);
-
     Account getUserInfo(Long userId);
+    void updatePassword(Long userId, String newPassword);
+    void updateNickname(Long userId, String newNickname);
+    void updateEmail(Long userId, String newEmail);
 }

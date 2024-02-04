@@ -9,13 +9,18 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class EncryptPasswordServiceImpl implements EncryptPasswordService {
+public class CryptPasswordServiceImpl implements CryptPasswordService {
 
     PasswordEncoder passwordEncoder;
 
     @Override
     public String encryptPassword(String password) {
         return passwordEncoder.encode(password);
+    }
+
+    @Override
+    public boolean isPasswordMatch(String inputPasswd, String storedPasswd) {
+        return passwordEncoder.matches(inputPasswd,storedPasswd);
     }
 
 }

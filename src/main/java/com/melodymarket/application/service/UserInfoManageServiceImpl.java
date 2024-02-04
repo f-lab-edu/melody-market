@@ -45,16 +45,13 @@ public class UserInfoManageServiceImpl implements UserInfoManageService {
         }
     }
 
-    @Override
-    public void modifyUserDetails(Long id, UpdateUserDto userDto) {
-        log.debug("유저 정보 수정={}", id);
+    public void modifyUserDetails(Long userId, UpdateUserDto userDto) {
+        log.debug("유저 정보 수정={}", userId);
         try {
-            if (userDto.getNickname() != null) {
-                userMapper.updateNickname(id, userDto.getNickname());
-            }
-            if (userDto.getEmail() != null) {
-                userMapper.updateEmail(id, userDto.getEmail());
-            }
+            if (userDto.getNickname() != null)
+                userMapper.updateNickname(userId, userDto.getNickname());
+            if (userDto.getEmail() != null)
+                userMapper.updateEmail(userId, userDto.getEmail());
         } catch (NullPointerException e) {
             throw new DataNotFoundException("알 수 없는 유저 정보에 대한 요청 입니다.");
         }

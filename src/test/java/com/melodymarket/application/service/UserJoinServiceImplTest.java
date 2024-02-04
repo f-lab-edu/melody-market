@@ -2,6 +2,8 @@ package com.melodymarket.application.service;
 
 import com.melodymarket.application.dto.UserDto;
 import com.melodymarket.infrastructure.exception.DataDuplicateKeyException;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,17 +20,23 @@ class UserJoinServiceImplTest {
 
     @Autowired
     UserJoinService userJoinService;
+    UserDto userDto;
 
+    @BeforeEach
+    void insert() {
+        this.userDto = createTestUser();
+        userJoinService.signUpUser(userDto);
+    }
 
     @Test
     @DisplayName("존재하는 유저아이디 예외 발생 체크")
     void givenExistUserId_whenCheckUserIdDuplication_thenThrowsException() {
         //given
-        String existUserId = "elephant";
+        String existUserId = "testuser";
 
         //when & then
-        assertThrows(DataDuplicateKeyException.class
-                , () -> userJoinService.checkUserIdDuplication(existUserId));
+        assertThrows(DataDuplicateKeyException.class,
+                () -> userJoinService.checkUserIdDuplication(existUserId));
     }
 
     @Test
@@ -45,11 +53,11 @@ class UserJoinServiceImplTest {
     @DisplayName("존재하는 닉네임 예외 발생 체크")
     void givenExistNickname_whenCheckNicknameDuplication_thenThrowsException() {
         //given
-        String existNickname = "hello";
+        String existNickname = "imtest";
 
         //when & then
-        assertThrows(DataDuplicateKeyException.class
-                , () -> userJoinService.checkNicknameDuplication(existNickname));
+        assertThrows(DataDuplicateKeyException.class,
+                () -> userJoinService.checkNicknameDuplication(existNickname));
     }
 
     @Test
@@ -66,7 +74,7 @@ class UserJoinServiceImplTest {
     @DisplayName("존재하지 않는 유저 정보 회원가입 예외 미발생 테스트")
     void givenNotExistUserDto_whenSaveUser_thenDoseNotThrowException() {
         //given
-        UserDto testUser = createTestUser();
+        UserDto testUser = createTestNewUser();
 
         //when & then
         assertDoesNotThrow(() -> userJoinService.signUpUser(testUser));
@@ -74,16 +82,16 @@ class UserJoinServiceImplTest {
 
     @Test
     @DisplayName("존재하는 유저 정보 회원가입 예외 발생 테스트")
-    void givenNotExsistUserDto_whenSaveUser_thenThrowsException() {
+    void givenNotExistUserDto_whenSaveUser_thenThrowsException() {
         //given
         UserDto testUser = createTestUser();
 
         // when
-        userJoinService.signUpUser(testUser);
-
+        DataDuplicateKeyException exception = assertThrows(DataDuplicateKeyException.class,
+                () -> userJoinService.signUpUser(testUser));
 
         //then
-        assertThrows(DataDuplicateKeyException.class, () -> userJoinService.signUpUser(testUser));
+        Assertions.assertThat(exception.getMessage()).isEqualTo("이미 가입 된 회원 정보 입니다.");
     }
 
     public UserDto createTestUser() {
@@ -96,4 +104,16 @@ class UserJoinServiceImplTest {
                 .birthDate("19970908")
                 .build();
     }
+
+    public UserDto createTestNewUser() {
+        return UserDto.builder()
+                .loginId("testuser2")
+                .username("테스트2")
+                .userPasswd("test123!")
+                .nickname("imtest2")
+                .email("test2@example.com")
+                .birthDate("19970908")
+                .build();
+    }
+
 }

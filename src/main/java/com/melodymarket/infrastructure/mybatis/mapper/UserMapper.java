@@ -1,5 +1,6 @@
 package com.melodymarket.infrastructure.mybatis.mapper;
 
+import com.melodymarket.application.dto.UpdateUserDto;
 import com.melodymarket.domain.user.model.Account;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,6 +12,5 @@ public interface UserMapper {
     Account findUser(String loginId);
     Account getUserInfo(Long id);
     void updatePassword(Long id, String password);
-    void updateNickname(Long id, String nickname);
-    void updateEmail(Long id, String email);
+    void updateUserInfo(Long id, UpdateUserDto updateUserDto);
 }

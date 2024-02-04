@@ -38,15 +38,12 @@
         WHERE id = #{id}
     </update>
 
-    <update id="updateNickname">
+    <update id="updateUserInfo">
         UPDATE melody_user
-        SET nickname = #{nickname}
-        WHERE id = #{id}
-    </update>
-
-    <update id="updateEmail">
-        UPDATE melody_user
-        SET email = #{email}
+        <set>
+            <if test="updateUserDto.nickname != null">nickname = #{updateUserDto.nickname},</if>
+            <if test="updateUserDto.email != null">email = #{updateUserDto.email},</if>
+        </set>
         WHERE id = #{id}
     </update>
 

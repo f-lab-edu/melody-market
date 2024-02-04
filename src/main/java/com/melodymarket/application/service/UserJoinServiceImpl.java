@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -40,7 +41,7 @@ public class UserJoinServiceImpl implements UserJoinService {
         Account account = Account.from(userDto, cryptPasswordService.encryptPassword(userDto.getUserPasswd()));
         try {
             userMapper.saveUser(account);
-        } catch (org.springframework.dao.DuplicateKeyException e) {
+        } catch (DuplicateKeyException e) {
             log.error("중복 데이터 회원가입 시도 ={}", userDto);
             throw new DataDuplicateKeyException("이미 가입 된 회원 정보 입니다.");
         }

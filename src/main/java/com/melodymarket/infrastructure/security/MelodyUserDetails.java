@@ -8,19 +8,17 @@ import java.util.Collection;
 
 public class MelodyUserDetails implements UserDetails {
 
+    private Long id;
     private String loginId;
-    private Long userId; // 사용자 고유 ID
     private String username;
     private String password;
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public MelodyUserDetails() {
-    }
 
     public MelodyUserDetails(Account account, Collection<? extends GrantedAuthority> authorities) {
         this.username = account.getUsername();
-        this.userId = account.getUserId();
+        this.id = account.getId();
         this.loginId = account.getLoginId();
         this.password = account.getUserPasswd();
         this.authorities = authorities;
@@ -35,8 +33,8 @@ public class MelodyUserDetails implements UserDetails {
         return loginId;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getId() {
+        return id;
     }
 
     @Override

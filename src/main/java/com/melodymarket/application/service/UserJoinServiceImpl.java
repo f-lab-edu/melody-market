@@ -29,7 +29,7 @@ public class UserJoinServiceImpl implements UserJoinService {
 
     @Override
     public void checkNicknameDuplication(String nickname) {
-        log.info("###닉네임 중복체크");
+        log.info("닉네임 중복체크");
         if (userMapper.existByNickname(nickname)) {
             throw new DataDuplicateKeyException("이미 존재하는 닉네임 입니다.");
         }

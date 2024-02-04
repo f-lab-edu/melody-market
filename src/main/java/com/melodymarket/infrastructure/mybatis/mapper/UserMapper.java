@@ -9,8 +9,8 @@ public interface UserMapper {
     boolean existByNickname(String nickname);
     void saveUser(Account account);
     Account findUser(String loginId);
-    Account getUserInfo(Long userId);
-    void updatePassword(Long userId, String newPassword);
-    void updateNickname(Long userId, String newNickname);
-    void updateEmail(Long userId, String newEmail);
+    Account getUserInfo(Long id);
+    void updatePassword(Long id, String password);
+    void updateNickname(Long id, String nickname);
+    void updateEmail(Long id, String email);
 }

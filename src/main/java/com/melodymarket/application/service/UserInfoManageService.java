@@ -5,7 +5,7 @@ import com.melodymarket.application.dto.UpdateUserDto;
 import com.melodymarket.application.dto.UserDto;
 
 public interface UserInfoManageService {
-    UserDto getUserDetails(Long userId);
-    void modifyUserPassword(Long userId, UpdatePasswordDto updatePasswordDto);
-    void modifyUserDetails(Long userId, UpdateUserDto userDto);
+    UserDto getUserDetails(Long id);
+    void modifyUserPassword(Long id, UpdatePasswordDto updatePasswordDto);
+    void modifyUserDetails(Long id, UpdateUserDto userDto);
 }

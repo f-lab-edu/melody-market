@@ -1,20 +1,28 @@
 package com.melodymarket.presentation.admin.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.melodymarket.application.dto.UpdatePasswordDto;
+import com.melodymarket.application.dto.UpdateUserDto;
 import com.melodymarket.application.dto.UserDto;
 import com.melodymarket.application.service.UserInfoManageServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @DisplayName("회원조희 API 테스트")
 @WithMockUser(roles = "USER")
@@ -30,17 +38,31 @@ class ManageMemberControllerTest {
     @Autowired
     ManageMemberController manageMemberController;
 
+    @Autowired
+    WebApplicationContext webApplicationContext;
+
+
     UserDto userDto = createTestUser();
+
+    @BeforeEach
+    void setUp() {
+        this.mockMvc = MockMvcBuilders
+                .webAppContextSetup(webApplicationContext)
+                .apply(springSecurity())
+                .defaultRequest(post("/**").with(csrf()))
+                .build();
+    }
 
     @Test
     @DisplayName("[GET] 유저 상세 정보 조회 API 테스트")
     void givenUserId_whenGetMappingWithUserIdFindSuccess_thenReturnUserInfo() throws Exception {
         //given
-        Long userId = 1L;
+        Long id = 1L;
 
         //when
-        Mockito.when(userInfoManageService.getUserDetails(userId)).thenReturn(userDto);
-        ResultActions resultActions = mockMvc.perform(get("/v1/member/details?user-id=" + userId));
+        Mockito.when(userInfoManageService.getUserDetails(id)).thenReturn(userDto);
+        ResultActions resultActions = mockMvc.perform(get("/v1/member/details/" + id));
+
         //then
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.loginId").value("testuser"))
@@ -51,7 +73,53 @@ class ManageMemberControllerTest {
 
     }
 
-    public UserDto createTestUser() {
+    @Test
+    @DisplayName("[POST] 유저 비밀번호 변경 API 테스트")
+    void givenUserIdAndOldUpdatePasswordDto_whenPostMapping_thenReturnSuccess() throws Exception {
+        //given
+        Long id = 1L;
+        UpdatePasswordDto updatePasswordDto = getTestUpdatePasswordDto();
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonTestDto = objectMapper.writeValueAsString(updatePasswordDto);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(post("/v1/member/details/" + id + "/update-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonTestDto));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().string("비밀번호가 변경되었습니다."));
+    }
+
+    @Test
+    @DisplayName("[POST] 유저 닉네임 변경 API 테스트")
+    void givenUserIdAnd_whenPostMapping_thenReturnSuccess() throws Exception {
+        //given
+        Long id = 1L;
+        UpdateUserDto updateUserDto = new UpdateUserDto();
+        updateUserDto.setNickname("새로운닉네임");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonTestDto = objectMapper.writeValueAsString(updateUserDto);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(post("/v1/member/details/" + id + "/update-user-info")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonTestDto));
+
+        //then
+        resultActions.andExpect(status().isOk());
+    }
+
+
+    private UpdatePasswordDto getTestUpdatePasswordDto() {
+        UpdatePasswordDto updatePasswordDto = new UpdatePasswordDto();
+        updatePasswordDto.setOldPasswd("old123!!");
+        updatePasswordDto.setNewPasswd("new123!!");
+        return updatePasswordDto;
+    }
+
+    private UserDto createTestUser() {
         return UserDto.builder()
                 .loginId("testuser")
                 .username("테스트")

@@ -36,4 +36,11 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(errors);
     }
+
+    @ExceptionHandler(PasswordMismatchException.class)
+    public ResponseEntity<Object> handlePasswordMissMatchException(PasswordMismatchException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_MODIFIED)
+                .body(ex.getMessage());
+    }
 }

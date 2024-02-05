@@ -10,7 +10,7 @@ public class DatabaseExceptionHandler {
     @ExceptionHandler(DataDuplicateKeyException.class)
     public ResponseEntity<Object> handleDuplicateKeyException(DataDuplicateKeyException ex) {
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(HttpStatus.CONFLICT)
                 .body(ex.getMessage());
 
     }
@@ -18,7 +18,7 @@ public class DatabaseExceptionHandler {
     @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<Object> handleNotFoundException(DataNotFoundException ex) {
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(HttpStatus.NOT_FOUND)
                 .body(ex.getMessage());
 
     }

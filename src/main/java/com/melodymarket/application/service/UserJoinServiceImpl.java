@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class UserJoinServiceImpl implements UserJoinService {
     UserMapper userMapper;
 
-    EncryptPasswordService encryptPasswordService;
+    CryptPasswordService cryptPasswordService;
 
     @Override
     public void checkUserIdDuplication(String loginId) {
@@ -29,7 +30,7 @@ public class UserJoinServiceImpl implements UserJoinService {
 
     @Override
     public void checkNicknameDuplication(String nickname) {
-        log.info("###닉네임 중복체크");
+        log.info("닉네임 중복체크");
         if (userMapper.existByNickname(nickname)) {
             throw new DataDuplicateKeyException("이미 존재하는 닉네임 입니다.");
         }
@@ -37,10 +38,10 @@ public class UserJoinServiceImpl implements UserJoinService {
 
     @Override
     public void signUpUser(UserDto userDto) {
-        Account account = Account.from(userDto, encryptPasswordService.encryptPassword(userDto.getUserPasswd()));
+        Account account = Account.from(userDto, cryptPasswordService.encryptPassword(userDto.getUserPasswd()));
         try {
             userMapper.saveUser(account);
-        } catch (org.springframework.dao.DuplicateKeyException e) {
+        } catch (DuplicateKeyException e) {
             log.error("중복 데이터 회원가입 시도 ={}", userDto);
             throw new DataDuplicateKeyException("이미 가입 된 회원 정보 입니다.");
         }

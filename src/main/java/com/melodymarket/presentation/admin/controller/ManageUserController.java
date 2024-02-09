@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Controller
-@RequestMapping("/v1/member")
-public class ManageMemberController {
+@RequestMapping("/v1/user")
+public class ManageUserController {
 
     UserInfoManageService userInfoManageService;
 
     @Autowired
-    public ManageMemberController(UserInfoManageServiceImpl userInfoManageServiceImpl) {
+    public ManageUserController(UserInfoManageServiceImpl userInfoManageServiceImpl) {
         this.userInfoManageService = userInfoManageServiceImpl;
     }
 
@@ -47,7 +47,7 @@ public class ManageMemberController {
         return ResponseEntity.ok("변경이 완료되었습니다.");
     }
 
-    @PostMapping("/details/{user-id}/delete-account")
+    @PostMapping("/delete/{user-id}")
     public ResponseEntity<Object> deleteUserAccount(@PathVariable("user-id") Long id,
                                                     @RequestBody String password,
                                                     HttpServletRequest request) {

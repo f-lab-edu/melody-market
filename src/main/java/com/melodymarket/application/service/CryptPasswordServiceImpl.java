@@ -19,8 +19,8 @@ public class CryptPasswordServiceImpl implements CryptPasswordService {
     }
 
     @Override
-    public boolean isPasswordMatch(String inputPasswd, String storedPasswd) {
-        return passwordEncoder.matches(inputPasswd,storedPasswd);
+    public boolean isPasswordMatch(String inputPassword, String storedPassword) {
+        return passwordEncoder.matches(inputPassword,storedPassword);
     }
 
 }

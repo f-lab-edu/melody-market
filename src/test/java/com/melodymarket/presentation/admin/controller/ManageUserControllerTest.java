@@ -27,8 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("회원조희 API 테스트")
 @WithMockUser(roles = "USER")
-@WebMvcTest(ManageMemberController.class)
-class ManageMemberControllerTest {
+@WebMvcTest(ManageUserController.class)
+class ManageUserControllerTest {
 
     @MockBean
     UserInfoManageServiceImpl userInfoManageService;
@@ -37,7 +37,7 @@ class ManageMemberControllerTest {
     MockMvc mockMvc;
 
     @Autowired
-    ManageMemberController manageMemberController;
+    ManageUserController manageUserController;
 
     @Autowired
     WebApplicationContext webApplicationContext;
@@ -62,7 +62,7 @@ class ManageMemberControllerTest {
 
         //when
         Mockito.when(userInfoManageService.getUserDetails(id)).thenReturn(userDto);
-        ResultActions resultActions = mockMvc.perform(get("/v1/member/details/" + id));
+        ResultActions resultActions = mockMvc.perform(get("/v1/user/details/" + id));
 
         //then
         resultActions.andExpect(status().isOk())
@@ -84,7 +84,7 @@ class ManageMemberControllerTest {
         String jsonTestDto = objectMapper.writeValueAsString(updatePasswordDto);
 
         //when
-        ResultActions resultActions = mockMvc.perform(post("/v1/member/details/" + id + "/update-password")
+        ResultActions resultActions = mockMvc.perform(post("/v1/user/details/" + id + "/update-password")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonTestDto));
 
@@ -104,7 +104,7 @@ class ManageMemberControllerTest {
         String jsonTestDto = objectMapper.writeValueAsString(updateUserDto);
 
         //when
-        ResultActions resultActions = mockMvc.perform(post("/v1/member/details/" + id + "/update-user-info")
+        ResultActions resultActions = mockMvc.perform(post("/v1/user/details/" + id + "/update-user-info")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonTestDto));
 
@@ -122,7 +122,7 @@ class ManageMemberControllerTest {
         String requestBody = objectMapper.writeValueAsString(password);
 
         //when
-        ResultActions resultActions = mockMvc.perform(post("/v1/member/details/" + id + "/delete-account")
+        ResultActions resultActions = mockMvc.perform(post("/v1/user/delete/" + id )
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody));
 
@@ -134,8 +134,8 @@ class ManageMemberControllerTest {
 
     private UpdatePasswordDto getTestUpdatePasswordDto() {
         UpdatePasswordDto updatePasswordDto = new UpdatePasswordDto();
-        updatePasswordDto.setOldPasswd("old123!!");
-        updatePasswordDto.setNewPasswd("new123!!");
+        updatePasswordDto.setOldPassword("old123!!");
+        updatePasswordDto.setNewPassword("new123!!");
         return updatePasswordDto;
     }
 
@@ -143,7 +143,7 @@ class ManageMemberControllerTest {
         return UserDto.builder()
                 .loginId("testuser")
                 .username("테스트")
-                .userPasswd("test123!")
+                .userPassword("test123!")
                 .nickname("imtest")
                 .email("test@example.com")
                 .birthDate("19970908")

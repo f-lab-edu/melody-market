@@ -1,7 +1,7 @@
 package com.melodymarket.application.service;
 
 import com.melodymarket.application.dto.UserDto;
-import com.melodymarket.domain.user.model.Account;
+import com.melodymarket.domain.user.model.UserModel;
 import com.melodymarket.infrastructure.exception.DataDuplicateKeyException;
 import com.melodymarket.infrastructure.mybatis.mapper.UserMapper;
 import lombok.AccessLevel;
@@ -38,9 +38,9 @@ public class UserJoinServiceImpl implements UserJoinService {
 
     @Override
     public void signUpUser(UserDto userDto) {
-        Account account = Account.from(userDto, cryptPasswordService.encryptPassword(userDto.getUserPasswd()));
+        UserModel userModel = UserModel.from(userDto, cryptPasswordService.encryptPassword(userDto.getUserPassword()));
         try {
-            userMapper.saveUser(account);
+            userMapper.saveUser(userModel);
         } catch (DuplicateKeyException e) {
             log.error("중복 데이터 회원가입 시도 ={}", userDto);
             throw new DataDuplicateKeyException("이미 가입 된 회원 정보 입니다.");

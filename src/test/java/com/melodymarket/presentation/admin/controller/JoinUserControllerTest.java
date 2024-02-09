@@ -24,13 +24,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("회원가입 중복 검사 테스트")
 @WithMockUser(roles = "USER")
-@WebMvcTest(JoinMemberController.class)
-class JoinMemberControllerTest {
+@WebMvcTest(JoinUserController.class)
+class JoinUserControllerTest {
 
     @Autowired
     MockMvc mockMvc;
     @Autowired
-    JoinMemberController joinMemberController;
+    JoinUserController joinUserController;
 
     @MockBean
     UserJoinServiceImpl userJoinService;
@@ -52,7 +52,7 @@ class JoinMemberControllerTest {
     @DisplayName("[GET] 유저아이디 중복 검사 API")
     void isUserIdNotAvailable() throws Exception {
         // when
-        mockMvc.perform(get("/v1/member/join/check-login-id?login-id=testuser"))
+        mockMvc.perform(get("/v1/user/join/check-login-id?login-id=testuser"))
 
         // then
                 .andExpect(status().isOk())
@@ -64,7 +64,7 @@ class JoinMemberControllerTest {
     void isNicknameAvailable() throws Exception {
 
         //when
-        mockMvc.perform(get("/v1/member/join/check-nickname?nickname=testnickname"))
+        mockMvc.perform(get("/v1/user/join/check-nickname?nickname=testnickname"))
         //then
                 .andExpect(status().isOk())
                 .andExpect(content().string("사용 가능한 닉네임 입니다."));
@@ -80,7 +80,7 @@ class JoinMemberControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonTestUser = objectMapper.writeValueAsString(testUser);
         //when
-        mockMvc.perform(post("/v1/member/join/save")
+        mockMvc.perform(post("/v1/user/join/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonTestUser))
         //then
@@ -92,7 +92,7 @@ class JoinMemberControllerTest {
         return UserDto.builder()
                 .loginId("testuser")
                 .username("테스트")
-                .userPasswd("test123!")
+                .userPassword("test123!")
                 .nickname("imtest")
                 .email("test@example.com")
                 .birthDate("19970908")

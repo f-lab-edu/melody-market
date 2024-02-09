@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@RequestMapping("/v1/member/join")
-public class JoinMemberController {
+@RequestMapping("/v1/user/join")
+public class JoinUserController {
 
     UserJoinService userJoinService;
 
     @Autowired
-    public JoinMemberController(UserJoinServiceImpl userJoinServiceImpl) {
+    public JoinUserController(UserJoinServiceImpl userJoinServiceImpl) {
         this.userJoinService = userJoinServiceImpl;
     }
 

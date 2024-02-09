@@ -47,4 +47,9 @@
         WHERE id = #{id}
     </update>
 
+    <delete id="deleteUserAccount">
+        DELETE
+        FROM melody_user
+        WHERE id = #{id}
+    </delete>
 </mapper>

@@ -4,6 +4,7 @@ import com.melodymarket.domain.user.model.Account;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class MelodyUserDetails implements UserDetails {
@@ -16,12 +17,12 @@ public class MelodyUserDetails implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
 
-    public MelodyUserDetails(Account account, Collection<? extends GrantedAuthority> authorities) {
+    public MelodyUserDetails(Account account) {
         this.username = account.getUsername();
         this.id = account.getId();
         this.loginId = account.getLoginId();
         this.password = account.getUserPasswd();
-        this.authorities = authorities;
+        this.authorities = new ArrayList<>();
     }
 
     @Override

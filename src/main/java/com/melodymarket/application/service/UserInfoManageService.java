@@ -8,4 +8,5 @@ public interface UserInfoManageService {
     UserDto getUserDetails(Long id);
     void modifyUserPassword(Long id, UpdatePasswordDto updatePasswordDto);
     void modifyUserDetails(Long id, UpdateUserDto updateUserDto);
+    void deleteUser(Long id, String password);
 }

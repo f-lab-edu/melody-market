@@ -11,11 +11,11 @@ import java.util.Optional;
 
 @Data
 @Builder
-public class Account {
+public class UserModel {
     private Long id;
     private String loginId;
     private String username;
-    private String userPasswd;
+    private String userPassword;
     private String nickname;
     private String email;
     private String birthDate;
@@ -24,11 +24,11 @@ public class Account {
 
 
 
-    public static Account from(UserDto userDto, String encryptPassword) {
-        return Account
+    public static UserModel from(UserDto userDto, String encryptPassword) {
+        return UserModel
                 .builder()
                 .loginId(userDto.getLoginId())
-                .userPasswd(encryptPassword)
+                .userPassword(encryptPassword)
                 .username(userDto.getUsername())
                 .nickname(userDto.getNickname())
                 .email(userDto.getEmail())

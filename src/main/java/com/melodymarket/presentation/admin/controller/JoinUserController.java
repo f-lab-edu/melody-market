@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@RequestMapping("/v1/member/join")
-public class JoinMemberController {
+@RequestMapping("/v1/user/join")
+public class JoinUserController {
 
     UserJoinService userJoinService;
 
     @Autowired
-    public JoinMemberController(UserJoinServiceImpl userJoinServiceImpl) {
+    public JoinUserController(UserJoinServiceImpl userJoinServiceImpl) {
         this.userJoinService = userJoinServiceImpl;
     }
 
@@ -58,8 +58,8 @@ public class JoinMemberController {
      * @return User exists or User not exists
      */
     @PostMapping("/save")
-    public ResponseEntity<Object> createAccount(@RequestBody @Validated UserDto userDto) {
-        log.debug("[CreateAccount] user info={}", userDto.toString());
+    public ResponseEntity<Object> createUser(@RequestBody @Validated UserDto userDto) {
+        log.debug("[CreateUser] user info={}", userDto.toString());
         userJoinService.signUpUser(userDto);
         return ResponseEntity.ok("유저 생성에 성공했습니다.");
     }

@@ -21,13 +21,14 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @DisplayName("회원조희 API 테스트")
 @WithMockUser(roles = "USER")
-@WebMvcTest(ManageMemberController.class)
-class ManageMemberControllerTest {
+@WebMvcTest(ManageUserController.class)
+class ManageUserControllerTest {
 
     @MockBean
     UserInfoManageServiceImpl userInfoManageService;
@@ -36,7 +37,7 @@ class ManageMemberControllerTest {
     MockMvc mockMvc;
 
     @Autowired
-    ManageMemberController manageMemberController;
+    ManageUserController manageUserController;
 
     @Autowired
     WebApplicationContext webApplicationContext;
@@ -61,7 +62,7 @@ class ManageMemberControllerTest {
 
         //when
         Mockito.when(userInfoManageService.getUserDetails(id)).thenReturn(userDto);
-        ResultActions resultActions = mockMvc.perform(get("/v1/member/details/" + id));
+        ResultActions resultActions = mockMvc.perform(get("/v1/user/details/" + id));
 
         //then
         resultActions.andExpect(status().isOk())
@@ -83,7 +84,7 @@ class ManageMemberControllerTest {
         String jsonTestDto = objectMapper.writeValueAsString(updatePasswordDto);
 
         //when
-        ResultActions resultActions = mockMvc.perform(post("/v1/member/details/" + id + "/update-password")
+        ResultActions resultActions = mockMvc.perform(post("/v1/user/details/" + id + "/update-password")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonTestDto));
 
@@ -94,7 +95,7 @@ class ManageMemberControllerTest {
 
     @Test
     @DisplayName("[POST] 유저 닉네임 변경 API 테스트")
-    void givenUserIdAnd_whenPostMapping_thenReturnSuccess() throws Exception {
+    void givenUserIdAndNewNickname_whenPostMapping_thenReturnSuccess() throws Exception {
         //given
         Long id = 1L;
         UpdateUserDto updateUserDto = new UpdateUserDto();
@@ -103,7 +104,7 @@ class ManageMemberControllerTest {
         String jsonTestDto = objectMapper.writeValueAsString(updateUserDto);
 
         //when
-        ResultActions resultActions = mockMvc.perform(post("/v1/member/details/" + id + "/update-user-info")
+        ResultActions resultActions = mockMvc.perform(post("/v1/user/details/" + id + "/update-user-info")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonTestDto));
 
@@ -111,11 +112,30 @@ class ManageMemberControllerTest {
         resultActions.andExpect(status().isOk());
     }
 
+    @Test
+    @DisplayName("[POST] 유저 삭제 테스트")
+    void givenUserIdAndPassword_whenPostMapping_thenReturn3xxrRedirection() throws Exception {
+        //given
+        Long id = 1L;
+        String password = "mockPassword";
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestBody = objectMapper.writeValueAsString(password);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(post("/v1/user/delete/" + id )
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().string("회원 탈퇴에 성공했습니다."));
+    }
+
 
     private UpdatePasswordDto getTestUpdatePasswordDto() {
         UpdatePasswordDto updatePasswordDto = new UpdatePasswordDto();
-        updatePasswordDto.setOldPasswd("old123!!");
-        updatePasswordDto.setNewPasswd("new123!!");
+        updatePasswordDto.setOldPassword("old123!!");
+        updatePasswordDto.setNewPassword("new123!!");
         return updatePasswordDto;
     }
 
@@ -123,7 +143,7 @@ class ManageMemberControllerTest {
         return UserDto.builder()
                 .loginId("testuser")
                 .username("테스트")
-                .userPasswd("test123!")
+                .userPassword("test123!")
                 .nickname("imtest")
                 .email("test@example.com")
                 .birthDate("19970908")

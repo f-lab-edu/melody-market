@@ -15,26 +15,26 @@
         WHERE nickname = #{nickname}
     </select>
 
-    <select id="findUser" parameterType="com.melodymarket.domain.user.model.Account">
-        SELECT id, login_id, username, user_passwd, nickname, email, birth_date, join_date, membership_level
+    <select id="findUser" parameterType="com.melodymarket.domain.user.model.UserModel">
+        SELECT id, login_id, username, user_password, nickname, email, birth_date, join_date, membership_level
         FROM melody_user
         WHERE login_id = #{loginId}
     </select>
 
-    <select id="getUserInfo" parameterType="com.melodymarket.domain.user.model.Account">
-        SELECT id, login_id, username, user_passwd, nickname, email, birth_date, join_date, membership_level
+    <select id="getUserInfo" parameterType="com.melodymarket.domain.user.model.UserModel">
+        SELECT id, login_id, username, user_password, nickname, email, birth_date, join_date, membership_level
         FROM melody_user
         WHERE id = #{id}
     </select>
 
     <insert id="saveUser">
-        INSERT INTO melody_user (login_id, username, user_passwd, nickname, email, birth_date, join_date, membership_level)
-        VALUES (#{loginId}, #{username}, #{userPasswd}, #{nickname}, #{email}, #{birthDate}, #{joinDate}, #{membershipLevel})
+        INSERT INTO melody_user (login_id, username, user_password, nickname, email, birth_date, join_date, membership_level)
+        VALUES (#{loginId}, #{username}, #{userPassword}, #{nickname}, #{email}, #{birthDate}, #{joinDate}, #{membershipLevel})
     </insert>
 
     <update id="updatePassword">
         UPDATE melody_user
-        SET user_passwd = #{password}
+        SET user_password = #{password}
         WHERE id = #{id}
     </update>
 
@@ -47,4 +47,9 @@
         WHERE id = #{id}
     </update>
 
+    <delete id="deleteUser">
+        DELETE
+        FROM melody_user
+        WHERE id = #{id}
+    </delete>
 </mapper>

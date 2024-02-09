@@ -35,11 +35,12 @@ public class UserInfoManageServiceImpl implements UserInfoManageService {
     @Override
     public void modifyUserPassword(Long id, UpdatePasswordDto updatePasswordDto) {
         try {
-            if (!cryptPasswordService.isPasswordMatch(updatePasswordDto.getOldPasswd(),
-                    userMapper.getUserInfo(id).getUserPasswd()))
+            if (!cryptPasswordService.isPasswordMatch(updatePasswordDto.getOldPassword(),
+                    userMapper.getUserInfo(id).getUserPassword())) {
                 throw new PasswordMismatchException("비밀번호가 일치하지 않습니다.");
+            }
 
-            userMapper.updatePassword(id, cryptPasswordService.encryptPassword(updatePasswordDto.getNewPasswd()));
+            userMapper.updatePassword(id, cryptPasswordService.encryptPassword(updatePasswordDto.getNewPassword()));
         } catch (NullPointerException e) {
             throw new DataNotFoundException("알 수 없는 유저 정보에 대한 요청 입니다.");
         }
@@ -52,6 +53,19 @@ public class UserInfoManageServiceImpl implements UserInfoManageService {
             userMapper.updateUserInfo(userId, updateUserDto);
         } catch (NullPointerException e) {
             throw new DataNotFoundException("알 수 없는 유저 정보에 대한 요청 입니다.");
+        }
+    }
+
+    @Override
+    public void deleteUser(Long id, String password) {
+        try {
+            if (!cryptPasswordService.isPasswordMatch(password,
+                    userMapper.getUserInfo(id).getUserPassword())) {
+                throw new PasswordMismatchException("비밀번호가 일치하지 않습니다.");
+            }
+            userMapper.deleteUser(id);
+        } catch (NullPointerException e) {
+            throw new DataNotFoundException("존재하지 않는 회원입니다.");
         }
     }
 

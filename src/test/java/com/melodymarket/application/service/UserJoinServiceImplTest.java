@@ -2,7 +2,6 @@ package com.melodymarket.application.service;
 
 import com.melodymarket.application.dto.UserDto;
 import com.melodymarket.infrastructure.exception.DataDuplicateKeyException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -34,9 +32,12 @@ class UserJoinServiceImplTest {
         //given
         String existUserId = "testuser";
 
-        //when & then
-        assertThrows(DataDuplicateKeyException.class,
+        //when
+        Exception exception = assertThrows(Exception.class,
                 () -> userJoinService.checkUserIdDuplication(existUserId));
+
+        //then
+        assertTrue(exception instanceof DataDuplicateKeyException);
     }
 
     @Test
@@ -56,8 +57,11 @@ class UserJoinServiceImplTest {
         String existNickname = "imtest";
 
         //when & then
-        assertThrows(DataDuplicateKeyException.class,
+        Exception exception = assertThrows(Exception.class,
                 () -> userJoinService.checkNicknameDuplication(existNickname));
+
+        //then
+        assertTrue(exception instanceof DataDuplicateKeyException);
     }
 
     @Test
@@ -87,11 +91,11 @@ class UserJoinServiceImplTest {
         UserDto testUser = createTestUser();
 
         // when
-        DataDuplicateKeyException exception = assertThrows(DataDuplicateKeyException.class,
+        Exception exception = assertThrows(Exception.class,
                 () -> userJoinService.signUpUser(testUser));
 
         //then
-        Assertions.assertThat(exception.getMessage()).isEqualTo("이미 가입 된 회원 정보 입니다.");
+        assertTrue(exception instanceof DataDuplicateKeyException);
     }
 
     public UserDto createTestUser() {

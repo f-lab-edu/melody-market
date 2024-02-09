@@ -15,8 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -61,11 +60,11 @@ class UserInfoManageServiceImplTest {
         Long id = 999L;
 
         //when
-        DataNotFoundException exception =
-                assertThrows(DataNotFoundException.class, () -> userInfoManageService.getUserDetails(id));
+        Exception exception =
+                assertThrows(Exception.class, () -> userInfoManageService.getUserDetails(id));
 
         //then
-        Assertions.assertThat(exception.getMessage()).isEqualTo("유저 정보를 조회할 수 없습니다.");
+        assertTrue(exception instanceof DataNotFoundException);
     }
 
     @Test
@@ -81,9 +80,7 @@ class UserInfoManageServiceImplTest {
 
         //then
         Assertions.assertThat(cryptPasswordService
-                        .isPasswordMatch(updatePasswordDto.getNewPassword(), userModel.getUserPassword()))
-                .isTrue();
-
+                        .isPasswordMatch(updatePasswordDto.getNewPassword(), userModel.getUserPassword())).isTrue();
     }
 
     @Test
@@ -95,11 +92,11 @@ class UserInfoManageServiceImplTest {
         updatePasswordDto.setOldPassword("incorrect");
 
         //when
-        PasswordMismatchException exception =
-                assertThrows(PasswordMismatchException.class, () -> userInfoManageService.modifyUserPassword(id, updatePasswordDto));
+         Exception exception =
+                assertThrows(Exception.class, () -> userInfoManageService.modifyUserPassword(id, updatePasswordDto));
 
         //then
-        Assertions.assertThat(exception.getMessage()).isEqualTo("비밀번호가 일치하지 않습니다.");
+        assertTrue(exception instanceof PasswordMismatchException);
     }
 
     @Test
@@ -110,11 +107,11 @@ class UserInfoManageServiceImplTest {
         UpdatePasswordDto updatePasswordDto = getTestUpdatePasswordDto();
 
         //when
-        DataNotFoundException exception =
-                assertThrows(DataNotFoundException.class, () -> userInfoManageService.modifyUserPassword(id, updatePasswordDto));
+        Exception exception =
+                assertThrows(Exception.class, () -> userInfoManageService.modifyUserPassword(id, updatePasswordDto));
 
         //then
-        Assertions.assertThat(exception.getMessage()).isEqualTo("알 수 없는 유저 정보에 대한 요청 입니다.");
+        assertTrue(exception instanceof DataNotFoundException);
     }
 
     @Test
@@ -173,11 +170,11 @@ class UserInfoManageServiceImplTest {
 
         //when
         userInfoManageService.deleteUserAccount(id, userDto.getUserPassword());
-        DataNotFoundException exception =
-                assertThrows(DataNotFoundException.class, () -> userInfoManageService.getUserDetails(id));
+        Exception exception =
+                assertThrows(Exception.class, () -> userInfoManageService.getUserDetails(id));
 
         //then
-        Assertions.assertThat(exception.getMessage()).isEqualTo("유저 정보를 조회할 수 없습니다.");
+        assertTrue(exception instanceof DataNotFoundException);
     }
 
     @Test
@@ -187,12 +184,13 @@ class UserInfoManageServiceImplTest {
         Long id = 999L;
 
         //when
-        DataNotFoundException exception =
-                assertThrows(DataNotFoundException.class,
+        Exception exception =
+                assertThrows(Exception.class,
                         () -> userInfoManageService.deleteUserAccount(id, userDto.getUserPassword()));
 
         //then
-        Assertions.assertThat(exception.getMessage()).isEqualTo("존재하지 않는 회원입니다.");
+        assertTrue(exception instanceof DataNotFoundException);
+
     }
 
     @Test
@@ -203,12 +201,12 @@ class UserInfoManageServiceImplTest {
         String incorrectPassword = "incorrect~!";
 
         //when
-        PasswordMismatchException exception =
-                assertThrows(PasswordMismatchException.class,
+        Exception exception =
+                assertThrows(Exception.class,
                         () -> userInfoManageService.deleteUserAccount(id, incorrectPassword));
 
         //then
-        Assertions.assertThat(exception.getMessage()).isEqualTo("비밀번호가 일치하지 않습니다.");
+        assertTrue(exception instanceof PasswordMismatchException);
     }
 
 

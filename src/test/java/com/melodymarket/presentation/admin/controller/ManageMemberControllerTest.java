@@ -21,7 +21,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @DisplayName("회원조희 API 테스트")
@@ -94,7 +95,7 @@ class ManageMemberControllerTest {
 
     @Test
     @DisplayName("[POST] 유저 닉네임 변경 API 테스트")
-    void givenUserIdAnd_whenPostMapping_thenReturnSuccess() throws Exception {
+    void givenUserIdAndNewNickname_whenPostMapping_thenReturnSuccess() throws Exception {
         //given
         Long id = 1L;
         UpdateUserDto updateUserDto = new UpdateUserDto();
@@ -109,6 +110,25 @@ class ManageMemberControllerTest {
 
         //then
         resultActions.andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("[POST] 유저 삭제 테스트")
+    void givenUserIdAndPassword_whenPostMapping_thenReturn3xxrRedirection() throws Exception {
+        //given
+        Long id = 1L;
+        String password = "mockPassword";
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestBody = objectMapper.writeValueAsString(password);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(post("/v1/member/details/" + id + "/delete-account")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().string("회원 탈퇴에 성공했습니다."));
     }
 
 

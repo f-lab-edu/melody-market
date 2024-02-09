@@ -57,13 +57,13 @@ public class UserInfoManageServiceImpl implements UserInfoManageService {
     }
 
     @Override
-    public void deleteUserAccount(Long id, String password) {
+    public void deleteUser(Long id, String password) {
         try {
             if (!cryptPasswordService.isPasswordMatch(password,
                     userMapper.getUserInfo(id).getUserPassword())) {
                 throw new PasswordMismatchException("비밀번호가 일치하지 않습니다.");
             }
-            userMapper.deleteUserAccount(id);
+            userMapper.deleteUser(id);
         } catch (NullPointerException e) {
             throw new DataNotFoundException("존재하지 않는 회원입니다.");
         }

@@ -58,8 +58,8 @@ public class JoinUserController {
      * @return User exists or User not exists
      */
     @PostMapping("/save")
-    public ResponseEntity<Object> createAccount(@RequestBody @Validated UserDto userDto) {
-        log.debug("[CreateAccount] user info={}", userDto.toString());
+    public ResponseEntity<Object> createUser(@RequestBody @Validated UserDto userDto) {
+        log.debug("[CreateUser] user info={}", userDto.toString());
         userJoinService.signUpUser(userDto);
         return ResponseEntity.ok("유저 생성에 성공했습니다.");
     }

@@ -48,11 +48,11 @@ public class ManageUserController {
     }
 
     @PostMapping("/delete/{user-id}")
-    public ResponseEntity<Object> deleteUserAccount(@PathVariable("user-id") Long id,
-                                                    @RequestBody String password,
-                                                    HttpServletRequest request) {
-        log.debug("[deleteUserAccount] request user id={}", id);
-        userInfoManageService.deleteUserAccount(id, password);
+    public ResponseEntity<Object> deleteUsert(@PathVariable("user-id") Long id,
+                                              @RequestBody String password,
+                                              HttpServletRequest request) {
+        log.debug("[deleteUser] request user id={}", id);
+        userInfoManageService.deleteUser(id, password);
 
         HttpSession session = request.getSession(false);
         if (session != null) {

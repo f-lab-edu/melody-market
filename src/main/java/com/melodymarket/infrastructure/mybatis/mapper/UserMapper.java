@@ -13,5 +13,5 @@ public interface UserMapper {
     UserModel getUserInfo(Long id);
     void updatePassword(Long id, String password);
     void updateUserInfo(Long id, UpdateUserDto updateUserDto);
-    void deleteUserAccount(Long id);
+    void deleteUser(Long id);
 }

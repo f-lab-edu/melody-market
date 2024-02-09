@@ -47,7 +47,7 @@
         WHERE id = #{id}
     </update>
 
-    <delete id="deleteUserAccount">
+    <delete id="deleteUser">
         DELETE
         FROM melody_user
         WHERE id = #{id}

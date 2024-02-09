@@ -164,12 +164,12 @@ class UserInfoManageServiceImplTest {
 
     @Test
     @DisplayName("회원 삭제 후 삭제 확인 테스트")
-    void givenUserIdAndUserPassword_whenDeleteUserAccount_thenCantSelectUserInfo() {
+    void givenUserIdAndUserPassword_whenDeleteUser_thenCantSelectUserInfo() {
         //given
         Long id = this.userModel.getId();
 
         //when
-        userInfoManageService.deleteUserAccount(id, userDto.getUserPassword());
+        userInfoManageService.deleteUser(id, userDto.getUserPassword());
         Exception exception =
                 assertThrows(Exception.class, () -> userInfoManageService.getUserDetails(id));
 
@@ -179,14 +179,14 @@ class UserInfoManageServiceImplTest {
 
     @Test
     @DisplayName("존재하지 않는 회원 삭제 요청 시 예외 발생 테스트")
-    void givenUnknownUserIdAndUserPassword_whenDeleteUserAccount_thenDataNotFoundException() {
+    void givenUnknownUserIdAndUserPassword_whenDeleteUser_thenDataNotFoundException() {
         //given
         Long id = 999L;
 
         //when
         Exception exception =
                 assertThrows(Exception.class,
-                        () -> userInfoManageService.deleteUserAccount(id, userDto.getUserPassword()));
+                        () -> userInfoManageService.deleteUser(id, userDto.getUserPassword()));
 
         //then
         assertTrue(exception instanceof DataNotFoundException);
@@ -195,7 +195,7 @@ class UserInfoManageServiceImplTest {
 
     @Test
     @DisplayName("회원 삭제 요청 시 틀린 비밀번호 예외 발생 테스트")
-    void givenUserIdAndIncorrectUserPassword_whenDeleteUserAccount_thenThrowsPasswordMissMatchException() {
+    void givenUserIdAndIncorrectUserPassword_whenDeleteUser_thenThrowsPasswordMissMatchException() {
         //given
         Long id = this.userModel.getId();
         String incorrectPassword = "incorrect~!";
@@ -203,7 +203,7 @@ class UserInfoManageServiceImplTest {
         //when
         Exception exception =
                 assertThrows(Exception.class,
-                        () -> userInfoManageService.deleteUserAccount(id, incorrectPassword));
+                        () -> userInfoManageService.deleteUser(id, incorrectPassword));
 
         //then
         assertTrue(exception instanceof PasswordMismatchException);

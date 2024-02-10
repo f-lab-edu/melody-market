@@ -4,8 +4,9 @@ import com.melodymarket.application.dto.UpdatePasswordDto;
 import com.melodymarket.application.dto.UpdateUserDto;
 import com.melodymarket.application.dto.UserDto;
 import com.melodymarket.common.exception.PasswordMismatchException;
+import com.melodymarket.domain.user.entity.UserEntity;
 import com.melodymarket.infrastructure.exception.DataNotFoundException;
-import com.melodymarket.infrastructure.mybatis.mapper.UserMapper;
+import com.melodymarket.infrastructure.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -18,55 +19,45 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UserInfoManageServiceImpl implements UserInfoManageService {
 
-    UserMapper userMapper;
-
+    UserRepository userRepository;
     CryptPasswordService cryptPasswordService;
 
     @Override
     public UserDto getUserDetails(Long id) {
         log.debug("유저 정보 조회={}", id);
-        try {
-            return UserDto.from(userMapper.getUserInfo(id));
-        } catch (NullPointerException e) {
-            throw new DataNotFoundException("유저 정보를 조회할 수 없습니다.");
-        }
+        return UserDto.from(getUserEntity(id));
     }
 
     @Override
     public void modifyUserPassword(Long id, UpdatePasswordDto updatePasswordDto) {
-        try {
-            if (!cryptPasswordService.isPasswordMatch(updatePasswordDto.getOldPassword(),
-                    userMapper.getUserInfo(id).getUserPassword())) {
-                throw new PasswordMismatchException("비밀번호가 일치하지 않습니다.");
-            }
-
-            userMapper.updatePassword(id, cryptPasswordService.encryptPassword(updatePasswordDto.getNewPassword()));
-        } catch (NullPointerException e) {
-            throw new DataNotFoundException("알 수 없는 유저 정보에 대한 요청 입니다.");
+        UserEntity userEntity = getUserEntity(id);
+        if (!cryptPasswordService.isPasswordMatch(updatePasswordDto.getOldPassword(),
+                userEntity.getUserPassword())) {
+            throw new PasswordMismatchException("비밀번호가 일치하지 않습니다.");
         }
+
+        userEntity.setUserPassword(cryptPasswordService.encryptPassword(updatePasswordDto.getNewPassword()));
+        userRepository.save(userEntity);
     }
 
     @Override
-    public void modifyUserDetails(Long userId, UpdateUserDto updateUserDto) {
-        log.debug("유저 정보 수정={}", userId);
-        try {
-            userMapper.updateUserInfo(userId, updateUserDto);
-        } catch (NullPointerException e) {
-            throw new DataNotFoundException("알 수 없는 유저 정보에 대한 요청 입니다.");
-        }
+    public void modifyUserDetails(Long id, UpdateUserDto updateUserDto) {
+        log.debug("유저 정보 수정={}", id);
+        userRepository.save(getUserEntity(id).modifyValueSetUserEntity(updateUserDto));
     }
 
     @Override
     public void deleteUser(Long id, String password) {
-        try {
-            if (!cryptPasswordService.isPasswordMatch(password,
-                    userMapper.getUserInfo(id).getUserPassword())) {
-                throw new PasswordMismatchException("비밀번호가 일치하지 않습니다.");
-            }
-            userMapper.deleteUser(id);
-        } catch (NullPointerException e) {
-            throw new DataNotFoundException("존재하지 않는 회원입니다.");
+        UserEntity userEntity = getUserEntity(id);
+        if (!cryptPasswordService.isPasswordMatch(password,
+                userEntity.getUserPassword())) {
+            throw new PasswordMismatchException("비밀번호가 일치하지 않습니다.");
         }
+        userRepository.deleteById(id);
+    }
+
+    public UserEntity getUserEntity(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new DataNotFoundException("유저 정보를 조회할 수 없습니다."));
     }
 
 }

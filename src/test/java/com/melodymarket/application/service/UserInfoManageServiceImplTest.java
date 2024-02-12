@@ -4,9 +4,9 @@ import com.melodymarket.application.dto.UpdatePasswordDto;
 import com.melodymarket.application.dto.UpdateUserDto;
 import com.melodymarket.application.dto.UserDto;
 import com.melodymarket.common.exception.PasswordMismatchException;
-import com.melodymarket.domain.user.model.UserModel;
+import com.melodymarket.domain.user.entity.UserEntity;
 import com.melodymarket.infrastructure.exception.DataNotFoundException;
-import com.melodymarket.infrastructure.mybatis.mapper.UserMapper;
+import com.melodymarket.infrastructure.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,22 +29,22 @@ class UserInfoManageServiceImplTest {
     @Autowired
     CryptPasswordService cryptPasswordService;
     @Autowired
-    UserMapper userMapper;
+    UserRepository userRepository;
     UserDto userDto;
-    UserModel userModel;
+    UserEntity userSelect;
 
     @BeforeEach
     void insert() {
         this.userDto = createTestUser();
         userJoinServiceImpl.signUpUser(userDto);
-        this.userModel = userMapper.findUser("testuser");
+        this.userSelect = userRepository.findByLoginId("testuser").orElse(null);
     }
 
     @Test
     @DisplayName("존재하는 유저 ID의 유저 정보 조회")
     void givenExistUserId_whenGetUserDetails_thenGetUserInfo() {
         //given
-        Long id = this.userModel.getId();
+        Long id = this.userSelect.getId();
 
         //when
         UserDto returnUser = userInfoManageService.getUserDetails(id);
@@ -71,23 +71,23 @@ class UserInfoManageServiceImplTest {
     @DisplayName("정확한 이전 비밀번호 입력과 새로운 비밀번호 입력 후 비밀번호 변경 테스트")
     void givenCorrectOldPasswdAndNewPasswd_whenModifyUserPasswd_thenSelectedNewPasswordIsSame() {
         //given
-        Long id = this.userModel.getId();
+        Long id = this.userSelect.getId();
         UpdatePasswordDto updatePasswordDto = getTestUpdatePasswordDto();
 
         //when
         userInfoManageService.modifyUserPassword(id, updatePasswordDto);
-        UserModel userModel = userMapper.getUserInfo(id);
+        UserDto userDto = userInfoManageService.getUserDetails(id);
 
         //then
         Assertions.assertThat(cryptPasswordService
-                        .isPasswordMatch(updatePasswordDto.getNewPassword(), userModel.getUserPassword())).isTrue();
+                        .isPasswordMatch(updatePasswordDto.getNewPassword(), userDto.getUserPassword())).isTrue();
     }
 
     @Test
     @DisplayName("잘못 된 이전 비밀번호 입력과 새로운 비밀번호 입력 후 비밀번호 변경 테스트")
     void givenIncorrectOldPasswdAndNewPasswd_whenModifyUserPasswd_thenThrowPasswordMismatchException() {
         //given
-        Long id = this.userModel.getId();
+        Long id = this.userSelect.getId();
         UpdatePasswordDto updatePasswordDto = getTestUpdatePasswordDto();
         updatePasswordDto.setOldPassword("incorrect");
 
@@ -118,47 +118,47 @@ class UserInfoManageServiceImplTest {
     @DisplayName("닉네임 변경 테스트")
     void givenNewNickname_whenModifyUserDetails_thenSelectedNewNicknameIsSame() {
         //given
-        Long id = this.userModel.getId();
+        Long id = this.userSelect.getId();
         UpdateUserDto updateUserDto = getTestUpdateUserDto("nickname");
 
         //when
         userInfoManageService.modifyUserDetails(id, updateUserDto);
-        UserModel userModel = userMapper.getUserInfo(id);
+        UserDto userDto = userInfoManageService.getUserDetails(id);
 
         //then
-        Assertions.assertThat(userModel.getNickname()).isEqualTo(updateUserDto.getNickname());
+        Assertions.assertThat(userDto.getNickname()).isEqualTo(updateUserDto.getNickname());
     }
 
     @Test
     @DisplayName("이메일 변경 테스트")
     void givenNewEmail_whenModifyUserDetails_thenSelectedNewEmailIsSame() {
         //given
-        Long id = this.userModel.getId();
+        Long id = this.userSelect.getId();
         UpdateUserDto updateUserDto = getTestUpdateUserDto("email");
 
         //when
         userInfoManageService.modifyUserDetails(id, updateUserDto);
-        UserModel userModel = userMapper.getUserInfo(id);
+        UserDto userDto = userInfoManageService.getUserDetails(id);
 
         //then
-        Assertions.assertThat(userModel.getEmail()).isEqualTo(updateUserDto.getEmail());
+        Assertions.assertThat(userDto.getEmail()).isEqualTo(updateUserDto.getEmail());
     }
 
     @Test
     @DisplayName("닉네임, 이메일 동시 변경 테스트")
     void givenNewNicknameAndNewEmail_whenModifyUserDetails_thenSelectedNewNicknameAndNewEmailIsSame() {
         //given
-        Long id = this.userModel.getId();
+        Long id = this.userSelect.getId();
         UpdateUserDto updateUserDto = getTestUpdateUserDto("all");
 
         //when
         userInfoManageService.modifyUserDetails(id, updateUserDto);
-        UserModel userModel = userMapper.getUserInfo(id);
+        UserDto userDto = userInfoManageService.getUserDetails(id);
 
         //then
         org.junit.jupiter.api.Assertions.assertAll(
-                () -> assertEquals(userModel.getNickname(), updateUserDto.getNickname()),
-                () -> assertEquals(userModel.getEmail(), updateUserDto.getEmail())
+                () -> assertEquals(userDto.getNickname(), updateUserDto.getNickname()),
+                () -> assertEquals(userDto.getEmail(), updateUserDto.getEmail())
         );
     }
 
@@ -166,7 +166,7 @@ class UserInfoManageServiceImplTest {
     @DisplayName("회원 삭제 후 삭제 확인 테스트")
     void givenUserIdAndUserPassword_whenDeleteUser_thenCantSelectUserInfo() {
         //given
-        Long id = this.userModel.getId();
+        Long id = this.userSelect.getId();
 
         //when
         userInfoManageService.deleteUser(id, userDto.getUserPassword());
@@ -197,7 +197,7 @@ class UserInfoManageServiceImplTest {
     @DisplayName("회원 삭제 요청 시 틀린 비밀번호 예외 발생 테스트")
     void givenUserIdAndIncorrectUserPassword_whenDeleteUser_thenThrowsPasswordMissMatchException() {
         //given
-        Long id = this.userModel.getId();
+        Long id = this.userSelect.getId();
         String incorrectPassword = "incorrect~!";
 
         //when

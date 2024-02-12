@@ -1,5 +1,6 @@
 package com.melodymarket.application.dto;
 
+import com.melodymarket.domain.user.entity.UserEntity;
 import com.melodymarket.domain.user.model.UserModel;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -45,6 +46,19 @@ public class UserDto {
                 .birthDate(userModel.getBirthDate())
                 .email(userModel.getEmail())
                 .membershipLevel(userModel.getMembershipLevel())
+                .build();
+    }
+
+    public static UserDto from(UserEntity userEntity) {
+        return UserDto
+                .builder()
+                .loginId(userEntity.getLoginId())
+                .username(userEntity.getUsername())
+                .nickname(userEntity.getNickname())
+                .userPassword(userEntity.getUserPassword())
+                .birthDate(userEntity.getBirthDate())
+                .email(userEntity.getEmail())
+                .membershipLevel(userEntity.getMembershipLevel())
                 .build();
     }
 

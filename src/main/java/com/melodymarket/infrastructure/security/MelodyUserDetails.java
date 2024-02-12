@@ -1,6 +1,6 @@
 package com.melodymarket.infrastructure.security;
 
-import com.melodymarket.domain.user.model.UserModel;
+import com.melodymarket.domain.user.entity.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -17,11 +17,11 @@ public class MelodyUserDetails implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
 
-    public MelodyUserDetails(UserModel userModel) {
-        this.username = userModel.getUsername();
-        this.id = userModel.getId();
-        this.loginId = userModel.getLoginId();
-        this.password = userModel.getUserPassword();
+    public MelodyUserDetails(UserEntity user) {
+        this.username = user.getUsername();
+        this.id = user.getId();
+        this.loginId = user.getLoginId();
+        this.password = user.getUserPassword();
         this.authorities = new ArrayList<>();
     }
 

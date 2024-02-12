@@ -1,7 +1,6 @@
 package com.melodymarket.application.service;
 
-import com.melodymarket.domain.user.model.UserModel;
-import com.melodymarket.infrastructure.mybatis.mapper.UserMapper;
+import com.melodymarket.infrastructure.repository.UserRepository;
 import com.melodymarket.infrastructure.security.MelodyUserDetails;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +17,11 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class LoginService implements UserDetailsService {
 
-    UserMapper userMapper;
+    UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
-        UserModel userModel = userMapper.findUser(loginId);
-        if (userModel == null) {
-            throw new UsernameNotFoundException("ID 또는 비밀번호를 바르게 입력해주세요.");
-        }
-        return new MelodyUserDetails(userModel);
+        return new MelodyUserDetails(userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new UsernameNotFoundException("ID 또는 비밀번호를 바르게 입력해주세요.")));
     }
 }

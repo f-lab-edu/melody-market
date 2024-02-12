@@ -7,6 +7,10 @@ spring:
     url: ${url}
     username: ${username}
     password: ${password}
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
 
 mybatis:
   mapper-locations: mybatis/mappers/UserMapper.xml

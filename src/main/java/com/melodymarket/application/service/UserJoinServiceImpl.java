@@ -29,7 +29,7 @@ public class UserJoinServiceImpl implements UserJoinService {
         log.debug("유저 중복 체크");
         String keyType = "id:";
 
-        if (isIdentifierInCheckProgress(keyType + loginId, sessionId) || userRepository.existsByLoginId(loginId)) {
+        if (userRepository.existsByLoginId(loginId) || isIdentifierInCheckProgress(keyType + loginId, sessionId)) {
             throw new DataDuplicateKeyException("이미 존재하는 아이디 입니다.");
         }
         redisService.setValue(keyType + loginId, sessionId, 3, TimeUnit.MINUTES);
@@ -40,7 +40,7 @@ public class UserJoinServiceImpl implements UserJoinService {
         log.info("닉네임 중복체크");
         String keyType = "nickname:";
 
-        if (isIdentifierInCheckProgress(keyType + nickname, sessionId) || userRepository.existsByNickname(nickname)) {
+        if (userRepository.existsByNickname(nickname) || isIdentifierInCheckProgress(keyType + nickname, sessionId)) {
             throw new DataDuplicateKeyException("이미 존재하는 닉네임 입니다.");
         }
         redisService.setValue(nickname, "nickname", 3, TimeUnit.MINUTES);
@@ -50,7 +50,7 @@ public class UserJoinServiceImpl implements UserJoinService {
     public void signUpUser(UserDto userDto, String sessionId) {
         UserEntity userEntity = UserEntity.from(userDto, cryptPasswordService.encryptPassword(userDto.getUserPassword()));
 
-        checkUserIdDuplication(userDto.getLoginId(),sessionId);
+        checkUserIdDuplication(userDto.getLoginId(), sessionId);
         checkNicknameDuplication(userDto.getNickname(), sessionId);
         try {
             userRepository.save(userEntity);

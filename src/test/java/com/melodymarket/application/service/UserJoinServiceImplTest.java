@@ -25,7 +25,7 @@ class UserJoinServiceImplTest {
     @BeforeEach
     void insert() {
         this.userDto = createTestUser();
-        userJoinService.signUpUser(userDto,sessionId);
+        userJoinService.signUpUser(userDto, sessionId);
     }
 
     @Test
@@ -85,7 +85,7 @@ class UserJoinServiceImplTest {
         UserDto testUser = createTestNewUser();
 
         //when & then
-        assertDoesNotThrow(() -> userJoinService.signUpUser(testUser,sessionId));
+        assertDoesNotThrow(() -> userJoinService.signUpUser(testUser, sessionId));
     }
 
     @Test
@@ -96,7 +96,7 @@ class UserJoinServiceImplTest {
 
         // when
         Exception exception = assertThrows(Exception.class,
-                () -> userJoinService.signUpUser(testUser,sessionId));
+                () -> userJoinService.signUpUser(testUser, sessionId));
 
         //then
         assertTrue(exception instanceof DataDuplicateKeyException);

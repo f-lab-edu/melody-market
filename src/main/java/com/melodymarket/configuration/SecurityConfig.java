@@ -1,5 +1,6 @@
 package com.melodymarket.configuration;
 
+import com.melodymarket.infrastructure.security.filter.JoinSessionCreationFilter;
 import com.melodymarket.infrastructure.security.handler.CustomAuthenticationSuccessHandler;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -24,6 +26,7 @@ public class SecurityConfig {
 
     /**
      * 보안 필터에 대한 예외처리
+     *
      * @return 정적 리소스에 대한 요청은 보안 요청을 무시하도록
      */
     @Bean
@@ -40,7 +43,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)//TODO: 우선은 생략 후 이후 csrf 적용할 것
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/","/login","/v1/user/join/*").permitAll()
+                        .requestMatchers("/", "/login", "/v1/user/join/*").permitAll()
                         .anyRequest().authenticated()
                 ).formLogin(formLogin -> formLogin
                         .successHandler(customAuthenticationSuccessHandler())
@@ -49,7 +52,7 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/")
                         .invalidateHttpSession(true)
                         .permitAll());
-
+        http.addFilterBefore(new JoinSessionCreationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }

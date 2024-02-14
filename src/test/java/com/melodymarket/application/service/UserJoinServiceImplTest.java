@@ -20,10 +20,12 @@ class UserJoinServiceImplTest {
     UserJoinService userJoinService;
     UserDto userDto;
 
+    String sessionId = "testSessionId";
+
     @BeforeEach
     void insert() {
         this.userDto = createTestUser();
-        userJoinService.signUpUser(userDto);
+        userJoinService.signUpUser(userDto, sessionId);
     }
 
     @Test
@@ -34,7 +36,7 @@ class UserJoinServiceImplTest {
 
         //when
         Exception exception = assertThrows(Exception.class,
-                () -> userJoinService.checkUserIdDuplication(existUserId));
+                () -> userJoinService.checkUserIdDuplication(existUserId, sessionId));
 
         //then
         assertTrue(exception instanceof DataDuplicateKeyException);
@@ -47,7 +49,7 @@ class UserJoinServiceImplTest {
         String NotExistUserId = "not_exist";
 
         //when & then
-        assertDoesNotThrow(() -> userJoinService.checkUserIdDuplication(NotExistUserId));
+        assertDoesNotThrow(() -> userJoinService.checkUserIdDuplication(NotExistUserId, sessionId));
     }
 
     @Test
@@ -55,10 +57,11 @@ class UserJoinServiceImplTest {
     void givenExistNickname_whenCheckNicknameDuplication_thenThrowsException() {
         //given
         String existNickname = "imtest";
+        String sessionId = "sessionIdTest";
 
         //when & then
         Exception exception = assertThrows(Exception.class,
-                () -> userJoinService.checkNicknameDuplication(existNickname));
+                () -> userJoinService.checkNicknameDuplication(existNickname, sessionId));
 
         //then
         assertTrue(exception instanceof DataDuplicateKeyException);
@@ -69,9 +72,10 @@ class UserJoinServiceImplTest {
     void givenNotExistNickname_whenCheckNicknameDuplication_thenDoseNotThrowException() {
         //given
         String notExistNickname = "not_exist";
+        String sessionId = "sessionIdTest";
 
         //when & then
-        assertDoesNotThrow(() -> userJoinService.checkNicknameDuplication(notExistNickname));
+        assertDoesNotThrow(() -> userJoinService.checkNicknameDuplication(notExistNickname, sessionId));
     }
 
     @Test
@@ -81,7 +85,7 @@ class UserJoinServiceImplTest {
         UserDto testUser = createTestNewUser();
 
         //when & then
-        assertDoesNotThrow(() -> userJoinService.signUpUser(testUser));
+        assertDoesNotThrow(() -> userJoinService.signUpUser(testUser, sessionId));
     }
 
     @Test
@@ -92,7 +96,7 @@ class UserJoinServiceImplTest {
 
         // when
         Exception exception = assertThrows(Exception.class,
-                () -> userJoinService.signUpUser(testUser));
+                () -> userJoinService.signUpUser(testUser, sessionId));
 
         //then
         assertTrue(exception instanceof DataDuplicateKeyException);

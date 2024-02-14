@@ -32,11 +32,12 @@ class UserInfoManageServiceImplTest {
     UserRepository userRepository;
     UserDto userDto;
     UserEntity userSelect;
+    String sessionId="testSessionId";
 
     @BeforeEach
     void insert() {
         this.userDto = createTestUser();
-        userJoinServiceImpl.signUpUser(userDto);
+        userJoinServiceImpl.signUpUser(userDto,sessionId);
         this.userSelect = userRepository.findByLoginId("testuser").orElse(null);
     }
 

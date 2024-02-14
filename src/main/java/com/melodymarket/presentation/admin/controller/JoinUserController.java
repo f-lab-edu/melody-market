@@ -3,6 +3,7 @@ package com.melodymarket.presentation.admin.controller;
 import com.melodymarket.application.dto.UserDto;
 import com.melodymarket.application.service.UserJoinService;
 import com.melodymarket.application.service.UserJoinServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -32,9 +33,10 @@ public class JoinUserController {
      * @return User exists or User not exists
      */
     @GetMapping("/check-login-id")
-    public ResponseEntity<String> isUserIdAvailable(@RequestParam("login-id") String loginId) {
-        log.debug("[isUserIdAvailable] loginId={}", loginId);
-        userJoinService.checkUserIdDuplication(loginId);
+    public ResponseEntity<String> isUserIdAvailable(@RequestParam("login-id") String loginId,
+                                                    HttpServletRequest request) {
+        log.debug("[isUserIdAvailable] [Session_id={}] loginId={}", request.getSession(false).getId(), loginId);
+        userJoinService.checkUserIdDuplication(loginId, request.getSession(false).getId());
         return ResponseEntity.ok("사용 가능한 아이디 입니다.");
     }
 
@@ -45,9 +47,10 @@ public class JoinUserController {
      * @return User exists or User not exists
      */
     @GetMapping("/check-nickname")
-    public ResponseEntity<String> isNicknameAvailable(@RequestParam("nickname") String nickname) {
-        log.debug("[isNicknameAvailable] nickname={}", nickname);
-        userJoinService.checkNicknameDuplication(nickname);
+    public ResponseEntity<String> isNicknameAvailable(@RequestParam("nickname") String nickname,
+                                                      HttpServletRequest request) {
+        log.debug("[isNicknameAvailable] [Session_id={}] nickname={}", request.getSession(false).getId(), nickname);
+        userJoinService.checkNicknameDuplication(nickname, request.getSession(false).getId());
         return ResponseEntity.ok("사용 가능한 닉네임 입니다.");
     }
 
@@ -58,9 +61,10 @@ public class JoinUserController {
      * @return User exists or User not exists
      */
     @PostMapping("/save")
-    public ResponseEntity<Object> createUser(@RequestBody @Validated UserDto userDto) {
-        log.debug("[CreateUser] user info={}", userDto.toString());
-        userJoinService.signUpUser(userDto);
+    public ResponseEntity<Object> createUser(@RequestBody @Validated UserDto userDto,
+                                             HttpServletRequest request) {
+        log.debug("[CreateUser] [Session_id={}] user info={}", request.getSession(false).getId(),userDto.toString());
+        userJoinService.signUpUser(userDto, request.getSession(false).getId());
         return ResponseEntity.ok("유저 생성에 성공했습니다.");
     }
 

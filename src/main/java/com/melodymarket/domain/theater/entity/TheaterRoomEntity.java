@@ -23,7 +23,7 @@ public class TheaterRoomEntity {
     private TheaterEntity theater;
     @Column
     private String name;
-    @OneToMany(mappedBy = "theaterRoom",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "theaterRoom", cascade = CascadeType.ALL)
     private List<TheaterSeatEntity> seats;
 
     public static List<TheaterRoomEntity> from(List<TheaterRoomDto> theaterRoomDto) {

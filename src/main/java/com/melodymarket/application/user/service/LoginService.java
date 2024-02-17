@@ -1,6 +1,6 @@
-package com.melodymarket.application.service;
+package com.melodymarket.application.user.service;
 
-import com.melodymarket.infrastructure.repository.UserRepository;
+import com.melodymarket.infrastructure.jpa.user.repository.UserRepository;
 import com.melodymarket.infrastructure.security.MelodyUserDetails;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

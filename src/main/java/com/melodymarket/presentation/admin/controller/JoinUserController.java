@@ -1,8 +1,8 @@
 package com.melodymarket.presentation.admin.controller;
 
-import com.melodymarket.application.dto.UserDto;
-import com.melodymarket.application.service.UserJoinService;
-import com.melodymarket.application.service.UserJoinServiceImpl;
+import com.melodymarket.application.user.dto.UserDto;
+import com.melodymarket.application.user.service.UserJoinService;
+import com.melodymarket.application.user.service.UserJoinServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;

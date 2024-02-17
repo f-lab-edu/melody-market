@@ -1,8 +1,8 @@
-package com.melodymarket.application.service;
+package com.melodymarket.application.user.service;
 
-import com.melodymarket.application.dto.UpdatePasswordDto;
-import com.melodymarket.application.dto.UpdateUserDto;
-import com.melodymarket.application.dto.UserDto;
+import com.melodymarket.application.user.dto.UpdatePasswordDto;
+import com.melodymarket.application.user.dto.UpdateUserDto;
+import com.melodymarket.application.user.dto.UserDto;
 
 public interface UserInfoManageService {
     UserDto getUserDetails(Long id);

@@ -1,4 +1,4 @@
-package com.melodymarket.application.dto;
+package com.melodymarket.application.user.dto;
 
 import com.melodymarket.domain.user.entity.UserEntity;
 import com.melodymarket.domain.user.model.UserModel;

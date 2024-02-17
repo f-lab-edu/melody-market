@@ -1,6 +1,6 @@
-package com.melodymarket.application.service;
+package com.melodymarket.application.user.service;
 
-import com.melodymarket.application.dto.UserDto;
+import com.melodymarket.application.user.dto.UserDto;
 import com.melodymarket.infrastructure.exception.DataDuplicateKeyException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

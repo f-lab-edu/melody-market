@@ -1,12 +1,12 @@
-package com.melodymarket.application.service;
+package com.melodymarket.application.user.service;
 
-import com.melodymarket.application.dto.UpdatePasswordDto;
-import com.melodymarket.application.dto.UpdateUserDto;
-import com.melodymarket.application.dto.UserDto;
+import com.melodymarket.application.user.dto.UpdatePasswordDto;
+import com.melodymarket.application.user.dto.UpdateUserDto;
+import com.melodymarket.application.user.dto.UserDto;
 import com.melodymarket.common.exception.PasswordMismatchException;
 import com.melodymarket.domain.user.entity.UserEntity;
 import com.melodymarket.infrastructure.exception.DataNotFoundException;
-import com.melodymarket.infrastructure.repository.UserRepository;
+import com.melodymarket.infrastructure.jpa.user.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

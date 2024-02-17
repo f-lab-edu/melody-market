@@ -1,4 +1,4 @@
-package com.melodymarket.infrastructure.repository;
+package com.melodymarket.infrastructure.jpa.user.repository;
 
 import com.melodymarket.domain.user.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

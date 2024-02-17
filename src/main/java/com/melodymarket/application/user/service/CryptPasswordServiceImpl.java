@@ -1,4 +1,4 @@
-package com.melodymarket.application.service;
+package com.melodymarket.application.user.service;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

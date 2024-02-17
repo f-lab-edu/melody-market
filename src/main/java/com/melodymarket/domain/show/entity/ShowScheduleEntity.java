@@ -16,16 +16,16 @@ public class ShowScheduleEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name="show_id")
+    @JoinColumn(name = "show_id")
     private ShowEntity showList;
     @Column
     private String showDate;
 
     @OneToOne
-    @JoinColumn(name="theater_reserve_id")
+    @JoinColumn(name = "theater_reserve_id")
     private TheaterReserveEntity theaterReserve;
     @ManyToOne
-    @JoinColumn(name="show_seat_id")
+    @JoinColumn(name = "show_seat_id")
     private ShowSeatEntity showSeat;
 
 }

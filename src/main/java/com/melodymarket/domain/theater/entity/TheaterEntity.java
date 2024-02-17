@@ -24,8 +24,9 @@ public class TheaterEntity {
     private String location;
     @OneToOne(mappedBy = "theater")
     private ShowEntity showList;
-    @OneToMany(mappedBy = "theater",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "theater", cascade = CascadeType.ALL)
     private List<TheaterRoomEntity> rooms;
+
     public static TheaterEntity from(TheaterDto theaterDto) {
         return TheaterEntity
                 .builder()

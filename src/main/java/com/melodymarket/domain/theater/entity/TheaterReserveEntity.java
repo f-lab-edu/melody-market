@@ -15,7 +15,7 @@ public class TheaterReserveEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne(mappedBy = "theaterReserve",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "theaterReserve", cascade = CascadeType.ALL)
     private ShowScheduleEntity showSchedule;
     @Column
     private String reserveDate;

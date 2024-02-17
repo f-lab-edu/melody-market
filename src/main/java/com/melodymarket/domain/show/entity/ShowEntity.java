@@ -31,7 +31,7 @@ public class ShowEntity {
     private UserEntity user;
 
     @OneToOne
-    @JoinColumn(name="theater_id")
+    @JoinColumn(name = "theater_id")
     private TheaterEntity theater;
 
 }

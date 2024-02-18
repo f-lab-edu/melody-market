@@ -29,10 +29,7 @@ public class ManageTheaterServiceImpl implements ManageTheaterService {
         setTheaterPersistence(theater);
         try {
             theaterRepository.save(theater);
-            return TheaterResponseDto.builder()
-                    .name(theaterDto.getName())
-                    .location(theaterDto.getLocation())
-                    .build();
+            return TheaterResponseDto.from(theaterDto);
         } catch (DataAccessException e) {
             log.error("[saveTheater] 처리 중 오류가 발생했습니다={}", e.getMessage());
             throw new DataAccessCustomException("처리 중 오류가 발생했습니다");

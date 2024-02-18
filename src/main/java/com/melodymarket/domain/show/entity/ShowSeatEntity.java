@@ -6,10 +6,7 @@ import lombok.*;
 import java.util.List;
 
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "show_seat")
 public class ShowSeatEntity {
@@ -18,6 +15,12 @@ public class ShowSeatEntity {
     private Long id;
     @OneToMany(mappedBy = "showSeat")
     private List<ShowScheduleEntity> showSchedule;
-
+    @Column
     private Long seatId;
+
+    @Builder
+    public ShowSeatEntity(List<ShowScheduleEntity> showSchedule, Long seatId) {
+        this.showSchedule = showSchedule;
+        this.seatId = seatId;
+    }
 }

@@ -3,14 +3,14 @@ package com.melodymarket.domain.show.entity;
 import com.melodymarket.domain.theater.entity.TheaterEntity;
 import com.melodymarket.domain.user.entity.UserEntity;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Table(name = "shows")
 public class ShowEntity {
     @Id
@@ -34,4 +34,13 @@ public class ShowEntity {
     @JoinColumn(name = "theater_id")
     private TheaterEntity theater;
 
+    @Builder
+    public ShowEntity(String showName, String director, String reserveStartDate, Integer price, UserEntity user, TheaterEntity theater) {
+        this.showName = showName;
+        this.director = director;
+        this.reserveStartDate = reserveStartDate;
+        this.price = price;
+        this.user = user;
+        this.theater = theater;
+    }
 }

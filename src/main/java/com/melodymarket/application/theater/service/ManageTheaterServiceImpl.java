@@ -2,6 +2,7 @@ package com.melodymarket.application.theater.service;
 
 import com.melodymarket.application.theater.dto.TheaterDto;
 import com.melodymarket.domain.theater.entity.TheaterEntity;
+import com.melodymarket.domain.theater.entity.TheaterRoomEntity;
 import com.melodymarket.infrastructure.exception.DataAccessCustomException;
 import com.melodymarket.infrastructure.jpa.theater.repository.TheaterRepository;
 import com.melodymarket.presentation.theater.dto.TheaterResponseDto;
@@ -48,9 +49,8 @@ public class ManageTheaterServiceImpl implements ManageTheaterService {
     }
 
     private void setTheaterPersistence(TheaterEntity theater) {
-        theater.getRooms().forEach(room -> {
-            room.setTheater(theater);
-            room.getSeats().forEach(seat -> seat.setTheaterRoom(room));
-        });
+        theater.associateTheaterWithRooms();
+        theater.getRooms().forEach(TheaterRoomEntity::associateRoomsWithSeats);
+
     }
 }

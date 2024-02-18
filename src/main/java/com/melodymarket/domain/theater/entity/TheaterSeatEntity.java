@@ -2,17 +2,17 @@ package com.melodymarket.domain.theater.entity;
 
 import com.melodymarket.application.theater.dto.TheaterSeatDto;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-@Setter
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "seat")
 public class TheaterSeatEntity {
     @Id
@@ -27,6 +27,18 @@ public class TheaterSeatEntity {
     private Integer seatRow;
     @Column
     private Integer seatNumber;
+
+    protected void setTheaterRoom(TheaterRoomEntity theaterRoom) {
+        this.theaterRoom = theaterRoom;
+    }
+
+    @Builder
+    public TheaterSeatEntity(TheaterRoomEntity theaterRoom, Integer seatFloor, Integer seatRow, Integer seatNumber) {
+        this.theaterRoom = theaterRoom;
+        this.seatFloor = seatFloor;
+        this.seatRow = seatRow;
+        this.seatNumber = seatNumber;
+    }
 
     public static List<TheaterSeatEntity> from(List<TheaterSeatDto> seatDtos) {
         return seatDtos.stream()

@@ -2,17 +2,16 @@ package com.melodymarket.domain.theater.entity;
 
 import com.melodymarket.application.theater.dto.TheaterRoomDto;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Table(name = "theater_room")
 public class TheaterRoomEntity {
     @Id
@@ -23,8 +22,20 @@ public class TheaterRoomEntity {
     private TheaterEntity theater;
     @Column
     private String name;
+
     @OneToMany(mappedBy = "theaterRoom", cascade = CascadeType.ALL)
     private List<TheaterSeatEntity> seats;
+
+    protected void setTheater(TheaterEntity theater) {
+        this.theater = theater;
+    }
+
+    @Builder
+    public TheaterRoomEntity(TheaterEntity theater, String name, List<TheaterSeatEntity> seats) {
+        this.theater = theater;
+        this.name = name;
+        this.seats = seats;
+    }
 
     public static List<TheaterRoomEntity> from(List<TheaterRoomDto> theaterRoomDto) {
         return theaterRoomDto.stream()
@@ -32,7 +43,11 @@ public class TheaterRoomEntity {
                         .name(roomDto.getRoomName())
                         .seats(TheaterSeatEntity.from(roomDto.getSeatData()))
                         .build())
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    public void associateRoomsWithSeats() {
+        this.getSeats().forEach(seat -> seat.setTheaterRoom(this));
     }
 
 }

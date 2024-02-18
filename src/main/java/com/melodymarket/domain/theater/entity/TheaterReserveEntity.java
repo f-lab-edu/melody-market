@@ -2,14 +2,14 @@ package com.melodymarket.domain.theater.entity;
 
 import com.melodymarket.domain.show.entity.ShowScheduleEntity;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Table(name = "theater_reserve")
 public class TheaterReserveEntity {
     @Id
@@ -19,4 +19,10 @@ public class TheaterReserveEntity {
     private ShowScheduleEntity showSchedule;
     @Column
     private String reserveDate;
+
+    @Builder
+    public TheaterReserveEntity(ShowScheduleEntity showSchedule, String reserveDate) {
+        this.showSchedule = showSchedule;
+        this.reserveDate = reserveDate;
+    }
 }

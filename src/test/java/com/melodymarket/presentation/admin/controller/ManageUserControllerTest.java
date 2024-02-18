@@ -1,10 +1,10 @@
 package com.melodymarket.presentation.admin.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.melodymarket.application.dto.UpdatePasswordDto;
-import com.melodymarket.application.dto.UpdateUserDto;
-import com.melodymarket.application.dto.UserDto;
-import com.melodymarket.application.service.UserInfoManageServiceImpl;
+import com.melodymarket.application.user.dto.UpdatePasswordDto;
+import com.melodymarket.application.user.dto.UpdateUserDto;
+import com.melodymarket.application.user.dto.UserDto;
+import com.melodymarket.application.user.service.UserInfoManageServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

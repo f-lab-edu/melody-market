@@ -1,4 +1,4 @@
-package com.melodymarket.application.dto;
+package com.melodymarket.application.user.dto;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;

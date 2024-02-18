@@ -1,8 +1,8 @@
 package com.melodymarket.presentation.admin.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.melodymarket.application.dto.UserDto;
-import com.melodymarket.application.service.UserJoinServiceImpl;
+import com.melodymarket.application.user.dto.UserDto;
+import com.melodymarket.application.user.service.UserJoinServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,6 +34,7 @@ class JoinUserControllerTest {
 
     @MockBean
     UserJoinServiceImpl userJoinService;
+
 
     @Autowired
     WebApplicationContext webApplicationContext;

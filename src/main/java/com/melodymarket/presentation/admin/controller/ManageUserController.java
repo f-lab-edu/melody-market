@@ -1,9 +1,9 @@
 package com.melodymarket.presentation.admin.controller;
 
-import com.melodymarket.application.dto.UpdatePasswordDto;
-import com.melodymarket.application.dto.UpdateUserDto;
-import com.melodymarket.application.service.UserInfoManageService;
-import com.melodymarket.application.service.UserInfoManageServiceImpl;
+import com.melodymarket.application.user.dto.UpdatePasswordDto;
+import com.melodymarket.application.user.dto.UpdateUserDto;
+import com.melodymarket.application.user.service.UserInfoManageService;
+import com.melodymarket.application.user.service.UserInfoManageServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;

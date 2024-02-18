@@ -1,10 +1,10 @@
-package com.melodymarket.application.service;
+package com.melodymarket.application.user.service;
 
-import com.melodymarket.application.dto.UserDto;
+import com.melodymarket.application.user.dto.UserDto;
 import com.melodymarket.domain.user.entity.UserEntity;
 import com.melodymarket.infrastructure.exception.DataDuplicateKeyException;
 import com.melodymarket.infrastructure.redis.RedisService;
-import com.melodymarket.infrastructure.repository.UserRepository;
+import com.melodymarket.infrastructure.jpa.user.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

@@ -1,7 +1,7 @@
 package com.melodymarket.domain.user.entity;
 
-import com.melodymarket.application.dto.UpdateUserDto;
-import com.melodymarket.application.dto.UserDto;
+import com.melodymarket.application.user.dto.UpdateUserDto;
+import com.melodymarket.application.user.dto.UserDto;
 import com.melodymarket.domain.user.enums.MembershipLevelEnum;
 import com.melodymarket.util.DateFormattingUtil;
 import jakarta.persistence.*;

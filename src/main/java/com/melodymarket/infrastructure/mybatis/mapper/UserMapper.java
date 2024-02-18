@@ -1,6 +1,6 @@
 package com.melodymarket.infrastructure.mybatis.mapper;
 
-import com.melodymarket.application.dto.UpdateUserDto;
+import com.melodymarket.application.user.dto.UpdateUserDto;
 import com.melodymarket.domain.user.model.UserModel;
 import org.apache.ibatis.annotations.Mapper;
 

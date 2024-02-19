@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -59,11 +60,11 @@ class ManageTheaterControllerTest {
         String json = objectMapper.writeValueAsString(testTheater);
 
         //when
-        mockMvc.perform(post("/v1/theater/add")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                //then
-                .andExpect(status().isOk());
+        ResultActions resultActions = mockMvc.perform(post("/v1/theater/add")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json));
+        //then
+        resultActions.andExpect(status().isOk());
     }
 
     private TheaterDto createTestTheater() {

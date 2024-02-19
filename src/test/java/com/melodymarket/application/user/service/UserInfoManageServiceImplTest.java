@@ -4,9 +4,11 @@ import com.melodymarket.application.user.dto.UpdatePasswordDto;
 import com.melodymarket.application.user.dto.UpdateUserDto;
 import com.melodymarket.application.user.dto.UserDto;
 import com.melodymarket.common.exception.PasswordMismatchException;
+import com.melodymarket.common.exception.PasswordSameException;
 import com.melodymarket.domain.user.entity.UserEntity;
 import com.melodymarket.infrastructure.exception.DataNotFoundException;
 import com.melodymarket.infrastructure.jpa.user.repository.UserRepository;
+import com.melodymarket.presentation.admin.dto.UserResponseDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,12 +34,12 @@ class UserInfoManageServiceImplTest {
     UserRepository userRepository;
     UserDto userDto;
     UserEntity userSelect;
-    String sessionId="testSessionId";
+    String sessionId = "testSessionId";
 
     @BeforeEach
     void insert() {
         this.userDto = createTestUser();
-        userJoinServiceImpl.signUpUser(userDto,sessionId);
+        userJoinServiceImpl.signUpUser(userDto, sessionId);
         this.userSelect = userRepository.findByLoginId("testuser").orElse(null);
     }
 
@@ -48,7 +50,7 @@ class UserInfoManageServiceImplTest {
         Long id = this.userSelect.getId();
 
         //when
-        UserDto returnUser = userInfoManageService.getUserDetails(id);
+        UserResponseDto returnUser = userInfoManageService.getUserDetails(id);
 
         //then
         Assertions.assertThat(returnUser).isNotNull();
@@ -77,11 +79,11 @@ class UserInfoManageServiceImplTest {
 
         //when
         userInfoManageService.modifyUserPassword(id, updatePasswordDto);
-        UserDto userDto = userInfoManageService.getUserDetails(id);
 
         //then
-        Assertions.assertThat(cryptPasswordService
-                        .isPasswordMatch(updatePasswordDto.getNewPassword(), userDto.getUserPassword())).isTrue();
+        updatePasswordDto.setOldPassword(updatePasswordDto.getNewPassword());
+        Exception exception = assertThrows(Exception.class, () -> userInfoManageService.modifyUserPassword(id, updatePasswordDto));
+        assertTrue(exception instanceof PasswordSameException);
     }
 
     @Test
@@ -93,7 +95,7 @@ class UserInfoManageServiceImplTest {
         updatePasswordDto.setOldPassword("incorrect");
 
         //when
-         Exception exception =
+        Exception exception =
                 assertThrows(Exception.class, () -> userInfoManageService.modifyUserPassword(id, updatePasswordDto));
 
         //then
@@ -124,7 +126,7 @@ class UserInfoManageServiceImplTest {
 
         //when
         userInfoManageService.modifyUserDetails(id, updateUserDto);
-        UserDto userDto = userInfoManageService.getUserDetails(id);
+        UserResponseDto userDto = userInfoManageService.getUserDetails(id);
 
         //then
         Assertions.assertThat(userDto.getNickname()).isEqualTo(updateUserDto.getNickname());
@@ -139,7 +141,7 @@ class UserInfoManageServiceImplTest {
 
         //when
         userInfoManageService.modifyUserDetails(id, updateUserDto);
-        UserDto userDto = userInfoManageService.getUserDetails(id);
+        UserResponseDto userDto = userInfoManageService.getUserDetails(id);
 
         //then
         Assertions.assertThat(userDto.getEmail()).isEqualTo(updateUserDto.getEmail());
@@ -154,7 +156,7 @@ class UserInfoManageServiceImplTest {
 
         //when
         userInfoManageService.modifyUserDetails(id, updateUserDto);
-        UserDto userDto = userInfoManageService.getUserDetails(id);
+        UserResponseDto userDto = userInfoManageService.getUserDetails(id);
 
         //then
         org.junit.jupiter.api.Assertions.assertAll(

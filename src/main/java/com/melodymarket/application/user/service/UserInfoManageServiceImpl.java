@@ -2,11 +2,12 @@ package com.melodymarket.application.user.service;
 
 import com.melodymarket.application.user.dto.UpdatePasswordDto;
 import com.melodymarket.application.user.dto.UpdateUserDto;
-import com.melodymarket.application.user.dto.UserDto;
 import com.melodymarket.common.exception.PasswordMismatchException;
+import com.melodymarket.common.exception.PasswordSameException;
 import com.melodymarket.domain.user.entity.UserEntity;
 import com.melodymarket.infrastructure.exception.DataNotFoundException;
 import com.melodymarket.infrastructure.jpa.user.repository.UserRepository;
+import com.melodymarket.presentation.admin.dto.UserResponseDto;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -23,9 +24,9 @@ public class UserInfoManageServiceImpl implements UserInfoManageService {
     CryptPasswordService cryptPasswordService;
 
     @Override
-    public UserDto getUserDetails(Long id) {
+    public UserResponseDto getUserDetails(Long id) {
         log.debug("유저 정보 조회={}", id);
-        return UserDto.from(getUserEntity(id));
+        return UserResponseDto.from(getUserEntity(id));
     }
 
     @Override
@@ -34,9 +35,12 @@ public class UserInfoManageServiceImpl implements UserInfoManageService {
         if (!cryptPasswordService.isPasswordMatch(updatePasswordDto.getOldPassword(),
                 userEntity.getUserPassword())) {
             throw new PasswordMismatchException("비밀번호가 일치하지 않습니다.");
+        } else if (cryptPasswordService.isPasswordMatch(updatePasswordDto.getNewPassword(),
+                userEntity.getUserPassword())) {
+            throw new PasswordSameException("새 비밀번호는 현재 비밀번호와 다르게 설정해야 합니다.");
         }
 
-        userEntity.setUserPassword(cryptPasswordService.encryptPassword(updatePasswordDto.getNewPassword()));
+        userEntity.changePassword(updatePasswordDto.getNewPassword(), cryptPasswordService);
         userRepository.save(userEntity);
     }
 

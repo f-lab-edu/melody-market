@@ -3,7 +3,7 @@ package com.melodymarket.application.theater.service;
 import com.melodymarket.application.theater.dto.TheaterDto;
 import com.melodymarket.application.theater.dto.TheaterRoomDto;
 import com.melodymarket.application.theater.dto.TheaterSeatDto;
-import com.melodymarket.infrastructure.exception.DataAccessCustomException;
+import com.melodymarket.infrastructure.exception.DataDuplicateKeyException;
 import com.melodymarket.infrastructure.jpa.theater.repository.TheaterRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -53,7 +53,7 @@ class TheaterManageServiceImplTest {
         Exception exception = assertThrows(Exception.class, () -> manageTheaterService.saveTheater(theaterTestDto));
 
         //then
-        assertTrue(exception instanceof DataAccessCustomException);
+        assertTrue(exception instanceof DataDuplicateKeyException);
     }
 
     private TheaterDto createTestTheater(String name) {

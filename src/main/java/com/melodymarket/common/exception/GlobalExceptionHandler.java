@@ -1,7 +1,7 @@
 package com.melodymarket.common.exception;
 
+import com.melodymarket.common.dto.ResponseDto;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
      * @return badRequest error message return
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public ResponseDto<Map<String, String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         BindingResult bindingResult = ex.getBindingResult();
 
         Map<String, String> errors = bindingResult.getFieldErrors().stream()
@@ -32,15 +32,12 @@ public class GlobalExceptionHandler {
                                         .ofNullable(fieldError.getDefaultMessage())
                                         .orElse(" ")));
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(errors);
+        return ResponseDto.of(HttpStatus.BAD_REQUEST, "유효성 검사에 실패하였습니다.", errors);
     }
 
     @ExceptionHandler(PasswordMismatchException.class)
-    public ResponseEntity<Object> handlePasswordMissMatchException(PasswordMismatchException ex) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_MODIFIED)
-                .body(ex.getMessage());
+    public ResponseDto<String> handlePasswordMissMatchException(PasswordMismatchException ex) {
+
+        return ResponseDto.of(HttpStatus.NOT_MODIFIED, ex.getMessage(), null);
     }
 }

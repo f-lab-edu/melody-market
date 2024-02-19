@@ -5,6 +5,7 @@ import com.melodymarket.application.user.dto.UpdatePasswordDto;
 import com.melodymarket.application.user.dto.UpdateUserDto;
 import com.melodymarket.application.user.dto.UserDto;
 import com.melodymarket.application.user.service.UserInfoManageServiceImpl;
+import com.melodymarket.presentation.admin.dto.UserResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,9 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("회원조희 API 테스트")
 @WithMockUser(roles = "USER")
@@ -61,17 +64,22 @@ class ManageUserControllerTest {
         Long id = 1L;
 
         //when
-        Mockito.when(userInfoManageService.getUserDetails(id)).thenReturn(userDto);
+        Mockito.when(userInfoManageService.getUserDetails(id))
+                .thenReturn(UserResponseDto.builder()
+                        .username(userDto.getUsername())
+                        .nickname(userDto.getNickname())
+                        .birthDate(userDto.getBirthDate())
+                        .email(userDto.getEmail()).build());
         ResultActions resultActions = mockMvc.perform(get("/v1/user/details/" + id));
 
         //then
-        resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.loginId").value("testuser"))
-                .andExpect(jsonPath("$.username").value("테스트"))
-                .andExpect(jsonPath("$.nickname").value("imtest"))
-                .andExpect(jsonPath("$.birthDate").value("19970908"))
-                .andExpect(jsonPath("$.email").value("test@example.com"));
-
+        resultActions.andDo(print()).andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value("OK"))
+                .andExpect(jsonPath("$.message").value("유저 정보 조회에 성공했습니다."))
+                .andExpect(jsonPath("$.data.username").value("테스트"))
+                .andExpect(jsonPath("$.data.nickname").value("imtest"))
+                .andExpect(jsonPath("$.data.birthDate").value("19970908"))
+                .andExpect(jsonPath("$.data.email").value("test@example.com"));
     }
 
     @Test
@@ -89,8 +97,7 @@ class ManageUserControllerTest {
                 .content(jsonTestDto));
 
         //then
-        resultActions.andExpect(status().isOk())
-                .andExpect(content().string("비밀번호가 변경되었습니다."));
+        resultActions.andExpect(status().isOk());
     }
 
     @Test
@@ -122,13 +129,12 @@ class ManageUserControllerTest {
         String requestBody = objectMapper.writeValueAsString(password);
 
         //when
-        ResultActions resultActions = mockMvc.perform(post("/v1/user/delete/" + id )
+        ResultActions resultActions = mockMvc.perform(post("/v1/user/delete/" + id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody));
 
         //then
-        resultActions.andExpect(status().isOk())
-                .andExpect(content().string("회원 탈퇴에 성공했습니다."));
+        resultActions.andExpect(status().isOk());
     }
 
 

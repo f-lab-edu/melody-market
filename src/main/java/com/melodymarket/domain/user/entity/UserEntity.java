@@ -2,21 +2,22 @@ package com.melodymarket.domain.user.entity;
 
 import com.melodymarket.application.user.dto.UpdateUserDto;
 import com.melodymarket.application.user.dto.UserDto;
+import com.melodymarket.application.user.service.CryptPasswordService;
 import com.melodymarket.domain.user.enums.MembershipLevelEnum;
 import com.melodymarket.util.DateFormattingUtil;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
 @Getter
-@Setter
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "melody_user")
 public class UserEntity {
     @Id
@@ -41,11 +42,27 @@ public class UserEntity {
     @Column
     private Integer membershipLevel;
 
+    @Builder
+    public UserEntity(String loginId, String username, String userPassword, String nickname, String email, String birthDate, String joinDate, Integer membershipLevel) {
+        this.loginId = loginId;
+        this.username = username;
+        this.userPassword = userPassword;
+        this.nickname = nickname;
+        this.email = email;
+        this.birthDate = birthDate;
+        this.joinDate = joinDate;
+        this.membershipLevel = membershipLevel;
+    }
+
     @PrePersist
     private void prePersist() {
         if (this.membershipLevel == null) {
             this.membershipLevel = MembershipLevelEnum.BRONZE.getLevel();
         }
+    }
+
+    public void changePassword(String newPassword, CryptPasswordService cryptPasswordService) {
+        this.userPassword = cryptPasswordService.encryptPassword(newPassword);
     }
 
     public static UserEntity from(UserDto userDto, String encryptPassword) {
@@ -64,10 +81,10 @@ public class UserEntity {
 
     public UserEntity modifyValueSetUserEntity(UpdateUserDto updateUserDto) {
         if (updateUserDto.getNickname() != null) {
-            this.setNickname(updateUserDto.getNickname());
+            this.nickname = updateUserDto.getNickname();
         }
         if (updateUserDto.getEmail() != null) {
-            this.setEmail(updateUserDto.getEmail());
+            this.email = updateUserDto.getEmail();
         }
         return this;
     }

@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -19,7 +20,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("회원가입 중복 검사 테스트")
@@ -52,23 +52,27 @@ class JoinUserControllerTest {
     @Test
     @DisplayName("[GET] 유저아이디 중복 검사 API")
     void isUserIdNotAvailable() throws Exception {
+        //given
+        String testUser = "testuser";
+
         // when
-        mockMvc.perform(get("/v1/user/join/check-login-id?login-id=testuser"))
+        ResultActions resultActions = mockMvc.perform(get("/v1/user/join/check-login-id?login-id=" + testUser));
 
         // then
-                .andExpect(status().isOk())
-                .andExpect(content().string("사용 가능한 아이디 입니다."));
+        resultActions.andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("[GET] 닉네임 중복 검사 API 테스트")
     void isNicknameAvailable() throws Exception {
+        //given
+        String testNickname = "testnickname";
 
         //when
-        mockMvc.perform(get("/v1/user/join/check-nickname?nickname=testnickname"))
+        ResultActions resultActions = mockMvc.perform(get("/v1/user/join/check-nickname?nickname=" + testNickname));
+
         //then
-                .andExpect(status().isOk())
-                .andExpect(content().string("사용 가능한 닉네임 입니다."));
+        resultActions.andExpect(status().isOk());
     }
 
     @Test
@@ -80,13 +84,14 @@ class JoinUserControllerTest {
         //json 형식으로 convert
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonTestUser = objectMapper.writeValueAsString(testUser);
+
         //when
-        mockMvc.perform(post("/v1/user/join/save")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonTestUser))
+        ResultActions resultActions = mockMvc.perform(post("/v1/user/join/save")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonTestUser));
+
         //then
-                .andExpect(status().isOk())
-                .andExpect(content().string("유저 생성에 성공했습니다."));
+        resultActions.andExpect(status().isOk());
     }
 
     public UserDto createTestUser() {

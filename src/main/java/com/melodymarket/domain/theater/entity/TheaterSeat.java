@@ -14,13 +14,13 @@ import java.util.stream.Collectors;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "seat")
-public class TheaterSeatEntity {
+public class TheaterSeat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumn(name = "theater_room_id")
-    private TheaterRoomEntity theaterRoom;
+    private TheaterRoom theaterRoom;
     @Column
     private Integer seatFloor;
     @Column
@@ -28,21 +28,21 @@ public class TheaterSeatEntity {
     @Column
     private Integer seatNumber;
 
-    protected void setTheaterRoom(TheaterRoomEntity theaterRoom) {
+    protected void setTheaterRoom(TheaterRoom theaterRoom) {
         this.theaterRoom = theaterRoom;
     }
 
     @Builder
-    public TheaterSeatEntity(TheaterRoomEntity theaterRoom, Integer seatFloor, Integer seatRow, Integer seatNumber) {
+    public TheaterSeat(TheaterRoom theaterRoom, Integer seatFloor, Integer seatRow, Integer seatNumber) {
         this.theaterRoom = theaterRoom;
         this.seatFloor = seatFloor;
         this.seatRow = seatRow;
         this.seatNumber = seatNumber;
     }
 
-    public static List<TheaterSeatEntity> from(List<TheaterSeatDto> seatDtos) {
+    public static List<TheaterSeat> from(List<TheaterSeatDto> seatDtos) {
         return seatDtos.stream()
-                .map(seatDto -> TheaterSeatEntity.builder()
+                .map(seatDto -> TheaterSeat.builder()
                         .seatFloor(seatDto.getSeatFloor())
                         .seatRow(seatDto.getSeatRow())
                         .seatNumber(seatDto.getSeatNumber())

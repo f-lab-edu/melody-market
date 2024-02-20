@@ -1,6 +1,6 @@
 package com.melodymarket.domain.theater.entity;
 
-import com.melodymarket.domain.show.entity.ShowScheduleEntity;
+import com.melodymarket.domain.show.entity.ShowSchedule;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,17 +11,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "theater_reserve")
-public class TheaterReserveEntity {
+public class TheaterReserve {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne(mappedBy = "theaterReserve", cascade = CascadeType.ALL)
-    private ShowScheduleEntity showSchedule;
+    private ShowSchedule showSchedule;
     @Column
     private String reserveDate;
 
     @Builder
-    public TheaterReserveEntity(ShowScheduleEntity showSchedule, String reserveDate) {
+    public TheaterReserve(ShowSchedule showSchedule, String reserveDate) {
         this.showSchedule = showSchedule;
         this.reserveDate = reserveDate;
     }

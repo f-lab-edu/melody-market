@@ -1,7 +1,9 @@
 package com.melodymarket.common.exception;
 
+import com.melodymarket.common.dto.ResponseDto;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,6 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -22,7 +25,7 @@ public class GlobalExceptionHandler {
      * @return badRequest error message return
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public ResponseDto<Map<String, String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         BindingResult bindingResult = ex.getBindingResult();
 
         Map<String, String> errors = bindingResult.getFieldErrors().stream()
@@ -32,15 +35,26 @@ public class GlobalExceptionHandler {
                                         .ofNullable(fieldError.getDefaultMessage())
                                         .orElse(" ")));
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(errors);
+        return ResponseDto.of(HttpStatus.BAD_REQUEST, "유효성 검사에 실패하였습니다.", errors);
     }
 
     @ExceptionHandler(PasswordMismatchException.class)
-    public ResponseEntity<Object> handlePasswordMissMatchException(PasswordMismatchException ex) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_MODIFIED)
-                .body(ex.getMessage());
+    public ResponseDto<String> handlePasswordMissMatchException(PasswordMismatchException ex) {
+
+        return ResponseDto.of(HttpStatus.NOT_MODIFIED, ex.getMessage(), null);
+    }
+
+    @ExceptionHandler(PasswordSameException.class)
+    public ResponseDto<String> handlePasswordSameException(PasswordSameException ex) {
+
+        return ResponseDto.of(HttpStatus.NOT_MODIFIED, ex.getMessage(), null);
+    }
+
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseDto<String> handleDataAccessException(DataAccessException ex) {
+        log.error("[handleDataAccessException] 데이터 처리 중 오류가 발생했습니다={}", ex.getMessage());
+
+        return ResponseDto.of(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), "데이터 처리 중 에러가 발생하였습니다.");
     }
 }

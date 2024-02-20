@@ -7,7 +7,6 @@ import com.melodymarket.common.dto.ResponseDto;
 import com.melodymarket.presentation.theater.dto.TheaterResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,10 +25,10 @@ public class ManageTheaterController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ResponseDto<TheaterResponseDto>> addTheater(@RequestBody @Validated TheaterDto theaterDto) {
+    public ResponseDto<TheaterResponseDto> addTheater(@RequestBody @Validated TheaterDto theaterDto) {
 
-        return new ResponseEntity<>(ResponseDto.of(HttpStatus.OK,
+        return ResponseDto.of(HttpStatus.OK,
                 "공연장 등록이 완료되었습니다.",
-                manageTheaterService.saveTheater(theaterDto)), HttpStatus.OK);
+                manageTheaterService.saveTheater(theaterDto));
     }
 }

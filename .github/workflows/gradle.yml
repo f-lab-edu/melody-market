@@ -34,6 +34,11 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+      - name: Create keys.properties file
+        run: | 
+          echo url=${{ secrets.database_url }} > src/main/resources/keys.properties
+          echo username=${{ secrets.database_username }} >> src/main/resources/keys.properties
+          echo password=${{ secrets.password }} >> src/main/resources/keys.properties
 
       - name: Grant Execute Permission to Gradlew
         run: chmod +x ./gradlew

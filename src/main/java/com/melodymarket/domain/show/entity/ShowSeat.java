@@ -9,17 +9,17 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "show_seat")
-public class ShowSeatEntity {
+public class ShowSeat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToMany(mappedBy = "showSeat")
-    private List<ShowScheduleEntity> showSchedule;
+    private List<ShowSchedule> showSchedule;
     @Column
     private Long seatId;
 
     @Builder
-    public ShowSeatEntity(List<ShowScheduleEntity> showSchedule, Long seatId) {
+    public ShowSeat(List<ShowSchedule> showSchedule, Long seatId) {
         this.showSchedule = showSchedule;
         this.seatId = seatId;
     }

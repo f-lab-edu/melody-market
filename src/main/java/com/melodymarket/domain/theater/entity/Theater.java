@@ -1,7 +1,7 @@
 package com.melodymarket.domain.theater.entity;
 
 import com.melodymarket.application.theater.dto.TheaterDto;
-import com.melodymarket.domain.show.entity.ShowEntity;
+import com.melodymarket.domain.show.entity.Show;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "theater")
-public class TheaterEntity {
+public class Theater {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,23 +23,23 @@ public class TheaterEntity {
     @Column
     private String location;
     @OneToOne(mappedBy = "theater")
-    private ShowEntity showList;
+    private Show showList;
     @OneToMany(mappedBy = "theater", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<TheaterRoomEntity> rooms;
+    private List<TheaterRoom> rooms;
 
     @Builder
-    public TheaterEntity(String name, String location, ShowEntity showList, List<TheaterRoomEntity> rooms) {
+    public Theater(String name, String location, Show showList, List<TheaterRoom> rooms) {
         this.name = name;
         this.location = location;
         this.showList = showList;
         this.rooms = rooms;
     }
 
-    public static TheaterEntity from(TheaterDto theaterDto) {
-        return TheaterEntity.builder()
+    public static Theater from(TheaterDto theaterDto) {
+        return Theater.builder()
                 .name(theaterDto.getName())
                 .location(theaterDto.getLocation())
-                .rooms(TheaterRoomEntity.from(theaterDto.getRoomsInfo()))
+                .rooms(TheaterRoom.from(theaterDto.getRoomsInfo()))
                 .build();
     }
 

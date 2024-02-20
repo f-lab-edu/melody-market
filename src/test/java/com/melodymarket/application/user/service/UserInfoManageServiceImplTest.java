@@ -5,7 +5,7 @@ import com.melodymarket.application.user.dto.UpdateUserDto;
 import com.melodymarket.application.user.dto.UserDto;
 import com.melodymarket.common.exception.PasswordMismatchException;
 import com.melodymarket.common.exception.PasswordSameException;
-import com.melodymarket.domain.user.entity.UserEntity;
+import com.melodymarket.domain.user.entity.User;
 import com.melodymarket.infrastructure.exception.DataNotFoundException;
 import com.melodymarket.infrastructure.jpa.user.repository.UserRepository;
 import com.melodymarket.presentation.admin.dto.UserResponseDto;
@@ -33,7 +33,7 @@ class UserInfoManageServiceImplTest {
     @Autowired
     UserRepository userRepository;
     UserDto userDto;
-    UserEntity userSelect;
+    User userSelect;
     String sessionId = "testSessionId";
 
     @BeforeEach

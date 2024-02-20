@@ -19,7 +19,7 @@ import java.time.LocalDate;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "melody_user")
-public class UserEntity {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,7 +43,7 @@ public class UserEntity {
     private Integer membershipLevel;
 
     @Builder
-    public UserEntity(String loginId, String username, String userPassword, String nickname, String email, String birthDate, String joinDate, Integer membershipLevel) {
+    public User(String loginId, String username, String userPassword, String nickname, String email, String birthDate, String joinDate, Integer membershipLevel) {
         this.loginId = loginId;
         this.username = username;
         this.userPassword = userPassword;
@@ -65,8 +65,8 @@ public class UserEntity {
         this.userPassword = cryptPasswordService.encryptPassword(newPassword);
     }
 
-    public static UserEntity from(UserDto userDto, String encryptPassword) {
-        return UserEntity
+    public static User from(UserDto userDto, String encryptPassword) {
+        return User
                 .builder()
                 .loginId(userDto.getLoginId())
                 .userPassword(encryptPassword)
@@ -79,7 +79,7 @@ public class UserEntity {
                 .build();
     }
 
-    public UserEntity modifyValueSetUserEntity(UpdateUserDto updateUserDto) {
+    public User modifyValueSetUserEntity(UpdateUserDto updateUserDto) {
         if (updateUserDto.getNickname() != null) {
             this.nickname = updateUserDto.getNickname();
         }

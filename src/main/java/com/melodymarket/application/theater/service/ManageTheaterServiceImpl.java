@@ -1,8 +1,8 @@
 package com.melodymarket.application.theater.service;
 
 import com.melodymarket.application.theater.dto.TheaterDto;
-import com.melodymarket.domain.theater.entity.TheaterEntity;
-import com.melodymarket.domain.theater.entity.TheaterRoomEntity;
+import com.melodymarket.domain.theater.entity.Theater;
+import com.melodymarket.domain.theater.entity.TheaterRoom;
 import com.melodymarket.infrastructure.exception.DataDuplicateKeyException;
 import com.melodymarket.infrastructure.jpa.theater.repository.TheaterRepository;
 import com.melodymarket.presentation.theater.dto.TheaterResponseDto;
@@ -10,7 +10,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -26,31 +25,20 @@ public class ManageTheaterServiceImpl implements ManageTheaterService {
         if (findByTheaterName(theaterDto.getName())) {
             throw new DataDuplicateKeyException("이미 등록 된 공연장 이름입니다.");
         }
-        TheaterEntity theater = TheaterEntity.from(theaterDto);
+        Theater theater = Theater.from(theaterDto);
         setTheaterPersistence(theater);
-        try {
-            theaterRepository.save(theater);
-            return TheaterResponseDto.from(theaterDto);
-        } catch (DataAccessException e) {
-            log.error("[saveTheater] 처리 중 오류가 발생했습니다={}", e.getMessage());
-            throw e;
-        }
-
+        theaterRepository.save(theater);
+        return TheaterResponseDto.from(theaterDto);
     }
 
     @Override
     public boolean findByTheaterName(String theaterName) {
-        try {
-            return theaterRepository.existsByName(theaterName);
-        } catch (DataAccessException e) {
-            log.error("[findByTheaterName] 처리 중 오류가 발생했습니다={}", e.getMessage());
-            throw e;
-        }
+        return theaterRepository.existsByName(theaterName);
     }
 
-    private void setTheaterPersistence(TheaterEntity theater) {
+    private void setTheaterPersistence(Theater theater) {
         theater.associateTheaterWithRooms();
-        theater.getRooms().forEach(TheaterRoomEntity::associateRoomsWithSeats);
+        theater.getRooms().forEach(TheaterRoom::associateRoomsWithSeats);
 
     }
 }

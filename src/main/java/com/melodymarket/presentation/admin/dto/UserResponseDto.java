@@ -1,6 +1,6 @@
 package com.melodymarket.presentation.admin.dto;
 
-import com.melodymarket.domain.user.entity.UserEntity;
+import com.melodymarket.domain.user.entity.User;
 import lombok.*;
 
 @Getter
@@ -16,15 +16,15 @@ public class UserResponseDto {
     private String birthDate;
     private Integer membershipLevel;
 
-    public static UserResponseDto from(UserEntity userEntity) {
+    public static UserResponseDto from(User user) {
         return UserResponseDto
                 .builder()
-                .loginId(userEntity.getLoginId())
-                .username(userEntity.getUsername())
-                .nickname(userEntity.getNickname())
-                .birthDate(userEntity.getBirthDate())
-                .email(userEntity.getEmail())
-                .membershipLevel(userEntity.getMembershipLevel())
+                .loginId(user.getLoginId())
+                .username(user.getUsername())
+                .nickname(user.getNickname())
+                .birthDate(user.getBirthDate())
+                .email(user.getEmail())
+                .membershipLevel(user.getMembershipLevel())
                 .build();
     }
 }

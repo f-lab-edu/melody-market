@@ -1,7 +1,7 @@
 package com.melodymarket.application.user.service;
 
 import com.melodymarket.application.user.dto.UserDto;
-import com.melodymarket.domain.user.entity.UserEntity;
+import com.melodymarket.domain.user.entity.User;
 import com.melodymarket.infrastructure.exception.DataDuplicateKeyException;
 import com.melodymarket.infrastructure.redis.RedisService;
 import com.melodymarket.infrastructure.jpa.user.repository.UserRepository;
@@ -48,12 +48,12 @@ public class UserJoinServiceImpl implements UserJoinService {
 
     @Override
     public void signUpUser(UserDto userDto, String sessionId) {
-        UserEntity userEntity = UserEntity.from(userDto, cryptPasswordService.encryptPassword(userDto.getUserPassword()));
+        User user = User.from(userDto, cryptPasswordService.encryptPassword(userDto.getUserPassword()));
 
         checkUserIdDuplication(userDto.getLoginId(), sessionId);
         checkNicknameDuplication(userDto.getNickname(), sessionId);
         try {
-            userRepository.save(userEntity);
+            userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
             log.error("중복 데이터 회원가입 시도 ={}", userDto);
             throw new DataDuplicateKeyException("이미 가입 된 회원 정보 입니다.");

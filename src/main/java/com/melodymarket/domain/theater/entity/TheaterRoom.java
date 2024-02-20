@@ -13,35 +13,35 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "theater_room")
-public class TheaterRoomEntity {
+public class TheaterRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumn(name = "theater_id")
-    private TheaterEntity theater;
+    private Theater theater;
     @Column
     private String name;
 
     @OneToMany(mappedBy = "theaterRoom", cascade = CascadeType.ALL)
-    private List<TheaterSeatEntity> seats;
+    private List<TheaterSeat> seats;
 
-    protected void setTheater(TheaterEntity theater) {
+    protected void setTheater(Theater theater) {
         this.theater = theater;
     }
 
     @Builder
-    public TheaterRoomEntity(TheaterEntity theater, String name, List<TheaterSeatEntity> seats) {
+    public TheaterRoom(Theater theater, String name, List<TheaterSeat> seats) {
         this.theater = theater;
         this.name = name;
         this.seats = seats;
     }
 
-    public static List<TheaterRoomEntity> from(List<TheaterRoomDto> theaterRoomDto) {
+    public static List<TheaterRoom> from(List<TheaterRoomDto> theaterRoomDto) {
         return theaterRoomDto.stream()
-                .map(roomDto -> TheaterRoomEntity.builder()
+                .map(roomDto -> TheaterRoom.builder()
                         .name(roomDto.getRoomName())
-                        .seats(TheaterSeatEntity.from(roomDto.getSeatData()))
+                        .seats(TheaterSeat.from(roomDto.getSeatData()))
                         .build())
                 .toList();
     }

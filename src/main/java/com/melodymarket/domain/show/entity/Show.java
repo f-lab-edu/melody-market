@@ -1,7 +1,7 @@
 package com.melodymarket.domain.show.entity;
 
-import com.melodymarket.domain.theater.entity.TheaterEntity;
-import com.melodymarket.domain.user.entity.UserEntity;
+import com.melodymarket.domain.theater.entity.Theater;
+import com.melodymarket.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "shows")
-public class ShowEntity {
+public class Show {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,14 +28,14 @@ public class ShowEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserEntity user;
+    private User user;
 
     @OneToOne
     @JoinColumn(name = "theater_id")
-    private TheaterEntity theater;
+    private Theater theater;
 
     @Builder
-    public ShowEntity(String showName, String director, String reserveStartDate, Integer price, UserEntity user, TheaterEntity theater) {
+    public Show(String showName, String director, String reserveStartDate, Integer price, User user, Theater theater) {
         this.showName = showName;
         this.director = director;
         this.reserveStartDate = reserveStartDate;

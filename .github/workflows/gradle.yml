@@ -27,6 +27,7 @@ jobs:
     env:
       REDIS_HOST: redis
 
+
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 17
@@ -39,6 +40,9 @@ jobs:
           echo url=${{ secrets.DATABASE_URL }} > src/main/resources/keys.properties
           echo username=${{ secrets.DATABASE_USERNAME }} >> src/main/resources/keys.properties
           echo password=${{ secrets.DATABASE_PASSWORD }} >> src/main/resources/keys.properties
+
+      - name: Print Redis Host
+        run: echo $REDIS_HOST
 
       - name: Grant Execute Permission to Gradlew
         run: chmod +x ./gradlew

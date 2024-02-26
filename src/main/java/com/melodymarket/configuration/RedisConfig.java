@@ -1,6 +1,5 @@
 package com.melodymarket.configuration;
 
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,12 +14,6 @@ public class RedisConfig {
     private String host;
     @Value("${spring.data.redis.port}")
     private int port;
-
-    @PostConstruct
-    public void postConstruct() {
-        System.out.println("Redis host: " + host);
-        System.out.println("Redis port: " + port);
-    }
 
 
     @Bean

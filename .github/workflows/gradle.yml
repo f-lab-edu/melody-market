@@ -45,10 +45,6 @@ jobs:
           echo url=${{ secrets.DATABASE_URL }} > src/main/resources/keys.properties
           echo username=${{ secrets.DATABASE_USERNAME }} >> src/main/resources/keys.properties
           echo password=${{ secrets.DATABASE_PASSWORD }} >> src/main/resources/keys.properties
-          echo REDIS_HOST=redis >> src/main/resources/keys.properties
-
-      - name: Print Redis Host
-        run: echo $REDIS_HOST
 
       - name: Grant Execute Permission to Gradlew
         run: chmod +x ./gradlew
@@ -61,6 +57,12 @@ jobs:
       - name: Build with Gradle Wrapper
         run: ./gradlew build
 
+      - name: Web docker build and push
+        run: |
+            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+            docker build -t ${{ secrets.DOCKER_REPO }}/melody-market .
+            docker push ${{ secrets.DOCKER_REPO }}/melody-market
+
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
     #
@@ -71,6 +73,10 @@ jobs:
     #
     # - name: Build with Gradle 8.5
     #   run: gradle build
+  deploy:
+    # needs를 통해 build job이 수행 성공시에 작업되도록 설정
+    needs: build
+    runs-on: ubuntu-latest
 
   dependency-submission:
 
@@ -92,6 +98,7 @@ jobs:
         uses: gradle/actions/dependency-submission@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
 
 
+
       - name: NCP login
         uses: appleboy/ssh-action@master
         with:
@@ -99,8 +106,12 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.NCP_KEYFILE }}
           port: ${{ secrets.SERVER_PORT }}
-          source: "./build/libs/*.jar"
-          target: "/root/cicd"
           script: |
-            whoami
-            ls -al /root/cicd
+            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+            docker stop $(sudo docker ps -a -q)
+            docker rm -f $(sudo docker ps -a -q)
+            docker pull ${{ secrets.DOCKER_REPO }}/melody-market
+            docker run -d -p 9090:8080 ${{ secrets.DOCKER_REPO }}/melody-market
+            docker image prune -f
+            ps -ef | grep
+            docker ps -a

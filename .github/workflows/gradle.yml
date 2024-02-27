@@ -73,10 +73,6 @@ jobs:
     #
     # - name: Build with Gradle 8.5
     #   run: gradle build
-  deploy:
-    # needs를 통해 build job이 수행 성공시에 작업되도록 설정
-    needs: build
-    runs-on: ubuntu-latest
 
   dependency-submission:
 
@@ -97,8 +93,11 @@ jobs:
       - name: Generate and submit dependency graph
         uses: gradle/actions/dependency-submission@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
 
-
-
+  deploy:
+    # needs를 통해 build job이 수행 성공시에 작업되도록 설정
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
       - name: NCP login
         uses: appleboy/ssh-action@master
         with:

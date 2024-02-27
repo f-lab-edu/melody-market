@@ -99,6 +99,8 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.NCP_KEYFILE }}
           port: ${{ secrets.SERVER_PORT }}
+          source: "./build/libs/*.jar"
+          target: "/root/cicd"
           script: |
             whoami
-            ls -al
+            ls -al /root/cicd

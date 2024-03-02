@@ -106,9 +106,9 @@ jobs:
           key: ${{ secrets.NCP_KEYFILE }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
-            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-            docker stop $(sudo docker ps -a -q)
-            docker rm -f $(sudo docker ps -a -q)
+#            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+#            docker stop $(sudo docker ps -a -q)
+#            docker rm -f $(sudo docker ps -a -q)
             docker pull ${{ secrets.DOCKER_REPO }}/melody-market
             docker run -d -p 9090:9090 ${{ secrets.DOCKER_REPO }}/melody-market
             docker image prune -f

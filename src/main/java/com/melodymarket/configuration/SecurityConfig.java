@@ -43,7 +43,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)//TODO: 우선은 생략 후 이후 csrf 적용할 것
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/", "/login", "/v1/user/join/*").permitAll()
+                        .requestMatchers("/", "/login", "/v1/user/join/*", "/actuator/health").permitAll()
                         .anyRequest().authenticated()
                 ).formLogin(formLogin -> formLogin
                         .successHandler(customAuthenticationSuccessHandler())

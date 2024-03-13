@@ -95,7 +95,7 @@ jobs:
 
   deploy:
     # needs를 통해 build job이 수행 성공시에 작업되도록 설정
-    needs: build정
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: NCP login

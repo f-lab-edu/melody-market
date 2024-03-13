@@ -60,8 +60,8 @@ jobs:
       - name: Web docker build and push
         run: |
             docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-            docker build -t ${{ secrets.DOCKER_REPO }}/melody-market .
-            docker push ${{ secrets.DOCKER_REPO }}/melody-market
+            docker build -t ${{ secrets.DOCKER_REPO }}/melody-market:melody .
+            docker push ${{ secrets.DOCKER_REPO }}/melody-market:melody
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.

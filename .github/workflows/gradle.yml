@@ -59,7 +59,7 @@ jobs:
 
       - name: Web docker build and push
         run: |
-            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login melody.kr.ncr.ntruss.com --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
             docker build -t ${{ secrets.DOCKER_REPO }}/melody-market:melody .
             docker push ${{ secrets.DOCKER_REPO }}/melody-market:melody
 
@@ -95,7 +95,7 @@ jobs:
 
   deploy:
     # needs를 통해 build job이 수행 성공시에 작업되도록 설정
-    needs: build
+    needs: build정
     runs-on: ubuntu-latest
     steps:
       - name: NCP login
@@ -106,11 +106,11 @@ jobs:
           key: ${{ secrets.NCP_KEYFILE }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
-            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login melody.kr.ncr.ntruss.com --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
             docker stop $(sudo docker ps -a -q)
             docker rm -f $(sudo docker ps -a -q)
-            docker pull ${{ secrets.DOCKER_REPO }}/melody-market
-            docker run -d -p 9090:9090 ${{ secrets.DOCKER_REPO }}/melody-market
+            docker pull ${{ secrets.DOCKER_REPO }}/melody-market:melody
+            docker run -d -p 9090:9090 ${{ secrets.DOCKER_REPO }}/melody-market:melody
             docker image prune -f
             ps -ef | grep
             docker ps -a

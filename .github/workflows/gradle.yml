@@ -106,11 +106,11 @@ jobs:
             script: |
               echo "${{ secrets.DOCKER_PASSWORD }}" | docker login melody.kr.ncr.ntruss.com --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
               # Kubernetes 배포 명령 실행
-              kubectl --kubeconfig="~/kubeconfig.yml" set image deployment/melody-deployment melody=melody.kr.ncr.ntruss.com/melody-market:${{ github.sha }} --record
+              kubectl --kubeconfig="/root/kubeconfig.yml" set image deployment/melody-deployment melody=melody.kr.ncr.ntruss.com/melody-market:${{ github.sha }} --record
               # 배포 상태 확인 및 롤백 처리
-              if ! kubectl --kubeconfig="~/kubeconfig.yml" rollout status deployment/melody-deployment --timeout=60s; then
+              if ! kubectl --kubeconfig="/root/kubeconfig.yml" rollout status deployment/melody-deployment --timeout=60s; then
                 echo "Deployment failed, starting rollback..."
-                kubectl --kubeconfig="~/kubeconfig.yml" rollout undo deployment/melody-deployment
+                kubectl --kubeconfig="/root/kubeconfig.yml" rollout undo deployment/melody-deployment
                 echo "Rollback completed."
               else
                 echo "Deployment succeeded."

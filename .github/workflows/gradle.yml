@@ -94,34 +94,28 @@ jobs:
         uses: gradle/actions/dependency-submission@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
 
   deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy and Check Status
-        id: deploy
-        run: |
-          OUTPUT=$(ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} '
-          source ~/.bashrc
+deploy:
+  needs: build
+  runs-on: ubuntu-latest
+  steps:
+    - name: SSH and Deploy to Kubernetes
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        key: ${{ secrets.NCP_KEYFILE }}
+        script: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login melody.kr.ncr.ntruss.com --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          # Kubernetes 배포 명령 실행
           kubectl set image deployment/your-deployment your-container=ncp-registry.example.com/your-image:${{ github.sha }} --record
+          # 배포 상태 확인 및 롤백 처리
           if ! kubectl rollout status deployment/your-deployment --timeout=60s; then
+            echo "Deployment failed, starting rollback..."
             kubectl rollout undo deployment/your-deployment
-            echo "ROLLBACK"
+            echo "Rollback completed."
           else
-            echo "SUCCESS"
+            echo "Deployment succeeded."
           fi
-          ')
-          echo "Result: $OUTPUT"
-          if [[ "$OUTPUT" == *"ROLLBACK"* ]]; then
-            echo "::set-output name=rollback::true"
-          else
-            echo "::set-output name=rollback::false"
-          fi
-
-      # 롤백 상태 확인
-      - name: Rollback Status
-        if: steps.deploy.outputs.rollback == 'true'
-        run: |
-          echo "Deployment failed and was rolled back."
 
 #  deploy:
 #    needs: build

@@ -99,7 +99,7 @@ jobs:
     steps:
         - name: SSH and Deploy to Kubernetes
           uses: appleboy/ssh-action@master
-          with:
+          env:
             host: ${{ secrets.SERVER_HOST }}
             username: ${{ secrets.SERVER_USERNAME }}
             key: ${{ secrets.SSH_PRIVATE_KEY }}

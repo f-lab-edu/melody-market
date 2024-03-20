@@ -106,11 +106,12 @@ jobs:
             script: |
               echo "${{ secrets.DOCKER_PASSWORD }}" | docker login melody.kr.ncr.ntruss.com --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
               # Kubernetes 배포 명령 실행
-              kubectl set image deployment/your-deployment your-container=ncp-registry.example.com/your-image:${{ github.sha }} --record
+              source ~/.bashrc
+              k set image deployment/your-deployment your-container=ncp-registry.example.com/your-image:${{ github.sha }} --record
               # 배포 상태 확인 및 롤백 처리
-              if ! kubectl rollout status deployment/your-deployment --timeout=60s; then
+              if ! k rollout status deployment/your-deployment --timeout=60s; then
                 echo "Deployment failed, starting rollback..."
-                kubectl rollout undo deployment/your-deployment
+                k rollout undo deployment/your-deployment
                 echo "Rollback completed."
               else
                 echo "Deployment succeeded."

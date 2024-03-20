@@ -60,8 +60,8 @@ jobs:
       - name: Web docker build and push
         run: |
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login melody.kr.ncr.ntruss.com --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
-            docker build -t ${{ secrets.DOCKER_REPO }}/melody-market:1.0v .
-            docker push ${{ secrets.DOCKER_REPO }}/melody-market:1.0v
+            docker build -t ${{ secrets.DOCKER_REPO }}/melody-market:${{ github.sha }} .
+            docker push ${{ secrets.DOCKER_REPO }}/melody-market:${{ github.sha }}
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
@@ -93,8 +93,37 @@ jobs:
       - name: Generate and submit dependency graph
         uses: gradle/actions/dependency-submission@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy and Check Status
+        id: deploy
+        run: |
+          OUTPUT=$(ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} '
+          source ~/.bashrc
+          kubectl set image deployment/your-deployment your-container=ncp-registry.example.com/your-image:${{ github.sha }} --record
+          if ! kubectl rollout status deployment/your-deployment --timeout=60s; then
+            kubectl rollout undo deployment/your-deployment
+            echo "ROLLBACK"
+          else
+            echo "SUCCESS"
+          fi
+          ')
+          echo "Result: $OUTPUT"
+          if [[ "$OUTPUT" == *"ROLLBACK"* ]]; then
+            echo "::set-output name=rollback::true"
+          else
+            echo "::set-output name=rollback::false"
+          fi
+
+      # 롤백 상태 확인
+      - name: Rollback Status
+        if: steps.deploy.outputs.rollback == 'true'
+        run: |
+          echo "Deployment failed and was rolled back."
+
 #  deploy:
-#    # needs를 통해 build job이 수행 성공시에 작업되도록 설정
 #    needs: build
 #    runs-on: ubuntu-latest
 #    steps:
@@ -109,8 +138,8 @@ jobs:
 #            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login melody.kr.ncr.ntruss.com --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
 #            docker stop $(sudo docker ps -a -q)
 #            docker rm -f $(sudo docker ps -a -q)
-#            docker pull ${{ secrets.DOCKER_REPO }}/melody-market:melody
-#            docker run -d -p 9090:9090 ${{ secrets.DOCKER_REPO }}/melody-market:melody
+#            docker pull ${{ secrets.DOCKER_REPO }}/melody-market:${{ github.sha }}
+#            docker run -d -p 9090:9090 ${{ secrets.DOCKER_REPO }}/melody-market:${{ github.sha }}
 #            docker image prune -f
 #            ps -ef | grep
 #            docker ps -a

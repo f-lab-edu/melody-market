@@ -9,7 +9,7 @@ name: Melody Market CI
 
 on:
   push:
-    branches: [ "ci/github-action" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 

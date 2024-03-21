@@ -55,7 +55,17 @@ jobs:
         uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
 
       - name: Build with Gradle Wrapper
-        run: ./gradlew build
+        run: ./gradlew build -x test
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run Unit Tests
+        run: ./gradlew test
 
       - name: Web docker build and push
         run: |
@@ -114,31 +124,9 @@ jobs:
               kubectl --kubeconfig="/root/kubeconfig.yml" set image deployment/melody-deployment melody=melody.kr.ncr.ntruss.com/melody-market:${{ github.sha }} --record
               # 배포 상태 확인 및 롤백 처리
               if ! kubectl --kubeconfig="/root/kubeconfig.yml" rollout status deployment/melody-deployment --timeout=60s; then
-                echo "D정eployment failed, starting rollback..."
+                echo "Deployment failed, starting rollback..."
                 kubectl --kubeconfig="/root/kubeconfig.yml" rollout undo deployment/melody-deployment
                 echo "Rollback completed."
               else
                 echo "Deployment succeeded."
               fi
-
-
-#  deploy:
-#    needs: build
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: NCP login
-#        uses: appleboy/ssh-action@master
-#        with:
-#          host: ${{ secrets.SERVER_HOST }}
-#          username: ${{ secrets.SERVER_USERNAME }}
-#          key: ${{ secrets.NCP_KEYFILE }}
-#          port: ${{ secrets.SERVER_PORT }}
-#          script: |
-#            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login melody.kr.ncr.ntruss.com --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
-#            docker stop $(sudo docker ps -a -q)
-#            docker rm -f $(sudo docker ps -a -q)
-#            docker pull ${{ secrets.DOCKER_REPO }}/melody-market:${{ github.sha }}
-#            docker run -d -p 9090:9090 ${{ secrets.DOCKER_REPO }}/melody-market:${{ github.sha }}
-#            docker image prune -f
-#            ps -ef | grep
-#            docker ps -a

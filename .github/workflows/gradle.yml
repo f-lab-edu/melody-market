@@ -57,21 +57,14 @@ jobs:
       - name: Build with Gradle Wrapper
         run: ./gradlew build -x test
 
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
       - name: Run Unit Tests
         run: ./gradlew test
 
       - name: Web docker build and push
         run: |
-            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login melody.kr.ncr.ntruss.com --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
-            docker build -t ${{ secrets.DOCKER_REPO }}/melody-market:${{ github.sha }} .
-            docker push ${{ secrets.DOCKER_REPO }}/melody-market:${{ github.sha }}
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login melody.kr.ncr.ntruss.com --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          docker build -t ${{ secrets.DOCKER_REPO }}/melody-market:${{ github.sha }} .
+          docker push ${{ secrets.DOCKER_REPO }}/melody-market:${{ github.sha }}
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
@@ -104,7 +97,7 @@ jobs:
         uses: gradle/actions/dependency-submission@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
 
   deploy:
-    needs: build
+    needs: test
     runs-on: ubuntu-latest
     steps:
         - name: SSH and Deploy to Kubernetes

@@ -110,7 +110,7 @@ jobs:
               export NCLOUD_SECRET_KEY=${{ secrets.NCLOUD_SECRET_KEY }}
               export NCLOUD_API_GW=https://ncloud.apigw.ntruss.com
               export NCLOUD_PROFILE=project
-              export PATH=$PATH:HOME/bin
+              export PATH=$PATH:$HOME/bin
               ncp-iam-authenticator help
               kubectl --kubeconfig="/root/kubeconfig.yml" set image deployment/melody-deployment melody=melody.kr.ncr.ntruss.com/melody-market:${{ github.sha }} --record
               # 배포 상태 확인 및 롤백 처리

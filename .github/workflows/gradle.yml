@@ -111,15 +111,15 @@ jobs:
               export NCLOUD_API_GW=https://ncloud.apigw.ntruss.com
               export NCLOUD_PROFILE=project
               export PATH=$PATH:$HOME/bin
-              ncp-iam-authenticator help
               kubectl --kubeconfig="/root/kubeconfig.yml" set image deployment/melody-deployment melody=melody.kr.ncr.ntruss.com/melody-market:${{ github.sha }} --record
               # 배포 상태 확인 및 롤백 처리
               if ! kubectl --kubeconfig="/root/kubeconfig.yml" rollout status deployment/melody-deployment --timeout=60s; then
-                echo "Deployment failed, starting rollback..."
+                echo "D정eployment failed, starting rollback..."
                 kubectl --kubeconfig="/root/kubeconfig.yml" rollout undo deployment/melody-deployment
                 echo "Rollback completed."
               else
                 echo "Deployment succeeded."
+              fi
 
 
 #  deploy:

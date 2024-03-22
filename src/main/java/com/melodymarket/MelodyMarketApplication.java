@@ -11,5 +11,4 @@ public class MelodyMarketApplication {
     public static void main(String[] args) {
         SpringApplication.run(MelodyMarketApplication.class, args);
     }
-
 }

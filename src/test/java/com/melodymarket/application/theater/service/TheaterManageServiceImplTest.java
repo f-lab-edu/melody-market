@@ -30,7 +30,8 @@ class TheaterManageServiceImplTest {
     @BeforeEach
     void insert() {
         this.theaterDto = createTestTheater("테스트 공연장");
-        manageTheaterService.saveTheater(theaterDto);
+        Long userId = 1L;
+        manageTheaterService.saveTheater(theaterDto, userId);
     }
 
     @Test
@@ -38,9 +39,10 @@ class TheaterManageServiceImplTest {
     void givenTheaterInfo_whenAddTheaterInfo_thenSuccess() {
         //given
         TheaterDto theaterTestDto = createTestTheater("새로운공연장");
+        Long userId = 1L;
 
         //when & then
-        assertDoesNotThrow(() -> manageTheaterService.saveTheater(theaterTestDto));
+        assertDoesNotThrow(() -> manageTheaterService.saveTheater(theaterTestDto, userId));
     }
 
     @Test
@@ -48,9 +50,10 @@ class TheaterManageServiceImplTest {
     void givenExistTheaterName_whenAddTheaterInfo_thenThrowException() {
         //given
         TheaterDto theaterTestDto = theaterDto;
+        Long userId = 1L;
 
         //when
-        Exception exception = assertThrows(Exception.class, () -> manageTheaterService.saveTheater(theaterTestDto));
+        Exception exception = assertThrows(Exception.class, () -> manageTheaterService.saveTheater(theaterTestDto, userId));
 
         //then
         assertTrue(exception instanceof DataDuplicateKeyException);

@@ -5,6 +5,8 @@ import com.melodymarket.application.theater.dto.TheaterDto;
 import com.melodymarket.application.theater.dto.TheaterRoomDto;
 import com.melodymarket.application.theater.dto.TheaterSeatDto;
 import com.melodymarket.application.theater.service.ManageTheaterServiceImpl;
+import com.melodymarket.domain.user.entity.User;
+import com.melodymarket.infrastructure.security.MelodyUserDetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -27,7 +30,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("공연장 API 테스트")
-@WithMockUser(roles = "USER")
 @WebMvcTest(ManageTheaterController.class)
 class ManageTheaterControllerTest {
 
@@ -42,6 +44,12 @@ class ManageTheaterControllerTest {
 
     @BeforeEach
     void setUp() {
+        User testUser = User.builder().loginId("testUser").userPassword("testPassword").build();
+        MelodyUserDetails userDetails = new MelodyUserDetails(testUser);
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
         this.mockMvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
                 .apply(springSecurity())
@@ -50,7 +58,6 @@ class ManageTheaterControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "USER")
     @DisplayName("[POST] 공연장 등록 API 테스트")
     void givenTestTheater_whenAddTheater_thenSuccess() throws Exception {
         //given

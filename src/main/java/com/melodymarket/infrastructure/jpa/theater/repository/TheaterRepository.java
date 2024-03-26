@@ -1,9 +1,9 @@
 package com.melodymarket.infrastructure.jpa.theater.repository;
 
 import com.melodymarket.domain.theater.entity.Theater;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
 
 public interface TheaterRepository extends JpaRepository<Theater, Long> {
     @Override
@@ -11,5 +11,5 @@ public interface TheaterRepository extends JpaRepository<Theater, Long> {
 
     boolean existsByName(String name);
 
-    List<Theater> findTheatersByUserId(Long userId);
+    Page<Theater> findTheatersByUserId(Long userId, Pageable pageable);
 }

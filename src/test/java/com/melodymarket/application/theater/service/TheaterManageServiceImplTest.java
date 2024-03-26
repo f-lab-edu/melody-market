@@ -69,7 +69,7 @@ class TheaterManageServiceImplTest {
         Long userId = 1L;
 
         //when
-        List<TheaterResponseDto> theaterResponseDtoList = manageTheaterService.getTheaterList(userId);
+        List<TheaterResponseDto> theaterResponseDtoList = manageTheaterService.getTheaterList(userId,0,"name");
 
         //then
         Assertions.assertThat(theaterResponseDtoList).hasSize(1);
@@ -83,7 +83,7 @@ class TheaterManageServiceImplTest {
         Long userId = 2L;
 
         //when
-        Exception exception = assertThrows(Exception.class, () -> manageTheaterService.getTheaterList(userId));
+        Exception exception = assertThrows(Exception.class, () -> manageTheaterService.getTheaterList(userId, 0, "name"));
 
         //then
         assertTrue(exception instanceof DataNotFoundException);

@@ -11,7 +11,12 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,8 +26,10 @@ import java.util.List;
 @Slf4j
 public class ManageTheaterServiceImpl implements ManageTheaterService {
 
+    static final int PAGE_SIZE = 10;
     TheaterRepository theaterRepository;
 
+    @Transactional
     @Override
     public TheaterResponseDto saveTheater(TheaterDto theaterDto, Long userId) {
         if (theaterRepository.existsByName(theaterDto.getName())) {
@@ -39,12 +46,15 @@ public class ManageTheaterServiceImpl implements ManageTheaterService {
         theater.getRooms().forEach(TheaterRoom::associateRoomsWithSeats);
     }
 
-    @Override
-    public List<TheaterResponseDto> getTheaterList(Long userId) {
-        List<Theater> theaterList = theaterRepository.findTheatersByUserId(userId);
-        if (theaterList.isEmpty()) {
+    public List<TheaterResponseDto> getTheaterList(Long userId, int pageNo, String criteria) {
+        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by(Sort.Direction.DESC, criteria));
+        Page<Theater> theaterPage = theaterRepository.findTheatersByUserId(userId, pageable);
+
+        if (theaterPage.isEmpty()) {
             throw new DataNotFoundException("유저가 등록한 공연이 없습니다.");
         }
-        return theaterList.stream().map(TheaterResponseDto::from).toList();
+
+        return theaterPage.getContent().stream().map(TheaterResponseDto::from).toList();
     }
+
 }

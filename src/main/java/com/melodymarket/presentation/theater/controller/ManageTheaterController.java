@@ -35,10 +35,12 @@ public class ManageTheaterController {
     }
 
     @GetMapping("/list")
-    public ResponseDto<List<TheaterResponseDto>> getTheaterList(@AuthenticationPrincipal MelodyUserDetails userDetails) {
+    public ResponseDto<List<TheaterResponseDto>> getTheaterList(@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
+                                                                @RequestParam(required = false, defaultValue = "name", value = "criteria") String criteria,
+                                                                @AuthenticationPrincipal MelodyUserDetails userDetails) {
         log.info("user Id ={}", userDetails.getId());
         return ResponseDto.of(HttpStatus.OK,
                 "공연장 리스트 조회 성공",
-                manageTheaterService.getTheaterList(userDetails.getId()));
+                manageTheaterService.getTheaterList(userDetails.getId(), pageNo, criteria));
     }
 }

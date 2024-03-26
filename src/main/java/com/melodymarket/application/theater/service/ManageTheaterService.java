@@ -8,5 +8,5 @@ import java.util.List;
 public interface ManageTheaterService {
     TheaterResponseDto saveTheater(TheaterDto theaterDto, Long userId);
 
-    List<TheaterResponseDto> getTheaterList(Long userId);
+    List<TheaterResponseDto> getTheaterList(Long userId, int pageNo, String criteria);
 }

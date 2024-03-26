@@ -21,19 +21,14 @@ public class ManageTheaterServiceImpl implements ManageTheaterService {
     TheaterRepository theaterRepository;
 
     @Override
-    public TheaterResponseDto saveTheater(TheaterDto theaterDto) {
-        if (findByTheaterName(theaterDto.getName())) {
+    public TheaterResponseDto saveTheater(TheaterDto theaterDto, Long userId) {
+        if (theaterRepository.existsByName(theaterDto.getName())) {
             throw new DataDuplicateKeyException("이미 등록 된 공연장 이름입니다.");
         }
-        Theater theater = Theater.from(theaterDto);
+        Theater theater = Theater.from(theaterDto, userId);
         setTheaterPersistence(theater);
         theaterRepository.save(theater);
         return TheaterResponseDto.from(theaterDto);
-    }
-
-    @Override
-    public boolean findByTheaterName(String theaterName) {
-        return theaterRepository.existsByName(theaterName);
     }
 
     private void setTheaterPersistence(Theater theater) {

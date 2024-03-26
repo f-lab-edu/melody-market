@@ -19,6 +19,8 @@ public class Theater {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
+    private Long userId;
+    @Column
     private String name;
     @Column
     private String location;
@@ -28,16 +30,18 @@ public class Theater {
     private List<TheaterRoom> rooms;
 
     @Builder
-    public Theater(String name, String location, Show showList, List<TheaterRoom> rooms) {
+    public Theater(String name, String location, Show showList, List<TheaterRoom> rooms, Long userId) {
         this.name = name;
         this.location = location;
         this.showList = showList;
         this.rooms = rooms;
+        this.userId = userId;
     }
 
-    public static Theater from(TheaterDto theaterDto) {
+    public static Theater from(TheaterDto theaterDto, Long userId) {
         return Theater.builder()
                 .name(theaterDto.getName())
+                .userId(userId)
                 .location(theaterDto.getLocation())
                 .rooms(TheaterRoom.from(theaterDto.getRoomsInfo()))
                 .build();

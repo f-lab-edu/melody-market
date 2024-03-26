@@ -26,6 +26,7 @@ import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -70,6 +71,19 @@ class ManageTheaterControllerTest {
         ResultActions resultActions = mockMvc.perform(post("/v1/theater/add")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json));
+        //then
+        resultActions.andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("[GET] 공연장 리스트 조회 API 테스트")
+    void givenTestUser_whenGetTheaterList_thenSuccess() throws Exception {
+        //given
+        //BeforeEach Setting User
+
+        //when
+        ResultActions resultActions = mockMvc.perform(get("/v1/theater/list"));
+
         //then
         resultActions.andExpect(status().isOk());
     }

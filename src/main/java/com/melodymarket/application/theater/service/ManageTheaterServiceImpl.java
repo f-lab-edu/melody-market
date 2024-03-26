@@ -4,6 +4,7 @@ import com.melodymarket.application.theater.dto.TheaterDto;
 import com.melodymarket.domain.theater.entity.Theater;
 import com.melodymarket.domain.theater.entity.TheaterRoom;
 import com.melodymarket.infrastructure.exception.DataDuplicateKeyException;
+import com.melodymarket.infrastructure.exception.DataNotFoundException;
 import com.melodymarket.infrastructure.jpa.theater.repository.TheaterRepository;
 import com.melodymarket.presentation.theater.dto.TheaterResponseDto;
 import lombok.AccessLevel;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -34,6 +37,14 @@ public class ManageTheaterServiceImpl implements ManageTheaterService {
     private void setTheaterPersistence(Theater theater) {
         theater.associateTheaterWithRooms();
         theater.getRooms().forEach(TheaterRoom::associateRoomsWithSeats);
+    }
 
+    @Override
+    public List<TheaterResponseDto> getTheaterList(Long userId) {
+        List<Theater> theaterList = theaterRepository.findTheatersByUserId(userId);
+        if (theaterList.isEmpty()) {
+            throw new DataNotFoundException("유저가 등록한 공연이 없습니다.");
+        }
+        return theaterList.stream().map(TheaterResponseDto::from).toList();
     }
 }

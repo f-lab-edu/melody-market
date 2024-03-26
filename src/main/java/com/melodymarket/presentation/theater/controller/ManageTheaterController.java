@@ -10,10 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -33,5 +32,13 @@ public class ManageTheaterController {
         return ResponseDto.of(HttpStatus.OK,
                 "공연장 등록이 완료되었습니다.",
                 manageTheaterService.saveTheater(theaterDto, melodyUserDetails.getId()));
+    }
+
+    @GetMapping("/list")
+    public ResponseDto<List<TheaterResponseDto>> getTheaterList(@AuthenticationPrincipal MelodyUserDetails userDetails) {
+        log.info("user Id ={}", userDetails.getId());
+        return ResponseDto.of(HttpStatus.OK,
+                "공연장 리스트 조회 성공",
+                manageTheaterService.getTheaterList(userDetails.getId()));
     }
 }

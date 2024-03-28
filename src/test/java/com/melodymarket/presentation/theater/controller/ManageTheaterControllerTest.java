@@ -93,8 +93,6 @@ class ManageTheaterControllerTest {
     void givenTestUser_whenGetTheaterList_thenSuccess() throws Exception {
         //given
         Long userId = this.userId;
-
-        //when
         Theater theater = Mockito.mock(Theater.class);
         when(theater.getId()).thenReturn(userId);
         when(theater.getName()).thenReturn("공연장");
@@ -102,6 +100,8 @@ class ManageTheaterControllerTest {
         TheaterResponseDto theaterResponseDto = new TheaterResponseDto(userId, "공연장", "위치");
         when(manageTheaterService.getTheaterList(Mockito.anyLong(), Mockito.anyInt(), Mockito.anyString()))
                 .thenReturn(List.of(theaterResponseDto));
+
+        //when
         ResultActions resultActions = mockMvc.perform(get("/v1/theater/list"));
 
         //then

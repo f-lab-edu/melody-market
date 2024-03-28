@@ -1,6 +1,7 @@
 package com.melodymarket.application.theater.service;
 
 import com.melodymarket.application.theater.dto.TheaterDto;
+import com.melodymarket.common.mapper.ResponseMapper;
 import com.melodymarket.domain.theater.entity.Theater;
 import com.melodymarket.domain.theater.entity.TheaterRoom;
 import com.melodymarket.infrastructure.exception.DataDuplicateKeyException;
@@ -28,6 +29,7 @@ public class ManageTheaterServiceImpl implements ManageTheaterService {
 
     static final int PAGE_SIZE = 10;
     TheaterRepository theaterRepository;
+    ResponseMapper responseMapper;
 
     @Transactional
     @Override
@@ -54,7 +56,8 @@ public class ManageTheaterServiceImpl implements ManageTheaterService {
             throw new DataNotFoundException("유저가 등록한 공연이 없습니다.");
         }
 
-        return theaterPage.getContent().stream().map(TheaterResponseDto::from).toList();
+//        return theaterPage.getContent().stream().map(TheaterResponseDto::from).toList();
+        return responseMapper.toTheaterResponseDto(theaterPage);
     }
 
 }

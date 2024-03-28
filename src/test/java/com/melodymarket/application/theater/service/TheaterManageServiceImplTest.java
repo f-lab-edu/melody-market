@@ -3,6 +3,8 @@ package com.melodymarket.application.theater.service;
 import com.melodymarket.application.theater.dto.TheaterDto;
 import com.melodymarket.application.theater.dto.TheaterRoomDto;
 import com.melodymarket.application.theater.dto.TheaterSeatDto;
+import com.melodymarket.common.mapper.ResponseMapper;
+import com.melodymarket.common.mapper.ResponseMapperImpl;
 import com.melodymarket.infrastructure.exception.DataDuplicateKeyException;
 import com.melodymarket.infrastructure.exception.DataNotFoundException;
 import com.melodymarket.infrastructure.jpa.theater.repository.TheaterRepository;
@@ -21,13 +23,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@Import(ManageTheaterServiceImpl.class)
+@Import({ManageTheaterServiceImpl.class, ResponseMapperImpl.class})
 @DisplayName("공연장 관리 서비스 테스트")
 class TheaterManageServiceImplTest {
     @Autowired
     ManageTheaterService manageTheaterService;
     @Autowired
     TheaterRepository theaterRepository;
+    @Autowired
+    ResponseMapper responseMapper;
     TheaterDto theaterDto;
 
     @BeforeEach

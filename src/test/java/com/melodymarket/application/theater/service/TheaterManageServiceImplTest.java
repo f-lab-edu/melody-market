@@ -4,21 +4,24 @@ import com.melodymarket.application.theater.dto.TheaterDto;
 import com.melodymarket.application.theater.dto.TheaterRoomDto;
 import com.melodymarket.application.theater.dto.TheaterSeatDto;
 import com.melodymarket.infrastructure.exception.DataDuplicateKeyException;
+import com.melodymarket.infrastructure.exception.DataNotFoundException;
 import com.melodymarket.infrastructure.jpa.theater.repository.TheaterRepository;
+import com.melodymarket.presentation.theater.dto.TheaterResponseDto;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@Transactional
+@DataJpaTest
+@Import(ManageTheaterServiceImpl.class)
 @DisplayName("공연장 관리 서비스 테스트")
 class TheaterManageServiceImplTest {
     @Autowired
@@ -57,6 +60,33 @@ class TheaterManageServiceImplTest {
 
         //then
         assertTrue(exception instanceof DataDuplicateKeyException);
+    }
+
+    @Test
+    @DisplayName("공연장을 등록한 유저의 공연장 리스트 조회 시 성공")
+    void givenRegisterTheaterByUser_whenGetTheaterList_thenGetTheaterListSuccessfully() {
+        //given
+        Long userId = 1L;
+
+        //when
+        List<TheaterResponseDto> theaterResponseDtoList = manageTheaterService.getTheaterList(userId,0,"name");
+
+        //then
+        Assertions.assertThat(theaterResponseDtoList).hasSize(1);
+        Assertions.assertThat(theaterResponseDtoList.get(0).getName()).isEqualTo("테스트 공연장");
+    }
+
+    @Test
+    @DisplayName("공연장을 등록하지 않은 유저의 공연장 리스트 조회 시 예외 발생 테스트")
+    void givenNotRegisterTheaterByUser_whenGetTheaterList_thenThrowException() {
+        //given
+        Long userId = 2L;
+
+        //when
+        Exception exception = assertThrows(Exception.class, () -> manageTheaterService.getTheaterList(userId, 0, "name"));
+
+        //then
+        assertTrue(exception instanceof DataNotFoundException);
     }
 
     private TheaterDto createTestTheater(String name) {

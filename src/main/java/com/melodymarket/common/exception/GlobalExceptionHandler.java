@@ -1,6 +1,7 @@
 package com.melodymarket.common.exception;
 
 import com.melodymarket.common.dto.ResponseDto;
+import com.melodymarket.infrastructure.exception.DataNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -56,5 +57,10 @@ public class GlobalExceptionHandler {
         log.error("[handleDataAccessException] 데이터 처리 중 오류가 발생했습니다={}", ex.getMessage());
 
         return ResponseDto.of(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), "데이터 처리 중 에러가 발생하였습니다.");
+    }
+
+    @ExceptionHandler(DataNotFoundException.class)
+    public ResponseDto<String> handleDataNotFoundException(DataNotFoundException ex) {
+        return ResponseDto.of(HttpStatus.NO_CONTENT, ex.getMessage(), null);
     }
 }

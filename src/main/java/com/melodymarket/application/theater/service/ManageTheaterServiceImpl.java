@@ -4,13 +4,21 @@ import com.melodymarket.application.theater.dto.TheaterDto;
 import com.melodymarket.domain.theater.entity.Theater;
 import com.melodymarket.domain.theater.entity.TheaterRoom;
 import com.melodymarket.infrastructure.exception.DataDuplicateKeyException;
+import com.melodymarket.infrastructure.exception.DataNotFoundException;
 import com.melodymarket.infrastructure.jpa.theater.repository.TheaterRepository;
 import com.melodymarket.presentation.theater.dto.TheaterResponseDto;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -18,8 +26,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ManageTheaterServiceImpl implements ManageTheaterService {
 
+    static final int PAGE_SIZE = 10;
     TheaterRepository theaterRepository;
 
+    @Transactional
     @Override
     public TheaterResponseDto saveTheater(TheaterDto theaterDto, Long userId) {
         if (theaterRepository.existsByName(theaterDto.getName())) {
@@ -34,6 +44,17 @@ public class ManageTheaterServiceImpl implements ManageTheaterService {
     private void setTheaterPersistence(Theater theater) {
         theater.associateTheaterWithRooms();
         theater.getRooms().forEach(TheaterRoom::associateRoomsWithSeats);
-
     }
+
+    public List<TheaterResponseDto> getTheaterList(Long userId, int pageNo, String criteria) {
+        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by(Sort.Direction.DESC, criteria));
+        Page<Theater> theaterPage = theaterRepository.findTheatersByUserId(userId, pageable);
+
+        if (theaterPage.isEmpty()) {
+            throw new DataNotFoundException("유저가 등록한 공연이 없습니다.");
+        }
+
+        return theaterPage.getContent().stream().map(TheaterResponseDto::from).toList();
+    }
+
 }

@@ -2,10 +2,12 @@ package com.melodymarket.presentation.theater.dto;
 
 import com.melodymarket.application.theater.dto.TheaterDto;
 import com.melodymarket.domain.theater.entity.Theater;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
+@AllArgsConstructor
 @Getter
 public class TheaterResponseDto {
     Long id;

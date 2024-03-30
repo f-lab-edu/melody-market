@@ -7,7 +7,9 @@ import com.melodymarket.domain.theater.entity.TheaterRoom;
 import com.melodymarket.infrastructure.exception.DataDuplicateKeyException;
 import com.melodymarket.infrastructure.exception.DataNotFoundException;
 import com.melodymarket.infrastructure.jpa.theater.repository.TheaterRepository;
+import com.melodymarket.infrastructure.jpa.theater.repository.TheaterRoomRepository;
 import com.melodymarket.presentation.theater.dto.TheaterResponseDto;
+import com.melodymarket.presentation.theater.dto.TheaterRoomResponseDto;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -29,6 +31,7 @@ public class ManageTheaterServiceImpl implements ManageTheaterService {
 
     static final int PAGE_SIZE = 10;
     TheaterRepository theaterRepository;
+    TheaterRoomRepository theaterRoomRepository;
     ResponseMapper responseMapper;
 
     @Transactional
@@ -56,8 +59,18 @@ public class ManageTheaterServiceImpl implements ManageTheaterService {
             throw new DataNotFoundException("유저가 등록한 공연이 없습니다.");
         }
 
-//        return theaterPage.getContent().stream().map(TheaterResponseDto::from).toList();
         return responseMapper.toTheaterResponseDto(theaterPage);
+    }
+
+    @Override
+    public List<TheaterRoomResponseDto> getTheaterRoomList(Long userId, Long theaterId, int pageNo, String criteria) {
+        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by(Sort.Direction.DESC, criteria));
+        Page<TheaterRoom> theaterRoomsPage = theaterRoomRepository.findTheaterRoomsByTheaterId(theaterId, pageable);
+        if (theaterRoomsPage.isEmpty()) {
+            throw new DataNotFoundException("공연에 등록된 Hall이 없습니다.");
+        }
+
+        return responseMapper.toTheaterRoomResponseDto(theaterRoomsPage);
     }
 
 }

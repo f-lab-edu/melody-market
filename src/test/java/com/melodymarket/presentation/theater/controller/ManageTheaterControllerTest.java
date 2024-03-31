@@ -10,6 +10,7 @@ import com.melodymarket.domain.user.entity.User;
 import com.melodymarket.infrastructure.jpa.theater.repository.TheaterRepository;
 import com.melodymarket.infrastructure.security.MelodyUserDetails;
 import com.melodymarket.presentation.theater.dto.TheaterResponseDto;
+import com.melodymarket.presentation.theater.dto.TheaterRoomResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -111,6 +112,30 @@ class ManageTheaterControllerTest {
                 .andExpect(jsonPath("$.data[0].name").value("공연장"))
                 .andExpect(jsonPath("$.data[0].location").value("위치"))
                 .andExpect(jsonPath("$.data[0].id").value(1L));
+    }
+
+    @Test
+    @DisplayName("[GET] 공연홀 리스트 조회 API 테스트")
+    void givenTheaterId_whenGetTheaterRoomList_thenSuccess() throws Exception {
+        //given
+        Long userId = this.userId;
+        Long theaterId = 1L;
+        Long theaterRoomId = 1L;
+        String hallName = "A홀";
+        int seatCount = 30;
+        TheaterRoomResponseDto theaterRoomResponseDto = new TheaterRoomResponseDto(theaterRoomId, hallName, seatCount);
+        when(manageTheaterService.getTheaterRoomList(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyInt(), Mockito.anyString()))
+                .thenReturn(List.of(theaterRoomResponseDto));
+
+        //when
+        ResultActions resultActions = mockMvc.perform(get("/v1/theater/list/"+theaterId+"/rooms"));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value("OK"))
+                .andExpect(jsonPath("$.data.length()").value(1))
+                .andExpect(jsonPath("$.data[0].id").value(theaterRoomId))
+                .andExpect(jsonPath("$.data[0].seatCount").value(seatCount));
     }
 
     private TheaterDto createTestTheater() {

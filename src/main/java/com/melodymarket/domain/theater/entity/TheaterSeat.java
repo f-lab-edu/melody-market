@@ -24,7 +24,7 @@ public class TheaterSeat {
     @Column
     private Integer seatFloor;
     @Column
-    private Integer seatRow;
+    private String seatRow;
     @Column
     private Integer seatNumber;
 
@@ -33,7 +33,7 @@ public class TheaterSeat {
     }
 
     @Builder
-    public TheaterSeat(TheaterRoom theaterRoom, Integer seatFloor, Integer seatRow, Integer seatNumber) {
+    public TheaterSeat(TheaterRoom theaterRoom, Integer seatFloor, String seatRow, Integer seatNumber) {
         this.theaterRoom = theaterRoom;
         this.seatFloor = seatFloor;
         this.seatRow = seatRow;

@@ -4,12 +4,15 @@ import com.melodymarket.application.theater.dto.TheaterDto;
 import com.melodymarket.common.mapper.ResponseMapper;
 import com.melodymarket.domain.theater.entity.Theater;
 import com.melodymarket.domain.theater.entity.TheaterRoom;
+import com.melodymarket.domain.theater.entity.TheaterSeat;
 import com.melodymarket.infrastructure.exception.DataDuplicateKeyException;
 import com.melodymarket.infrastructure.exception.DataNotFoundException;
 import com.melodymarket.infrastructure.jpa.theater.repository.TheaterRepository;
 import com.melodymarket.infrastructure.jpa.theater.repository.TheaterRoomRepository;
+import com.melodymarket.infrastructure.jpa.theater.repository.TheaterSeatRepository;
 import com.melodymarket.presentation.theater.dto.TheaterResponseDto;
 import com.melodymarket.presentation.theater.dto.TheaterRoomResponseDto;
+import com.melodymarket.presentation.theater.dto.TheaterSeatResponseDto;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -33,6 +36,7 @@ public class ManageTheaterServiceImpl implements ManageTheaterService {
     TheaterRepository theaterRepository;
     TheaterRoomRepository theaterRoomRepository;
     ResponseMapper responseMapper;
+    TheaterSeatRepository theaterSeatRepository;
 
     @Transactional
     @Override
@@ -71,6 +75,17 @@ public class ManageTheaterServiceImpl implements ManageTheaterService {
         }
 
         return responseMapper.toTheaterRoomResponseDto(theaterRoomsPage);
+    }
+
+    @Override
+    public List<TheaterSeatResponseDto> getTheaterSeatList(Long userId, Long theaterId, Long roomId, int floor, int pageNo, String criteria) {
+        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by(Sort.Direction.ASC, criteria));
+        Page<TheaterSeat> theaterSeatPage = theaterSeatRepository.findByTheaterRoomIdAndSeatFloorOrderBySeatRowAscSeatNumberAsc(roomId, floor, pageable);
+        if (theaterSeatPage.isEmpty()) {
+            throw new DataNotFoundException("공연홀에 등록된 좌석이 없습니다.");
+        }
+
+        return responseMapper.toTheaterSeatResponseDto(theaterSeatPage);
     }
 
 }

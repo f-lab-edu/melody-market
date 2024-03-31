@@ -7,6 +7,7 @@ import com.melodymarket.common.dto.ResponseDto;
 import com.melodymarket.infrastructure.security.MelodyUserDetails;
 import com.melodymarket.presentation.theater.dto.TheaterResponseDto;
 import com.melodymarket.presentation.theater.dto.TheaterRoomResponseDto;
+import com.melodymarket.presentation.theater.dto.TheaterSeatResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -54,5 +55,17 @@ public class ManageTheaterController {
         return ResponseDto.of(HttpStatus.OK,
                 "공연장 홀 정보 리스트 조회 성공",
                 manageTheaterService.getTheaterRoomList(userDetails.getId(), theaterId, pageNo, criteria));
+    }
+
+    @GetMapping("/list/{theater-id}/{room-id}/{floor-num}/seats")
+    public ResponseDto<List<TheaterSeatResponseDto>> getDetailsTheaterRoom(@PathVariable("theater-id") Long theaterId,
+                                                                           @PathVariable("room-id") Long roomId,
+                                                                           @PathVariable("floor-num") int seatFloor,
+                                                                           @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
+                                                                           @RequestParam(required = false, defaultValue = "seatRow", value = "criteria") String criteria,
+                                                                           @AuthenticationPrincipal MelodyUserDetails userDetails) {
+        return ResponseDto.of(HttpStatus.OK,
+                "공연홀 좌석 리스트 조회 성공",
+                manageTheaterService.getTheaterSeatList(userDetails.getId(), theaterId, roomId, seatFloor, pageNo, criteria));
     }
 }

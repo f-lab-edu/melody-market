@@ -10,6 +10,7 @@ import com.melodymarket.infrastructure.exception.DataNotFoundException;
 import com.melodymarket.infrastructure.jpa.theater.repository.TheaterRepository;
 import com.melodymarket.presentation.theater.dto.TheaterResponseDto;
 import com.melodymarket.presentation.theater.dto.TheaterRoomResponseDto;
+import com.melodymarket.presentation.theater.dto.TheaterSeatResponseDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -130,6 +131,62 @@ class TheaterManageServiceImplTest {
         assertTrue(exception instanceof DataNotFoundException);
     }
 
+    @Test
+    @DisplayName("좌석이 등록되어 있는 공연홀 좌석 리스트 조회 시 성공")
+    void givenRegisterSeatByTheaterRoomId_whenGetTheaterSeatList_thenGetTheaterSeatListSuccessfully() {
+        //given
+        Long userId = this.userId;
+        List<TheaterResponseDto> theaterResponseDtoList = manageTheaterService.getTheaterList(userId, 0, "name");
+        Long theaterId = theaterResponseDtoList.get(0).getId();
+        List<TheaterRoomResponseDto> theaterRoomList = manageTheaterService.getTheaterRoomList(userId, theaterId, 0, "name");
+        Long theaterRoomId = theaterRoomList.get(0).getId();
+        int floor = 1;
+
+        //when
+        List<TheaterSeatResponseDto> theaterSeatList = manageTheaterService.getTheaterSeatList(userId, theaterId, theaterRoomId, floor, 0, "seatRow");
+
+        //then
+        Assertions.assertThat(theaterSeatList).hasSize(insertSeat);
+        Assertions.assertThat(theaterSeatList.get(0).getSeatRow()).isEqualTo("1");
+        Assertions.assertThat(theaterSeatList.get(0).getSeatRow()).isEqualTo("1");
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 공연홀에 대한 좌석 조회 시 예외 발생 테스트")
+    void givenNotRegisterSeatByTheaterRoomId_whenGetTheaterSeatList_thenThrowException() {
+        //given
+        Long userId = this.userId;
+        List<TheaterResponseDto> theaterResponseDtoList = manageTheaterService.getTheaterList(userId, 0, "name");
+        Long theaterId = theaterResponseDtoList.get(0).getId();
+        Long theaterRoomId = -1L;
+        int floor = 1;
+
+        //when
+        Exception exception = assertThrows(Exception.class, () -> manageTheaterService.getTheaterSeatList(userId, theaterId, theaterRoomId, floor, 0, "seatRow"));
+
+        //then
+        assertTrue(exception instanceof DataNotFoundException);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 층에 대한 좌석 조회 시 예외 발생 테스트")
+    void givenNotExsistFloorByTheaterRoomId_whenGetTheaterSeatList_thenThrowException() {
+        //given
+        Long userId = this.userId;
+        List<TheaterResponseDto> theaterResponseDtoList = manageTheaterService.getTheaterList(userId, 0, "name");
+        Long theaterId = theaterResponseDtoList.get(0).getId();
+        List<TheaterRoomResponseDto> theaterRoomList = manageTheaterService.getTheaterRoomList(userId, theaterId, 0, "name");
+        Long theaterRoomId = theaterRoomList.get(0).getId();
+        int floor = -1;
+
+        //when
+        Exception exception = assertThrows(Exception.class, () -> manageTheaterService.getTheaterSeatList(userId, theaterId, theaterRoomId, floor, 0, "seatRow"));
+
+        //then
+        assertTrue(exception instanceof DataNotFoundException);
+    }
+
+
     private TheaterDto createTestTheater(String name) {
         return TheaterDto.builder()
                 .name(name)
@@ -149,8 +206,8 @@ class TheaterManageServiceImplTest {
 
     private List<TheaterSeatDto> createTestTheaterSeats() {
         List<TheaterSeatDto> seatDtoList = new ArrayList<>();
-        for (int i = 0; i < insertSeat; i++) {
-            seatDtoList.add(TheaterSeatDto.builder().seatFloor(i).seatRow(5).seatNumber(1).build());
+        for (int i = 1; i < insertSeat + 1; i++) {
+            seatDtoList.add(TheaterSeatDto.builder().seatFloor(1).seatRow("" + i).seatNumber(1).build());
         }
 
         return seatDtoList;

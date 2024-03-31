@@ -11,6 +11,7 @@ import com.melodymarket.infrastructure.jpa.theater.repository.TheaterRepository;
 import com.melodymarket.infrastructure.security.MelodyUserDetails;
 import com.melodymarket.presentation.theater.dto.TheaterResponseDto;
 import com.melodymarket.presentation.theater.dto.TheaterRoomResponseDto;
+import com.melodymarket.presentation.theater.dto.TheaterSeatResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -118,7 +119,6 @@ class ManageTheaterControllerTest {
     @DisplayName("[GET] 공연홀 리스트 조회 API 테스트")
     void givenTheaterId_whenGetTheaterRoomList_thenSuccess() throws Exception {
         //given
-        Long userId = this.userId;
         Long theaterId = 1L;
         Long theaterRoomId = 1L;
         String hallName = "A홀";
@@ -128,7 +128,7 @@ class ManageTheaterControllerTest {
                 .thenReturn(List.of(theaterRoomResponseDto));
 
         //when
-        ResultActions resultActions = mockMvc.perform(get("/v1/theater/list/"+theaterId+"/rooms"));
+        ResultActions resultActions = mockMvc.perform(get("/v1/theater/list/" + theaterId + "/rooms"));
 
         //then
         resultActions.andExpect(status().isOk())
@@ -136,6 +136,36 @@ class ManageTheaterControllerTest {
                 .andExpect(jsonPath("$.data.length()").value(1))
                 .andExpect(jsonPath("$.data[0].id").value(theaterRoomId))
                 .andExpect(jsonPath("$.data[0].seatCount").value(seatCount));
+    }
+
+    @Test
+    @DisplayName("[GET] 공연홀에 등록된 좌석 리스트 조회 API 테스트")
+    void givenTheaterRoomId_whenGetTheaterSeatList_thenSuccess() throws Exception {
+        //given
+        Long theaterId = 1L;
+        Long theaterRoomId = 1L;
+        Long seatId = 1L;
+        int seatFloor = 1;
+        String seatRow = "1";
+        int seatNumber = 1;
+        TheaterSeatResponseDto theaterSeatResponseDto = TheaterSeatResponseDto.builder()
+                .id(seatId)
+                .seatFloor(seatFloor)
+                .seatRow(seatRow)
+                .seatNumber(seatNumber)
+                .build();
+        when(manageTheaterService.getTheaterSeatList(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong(), Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString()))
+                .thenReturn(List.of(theaterSeatResponseDto));
+
+        //when
+        ResultActions resultActions = mockMvc.perform(get("/v1/theater/list/" + theaterRoomId + "/" + theaterId + "/" + seatFloor + "/seats"));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value("OK"))
+                .andExpect(jsonPath("$.data.length()").value(1))
+                .andExpect(jsonPath("$.data[0].id").value(seatId))
+                .andExpect(jsonPath("$.data[0].seatRow").value(seatRow));
     }
 
     private TheaterDto createTestTheater() {
@@ -162,7 +192,7 @@ class ManageTheaterControllerTest {
         seatDtoList.add(
                 TheaterSeatDto.builder()
                         .seatFloor(1)
-                        .seatRow(1)
+                        .seatRow("1")
                         .seatNumber(1)
                         .build()
         );

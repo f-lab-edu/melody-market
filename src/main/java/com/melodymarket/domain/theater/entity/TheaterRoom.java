@@ -17,7 +17,7 @@ public class TheaterRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "theater_id")
     private Theater theater;
     @Column
@@ -25,6 +25,8 @@ public class TheaterRoom {
 
     @OneToMany(mappedBy = "theaterRoom", cascade = CascadeType.ALL)
     private List<TheaterSeat> seats;
+    @Column
+    private int seatCount;
 
     protected void setTheater(Theater theater) {
         this.theater = theater;
@@ -35,12 +37,14 @@ public class TheaterRoom {
         this.theater = theater;
         this.name = name;
         this.seats = seats;
+        this.seatCount = seats.size();
     }
 
     public static List<TheaterRoom> from(List<TheaterRoomDto> theaterRoomDto) {
         return theaterRoomDto.stream()
                 .map(roomDto -> TheaterRoom.builder()
                         .name(roomDto.getRoomName())
+                        .seats(TheaterSeat.from(roomDto.getSeatData()))
                         .seats(TheaterSeat.from(roomDto.getSeatData()))
                         .build())
                 .toList();

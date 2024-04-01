@@ -10,6 +10,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TheaterSeatDto {
     Integer seatFloor;
-    Integer seatRow;
+    String seatRow;
     Integer seatNumber;
 }

@@ -7,7 +7,6 @@ import com.melodymarket.common.mapper.ResponseMapper;
 import com.melodymarket.common.mapper.ResponseMapperImpl;
 import com.melodymarket.infrastructure.exception.DataDuplicateKeyException;
 import com.melodymarket.infrastructure.exception.DataNotFoundException;
-import com.melodymarket.infrastructure.jpa.theater.repository.TheaterRepository;
 import com.melodymarket.presentation.theater.dto.TheaterResponseDto;
 import com.melodymarket.presentation.theater.dto.TheaterRoomResponseDto;
 import com.melodymarket.presentation.theater.dto.TheaterSeatResponseDto;
@@ -26,15 +25,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@Import({ManageTheaterServiceImpl.class, ResponseMapperImpl.class})
+@Import({ManageTheaterServiceImpl.class, ResponseMapperImpl.class, TheaterAuthorizationServiceImpl.class})
 @DisplayName("공연장 관리 서비스 테스트")
 class TheaterManageServiceImplTest {
     @Autowired
     ManageTheaterService manageTheaterService;
     @Autowired
-    TheaterRepository theaterRepository;
-    @Autowired
     ResponseMapper responseMapper;
+    @Autowired
+    TheaterAuthorizationService theaterAuthorizationService;
     TheaterDto theaterDto;
     final int insertTheaterRoom = 3;
     final int insertSeat = 5;
@@ -128,7 +127,7 @@ class TheaterManageServiceImplTest {
         Exception exception = assertThrows(Exception.class, () -> manageTheaterService.getTheaterRoomList(userId, theaterId, 0, "name"));
 
         //then
-        assertTrue(exception instanceof DataNotFoundException);
+        assertTrue(exception instanceof IllegalStateException);
     }
 
     @Test

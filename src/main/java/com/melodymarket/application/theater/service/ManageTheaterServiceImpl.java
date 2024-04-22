@@ -37,6 +37,8 @@ public class ManageTheaterServiceImpl implements ManageTheaterService {
     TheaterRoomRepository theaterRoomRepository;
     ResponseMapper responseMapper;
     TheaterSeatRepository theaterSeatRepository;
+    TheaterAuthorizationService theaterAuthorizationService;
+
 
     @Transactional
     @Override
@@ -68,6 +70,8 @@ public class ManageTheaterServiceImpl implements ManageTheaterService {
 
     @Override
     public List<TheaterRoomResponseDto> getTheaterRoomList(Long userId, Long theaterId, int pageNo, String criteria) {
+        theaterAuthorizationService.authenticationUserId(userId, theaterId);
+
         Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by(Sort.Direction.DESC, criteria));
         Page<TheaterRoom> theaterRoomsPage = theaterRoomRepository.findTheaterRoomsByTheaterId(theaterId, pageable);
         if (theaterRoomsPage.isEmpty()) {
@@ -79,6 +83,8 @@ public class ManageTheaterServiceImpl implements ManageTheaterService {
 
     @Override
     public List<TheaterSeatResponseDto> getTheaterSeatList(Long userId, Long theaterId, Long roomId, int floor, int pageNo, String criteria) {
+        theaterAuthorizationService.authenticationUserId(userId, theaterId);
+
         Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by(Sort.Direction.ASC, criteria));
         Page<TheaterSeat> theaterSeatPage = theaterSeatRepository.findByTheaterRoomIdAndSeatFloorOrderBySeatRowAscSeatNumberAsc(roomId, floor, pageable);
         if (theaterSeatPage.isEmpty()) {

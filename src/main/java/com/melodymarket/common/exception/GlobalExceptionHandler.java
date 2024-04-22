@@ -63,4 +63,9 @@ public class GlobalExceptionHandler {
     public ResponseDto<String> handleDataNotFoundException(DataNotFoundException ex) {
         return ResponseDto.of(HttpStatus.NO_CONTENT, ex.getMessage(), null);
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseDto<String> handleIllegalStateException(IllegalStateException ex) {
+        return ResponseDto.of(HttpStatus.FORBIDDEN, ex.getMessage(), null);
+    }
 }
